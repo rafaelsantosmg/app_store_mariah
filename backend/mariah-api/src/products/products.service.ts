@@ -25,12 +25,12 @@ export class ProductsService {
     return product;
   }
 
-  findAll() {
-    return this.prisma.products.findMany();
+  async findAll() {
+    return await this.prisma.products.findMany();
   }
 
-  findOne(id: number) {
-    const product = this.prisma.products.findUnique({ where: { id } });
+  async findOne(id: number) {
+    const product = await this.prisma.products.findUnique({ where: { id } });
 
     if (!product) {
       throw new Error('Product not found');
@@ -39,8 +39,10 @@ export class ProductsService {
     return product;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    const productExist = this.prisma.products.findFirst({ where: { id } });
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    const productExist = await this.prisma.products.findFirst({
+      where: { id },
+    });
     if (!productExist) {
       throw new Error('Product not found');
     }
@@ -51,8 +53,10 @@ export class ProductsService {
     });
   }
 
-  remove(id: number) {
-    const productExist = this.prisma.products.findFirst({ where: { id } });
+  async remove(id: number) {
+    const productExist = await this.prisma.products.findFirst({
+      where: { id },
+    });
     if (!productExist) {
       throw new Error('Product not found');
     }
