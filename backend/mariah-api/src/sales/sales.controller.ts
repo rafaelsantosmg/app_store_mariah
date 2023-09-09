@@ -1,23 +1,22 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
-  Delete,
   ConflictException,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
 } from '@nestjs/common';
-import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
-import { UpdateSaleDto } from './dto/update-sale.dto';
+import { SalesService } from './sales.service';
 
 @Controller('sales')
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
 
   @Post()
-  async create(@Body() createSaleDto: any) {
+  async create(@Body() createSaleDto: CreateSaleDto) {
     try {
       return await this.salesService.create(createSaleDto);
     } catch (error) {
@@ -31,12 +30,20 @@ export class SalesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.salesService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      return await this.salesService.findOne(+id);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.salesService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      return await this.salesService.remove(+id);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
   }
 }
