@@ -1,5 +1,11 @@
 export class CreateSaleDto {
+  products: SalesProducts[];
   discont?: number;
-  paymentsId?: number;
-  products: [];
+  method?: string;
+  cardMethod?: string;
+}
+
+class SalesProducts {
+  productId: number;
+  quantity: number;
 }
