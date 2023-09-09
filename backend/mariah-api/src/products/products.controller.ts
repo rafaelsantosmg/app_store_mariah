@@ -19,45 +19,48 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
+  async create(@Body() createProductDto: CreateProductDto) {
     try {
-      return this.productsService.create(createProductDto);
+      return await this.productsService.create(createProductDto);
     } catch (error) {
       throw new ConflictException(error.message);
     }
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     try {
-      return this.productsService.findAll();
+      return await this.productsService.findAll();
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     try {
-      return this.productsService.findOne(+id);
+      return await this.productsService.findOne(+id);
     } catch (error) {
       throw new NotFoundException(error.message);
     }
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+  ) {
     try {
-      return this.productsService.update(+id, updateProductDto);
+      return await this.productsService.update(+id, updateProductDto);
     } catch (error) {
       throw new NotFoundException(error.message);
     }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     try {
-      return this.productsService.remove(+id);
+      return await this.productsService.remove(+id);
     } catch (error) {
       throw new NotFoundException(error.message);
     }

@@ -15,8 +15,8 @@ model Payments {
   method     String
   cardMethod String   @map("card_method")
   createdAt  DateTime @default(now()) @map("created_at")
-
-  Sales Sales[]
+  Sales      Sales?   @relation(fields: [salesId], references: [id])
+  salesId    Int?
 }
 
 model Sales {
@@ -28,8 +28,8 @@ model Sales {
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 
-  Product    Products[]
-  Payments   Payments?  @relation(fields: [paymentsId], references: [id])
+  Products   Products[]
+  Payments   Payments[]
   paymentsId Int?
 }
 
@@ -40,11 +40,9 @@ model Products {
   price       Float
   image       String?
   stock       Int
-  salesId     Int?     @map("sales_id")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
-
-  Sales Sales? @relation(fields: [salesId], references: [id])
+  Sales       Sales[]
 
   @@map("products")
 }
