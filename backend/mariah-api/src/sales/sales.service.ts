@@ -1,15 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSaleDto } from './dto/create-sale.dto';
-import { UpdateSaleDto } from './dto/update-sale.dto';
 import { PrismaService } from '../database/prisma/prisma.service';
+import { CreateSaleDto } from './dto/create-sale.dto';
+
+type ProductPayload = {
+  productId: number;
+  quantity: number;
+};
+
+type PaymentPayload = {
+  method?: string;
+  cardMethod?: string;
+  saleId: number;
+};
 
 @Injectable()
 export class SalesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createSale: any) {
+  async create(createSale: CreateSaleDto) {
     const products = await Promise.all(
-      createSale.products.map(async (product: any) => {
+      createSale.products.map(async (product: ProductPayload) => {
         const productExist = await this.prisma.products.findUnique({
           where: { id: product.productId },
         });
@@ -26,10 +36,10 @@ export class SalesService {
     );
 
     const totalPrice = products.reduce((acc, product) => {
-      return acc + product.price;
+      return acc + product.price * product.quantity;
     }, 0);
 
-    let salesPrice = createSale.discont
+    const salesPrice = createSale.discont
       ? totalPrice - (totalPrice * createSale.discont) / 100
       : totalPrice;
 
@@ -50,8 +60,8 @@ export class SalesService {
     });
 
     await this.createPayment({
-      method: createSale.method,
-      cardMethod: createSale.cardMethod,
+      method: createSale.method ? createSale.method : null,
+      cardMethod: createSale.cardMethod ? createSale.cardMethod : null,
       saleId: sale.id,
     });
 
@@ -76,21 +86,35 @@ export class SalesService {
     });
   }
 
-  async findOne(id: number) {}
+  async findOne(id: number) {
+    const sale = await this.prisma.sales.findUnique({
+      where: { id },
+      include: {
+        Products: true,
+        Payments: true,
+      },
+    });
 
-  async remove(id: number) {
-    return `This action removes a #${id} sale`;
+    if (!sale) {
+      throw new Error('Sale not found');
+    }
+
+    return sale;
   }
 
-  async createPayment(payment: any) {
-    // const sale = await this.prisma.sales.findUnique({
-    //   where: { id: payment.saleId },
-    // });
+  async remove(id: number) {
+    const sale = await this.prisma.sales.findUnique({ where: { id } });
 
-    // if (!sale) {
-    //   throw new Error(`Sale com ID nº ${payment.saleId} not found`);
-    // }
+    if (!sale) {
+      throw new Error('Sale not found');
+    }
 
+    return await this.prisma.sales.delete({
+      where: { id },
+    });
+  }
+
+  async createPayment(payment: PaymentPayload) {
     await this.prisma.payments.create({
       data: {
         method: payment.method ? payment.method : null,
