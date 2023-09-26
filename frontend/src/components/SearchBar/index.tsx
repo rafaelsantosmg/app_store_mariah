@@ -13,6 +13,10 @@ export default function SearchBar(): JSX.Element {
     target,
   }: ChangeEvent<HTMLInputElement>) => {
     const search = target.value
+    if (!search) {
+      setSearchProducts([])
+      return
+    }
     const filteredProducts = products.filter((product: Product) => {
       if (
         product.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -27,43 +31,23 @@ export default function SearchBar(): JSX.Element {
   }
 
   return (
-    <Box
-      sx={{
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        gridArea: 'search',
-        justifyContent: 'flex-start',
-        mt: 2,
-        mb: 2,
-        width: '100%',
-      }}
-    >
-      <Grid
-        container
-        justifyContent="space-between"
-        alignItems="center"
-        md={8}
-        sm={10}
-        xs={10}
+    <Grid container justifyContent="space-between" alignItems="center" xs={12}>
+      <Box
+        sx={{
+          background: theme.white,
+          display: 'flex',
+          width: '100%',
+        }}
       >
-        <Box
-          sx={{
-            background: theme.white,
-            display: 'flex',
-            width: '100%',
-          }}
-        >
-          <Grid container spacing={2} justifyContent="space-between">
-            <Grid item xs={12}>
-              <TextFields
-                label="Busque um produto"
-                onChange={handleChangeTextFields}
-              />
-            </Grid>
+        <Grid container spacing={2} justifyContent="space-between">
+          <Grid item xs={12}>
+            <TextFields
+              label="Busque um produto"
+              onChange={handleChangeTextFields}
+            />
           </Grid>
-        </Box>
-      </Grid>
-    </Box>
+        </Grid>
+      </Box>
+    </Grid>
   )
 }
