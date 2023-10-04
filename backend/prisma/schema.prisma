@@ -12,11 +12,13 @@ datasource db {
 
 model Payments {
   id         Int      @id @default(autoincrement())
-  method     String
-  cardMethod String   @map("card_method")
+  method     String?
+  cardMethod String?  @map("card_method")
   createdAt  DateTime @default(now()) @map("created_at")
   Sales      Sales?   @relation(fields: [salesId], references: [id])
   salesId    Int?
+
+  @@map("payments")
 }
 
 model Sales {
@@ -31,6 +33,8 @@ model Sales {
   Products   Products[]
   Payments   Payments[]
   paymentsId Int?
+
+  @@map("sales")
 }
 
 model Products {

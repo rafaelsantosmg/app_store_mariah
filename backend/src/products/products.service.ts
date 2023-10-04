@@ -26,7 +26,7 @@ export class ProductsService {
   }
 
   async findAll() {
-    return await this.prisma.products.findMany();
+    return await this.prisma.products.findMany({ orderBy: { id: 'asc' } });
   }
 
   async findOne(id: number) {
