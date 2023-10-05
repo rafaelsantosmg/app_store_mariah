@@ -29,7 +29,7 @@ export default function ModalSale({ ...props }) {
                   0px 4px 5px 0px rgba(0,0,0,0.14),
                   0px 1px 10px 0px rgba(0, 0, 0, 0.12)`,
           left: '50%',
-          maxHeight: '85%',
+          maxHeight: '95%',
           minWidth: '300px',
           p: 5,
           position: 'relative',
@@ -52,7 +52,7 @@ export default function ModalSale({ ...props }) {
           sx={{
             border: '1px solid #ccc',
             borderRadius: '10px',
-            height: '70vh',
+            height: '85vh',
             overflow: 'auto',
             padding: '1rem',
           }}

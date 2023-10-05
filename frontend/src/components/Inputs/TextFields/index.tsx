@@ -5,13 +5,7 @@ export default function TextFields({ ...props }): JSX.Element {
   const { ...rest } = props
   return (
     <Box sx={{ width: '100%' }}>
-      <TextField
-        id="filled-search"
-        type="search"
-        variant="outlined"
-        fullWidth
-        {...rest}
-      />
+      <TextField variant="outlined" fullWidth {...rest} />
     </Box>
   )
 }

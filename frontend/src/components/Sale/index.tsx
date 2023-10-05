@@ -1,24 +1,63 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Grid, Tab, Typography } from '@mui/material'
+import { Button, Grid, Table, Typography } from '@mui/material'
+import { useContext, useEffect, useState } from 'react'
+import { DataContext } from '../../providers/DataProvider'
 import theme from '../../theme'
-import TextFields from '../Inputs/TextFields'
 import SearchBar from '../SearchBar'
 import SortTable from '../Table'
-import { useContext } from 'react'
-import { DataContext } from '../../providers/DataProvider'
+import SaleTable from '../SaleTable'
+import TextFields from '../Inputs/TextFields'
+import SelectFields from '../Inputs/SelectFields'
 
-const style = {
-  p: {
-    color: theme.red,
-    ml: 1,
-  },
+function serializePaymentMethods(paymentMethod: string): string {
+  switch (paymentMethod) {
+    case 'Dinheiro':
+      return 'money'
+    case 'Pix':
+      return 'pix'
+    case 'Cartão de Crédito':
+      return 'credit_card'
+    case 'Cartão de Débito':
+      return 'debit_card'
+    default:
+      return ''
+  }
 }
 
 export default function Sale({ ...props }): JSX.Element {
-  const { searchProducts } = useContext(DataContext)
+  const MAX_DISCOUNT = 10 // 10%
+  const PAYMENT_METHODS = [
+    'Dinheiro',
+    'Pix',
+    'Cartão de Crédito',
+    'Cartão de Débito',
+  ]
+  const { searchProducts, saleProducts } = useContext(DataContext)
   const { form, handleClose } = props
-  const { errors, handleBlur, handleChange, handleSubmit, touched, values } =
-    form
+  const {
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    resetForm,
+    setFieldValue,
+    values,
+  } = form
+  const [viewTable, setViewTable] = useState<boolean>(false)
+  const [total, setTotal] = useState<number>(0)
+
+  useEffect(() => {
+    searchProducts.length > 0 ? setViewTable(true) : setViewTable(false)
+  }, [searchProducts])
+
+  useEffect(() => {
+    const totalProducts = saleProducts.reduce(
+      (acc, product) => acc + product.price * product.quantity,
+      0
+    )
+    const discont = (totalProducts * values.discount) / 100 || 0
+
+    setTotal(totalProducts - discont)
+  }, [saleProducts, values.discount])
 
   return (
     <form
@@ -33,12 +72,12 @@ export default function Sale({ ...props }): JSX.Element {
       }}
     >
       <>
-        <Grid container xs={11} rowGap={2}>
+        <Grid container xs={12}>
           <Grid
             item
             xs={12}
             sx={{
-              mb: 1,
+              mb: 3,
               mt: 1,
             }}
           >
@@ -54,29 +93,52 @@ export default function Sale({ ...props }): JSX.Element {
               Venda
             </Typography>
           </Grid>
-          <Grid container xs={12} columnSpacing={1}>
-            <Grid item xs={2}>
-              <TextFields
-                label="Código"
-                name="id"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id}
-              />
-              {errors.id && touched.id && (
-                <Typography sx={style.p}>{errors.id}</Typography>
-              )}
-            </Grid>
-            <Grid item xs={10}>
-              <SearchBar />
-            </Grid>
+          <Grid container xs={12}>
+            <SearchBar form={form} />
+            {viewTable ? (
+              <SortTable setViewTable={setViewTable} form={form} />
+            ) : (
+              <SaleTable form={form} />
+            )}
           </Grid>
-          {searchProducts.length > 0 && <SortTable />}
+        </Grid>
+        <Grid container xs={12} justifyContent="space-between" sx={{ mt: 5 }}>
+          <Grid item xs={3}>
+            <TextFields
+              label="total"
+              value={total.toLocaleString('pt-br', {
+                style: 'currency',
+                currency: 'BRL',
+              })}
+              inputProps={{ readOnly: true, min: 0 }}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextFields
+              label="Desconto %"
+              name="discount"
+              type="number"
+              InputProps={{ min: 0, max: MAX_DISCOUNT }}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              value={values.discount}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <SelectFields
+              label="Forma de Pagamento"
+              name="paymentMethod"
+              options={PAYMENT_METHODS}
+              clearField={() => setFieldValue('paymentMethod', '')}
+              value={values.paymentMethod}
+              onChange={handleChange}
+              onClose={handleChange}
+            />
+          </Grid>
         </Grid>
         <Grid
           container
-          md={8}
-          xs={10}
+          xs={12}
           sx={{
             display: 'flex',
             flexDirection: 'row',
@@ -120,7 +182,7 @@ export default function Sale({ ...props }): JSX.Element {
             color="error"
             type="button"
             onClick={() => {
-              form.resetForm()
+              resetForm()
               handleClose()
             }}
           >

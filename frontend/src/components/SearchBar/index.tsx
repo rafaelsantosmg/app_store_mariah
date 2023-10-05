@@ -1,34 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Grid } from '@mui/material'
-import { ChangeEvent, useContext } from 'react'
-import { Product } from '../../interfaces/Products'
-import { DataContext } from '../../providers/DataProvider'
+import { Box, Grid, Typography } from '@mui/material'
 import theme from '../../theme'
 import TextFields from '../Inputs/TextFields'
 
-export default function SearchBar(): JSX.Element {
-  const { products, setSearchProducts } = useContext(DataContext)
+const style = {
+  p: {
+    color: theme.red,
+    ml: 1,
+  },
+}
 
-  const handleChangeTextFields = ({
-    target,
-  }: ChangeEvent<HTMLInputElement>) => {
-    const search = target.value
-    if (!search) {
-      setSearchProducts([])
-      return
-    }
-    const filteredProducts = products.filter((product: Product) => {
-      if (
-        product.name.toLowerCase().includes(search.toLowerCase()) ||
-        product.description.toLowerCase().includes(search.toLowerCase()) ||
-        product.price.toFixed(2).replace('.', ',').includes(search)
-      ) {
-        return product
-      }
-    })
-
-    setSearchProducts(filteredProducts)
-  }
+export default function SearchBar({ ...props }): JSX.Element {
+  const { form } = props
+  const { errors, handleBlur, handleChange, touched, values } = form
 
   return (
     <Grid container justifyContent="space-between" alignItems="center" xs={12}>
@@ -40,11 +24,33 @@ export default function SearchBar(): JSX.Element {
         }}
       >
         <Grid container spacing={2} justifyContent="space-between">
-          <Grid item xs={12}>
+          <Grid item xs={2}>
             <TextFields
-              label="Busque um produto"
-              onChange={handleChangeTextFields}
+              id="outlined-number"
+              inputProps={{ min: 0 }}
+              label="Código"
+              name="id"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.id}
             />
+            {errors.id && touched.id && (
+              <Typography sx={style.p}>{errors.id}</Typography>
+            )}
+          </Grid>
+          <Grid item xs={10}>
+            <TextFields
+              id="outlined-search"
+              label="Busque um produto"
+              name="search"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              type="search"
+              value={values.search}
+            />
+            {errors.search && touched.search && (
+              <Typography sx={style.p}>{errors.search}</Typography>
+            )}
           </Grid>
         </Grid>
       </Box>

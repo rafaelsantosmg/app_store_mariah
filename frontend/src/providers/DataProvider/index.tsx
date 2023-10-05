@@ -1,14 +1,14 @@
-import React, { useState, createContext, use, useEffect } from 'react'
+import { createContext, useState } from 'react'
 
+import { Product, ProductSale } from '../../interfaces/Products'
 import { TDataContext, TProviderProps } from '../../types'
-import { Product } from '../../interfaces/Products'
 
 export const DataContext = createContext<TDataContext>({} as TDataContext)
 
 export const DataProvider = ({ children }: TProviderProps) => {
   const [products, setProducts] = useState<Product[]>([])
   const [searchProducts, setSearchProducts] = useState<Product[]>([])
-  const [categories, setCategories] = useState<string[]>([])
+  const [saleProducts, setSaleProducts] = useState<ProductSale[]>([])
   const [loading, setLoading] = useState<boolean>(true)
 
   return (
@@ -18,8 +18,8 @@ export const DataProvider = ({ children }: TProviderProps) => {
         setProducts,
         searchProducts,
         setSearchProducts,
-        categories,
-        setCategories,
+        saleProducts,
+        setSaleProducts,
         loading,
         setLoading,
       }}

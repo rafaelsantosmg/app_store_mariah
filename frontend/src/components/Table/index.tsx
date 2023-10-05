@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Grid } from '@mui/material'
+import { Button, Grid } from '@mui/material'
 import Box from '@mui/material/Box'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Paper from '@mui/material/Paper'
@@ -13,11 +13,19 @@ import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import { visuallyHidden } from '@mui/utils'
-import { ChangeEvent, MouseEvent, useContext, useMemo, useState } from 'react'
+import {
+  ChangeEvent,
+  MouseEvent,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { Product } from '../../interfaces/Products'
 import { EnhancedTableProps, HeadCell } from '../../interfaces/Table'
 import { DataContext } from '../../providers/DataProvider'
-import { Order } from '../../types'
+import { Order, TSaleProduct, TSelected } from '../../types'
+import TextFields from '../Inputs/TextFields'
 import LoaderSpinner from '../LoaderSpinner'
 
 function createData(
@@ -149,13 +157,25 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   )
 }
 
-export default function SortTable(): JSX.Element {
-  const { searchProducts, loading } = useContext(DataContext)
+export default function SortTable({ ...props }): JSX.Element {
+  const { setViewTable, form } = props
+  const { setFieldValue, values, handleChange, handleBlur } = form
+  const { searchProducts, loading, products } = useContext(DataContext)
   const [order, setOrder] = useState<Order>('asc')
   const [orderBy, setOrderBy] = useState<keyof Product>('name')
+  const [selected, setSelected] = useState<TSelected>({
+    id: 0,
+    name: '',
+  })
   const [page, setPage] = useState<number>(0)
   const [dense, setDense] = useState<boolean>(false)
   const [rowsPerPage, setRowsPerPage] = useState<number>(5)
+
+  useEffect(() => {
+    if (searchProducts.length === 1) {
+      setSelected(searchProducts[0])
+    }
+  }, [searchProducts])
 
   const rows = searchProducts.map((product: Product) =>
     createData(
@@ -185,6 +205,51 @@ export default function SortTable(): JSX.Element {
     setOrderBy(property)
   }
 
+  const handleClear = () => {
+    setFieldValue('quantity', 0)
+    setFieldValue('id', 0)
+    setFieldValue('search', '')
+    setViewTable(false)
+  }
+
+  const handleClick = (prod: TSelected) => {
+    const productId = products.find(
+      (product: Product) =>
+        product.id === prod.id || product.name.includes(prod.name)
+    )?.id
+    const product = {
+      productId,
+      quantity: values.quantity,
+    }
+    if (values.products.length > 0) {
+      const productIndex = values.products.findIndex(
+        (prod: TSaleProduct) => prod.productId === productId
+      )
+      if (productIndex !== -1) {
+        const products = values.products
+        products[productIndex].quantity += values.quantity
+        setFieldValue('products', products)
+        handleClear()
+        return
+      }
+    }
+    setFieldValue('products', [...values.products, product])
+    handleClear()
+  }
+
+  const handleSelected = (prod: TSelected) => {
+    if (prod.id === selected.id) {
+      setSelected({
+        id: 0,
+        name: '',
+      })
+    } else
+      setSelected({
+        id: prod.id,
+        name: prod.name,
+      })
+  }
+
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage)
   }
@@ -204,7 +269,30 @@ export default function SortTable(): JSX.Element {
   return loading ? (
     <LoaderSpinner />
   ) : (
-    <Grid container xs={12}>
+    <Grid container xs={12} sx={{ mt: 2 }}>
+      <Grid container justifyContent="space-between" sx={{ mb: 2 }}>
+        <Grid item>
+          <TextFields
+            name="quantity"
+            label="Quantidade"
+            type="number"
+            variant="outlined"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.quantity}
+          />
+        </Grid>
+        <Grid item>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleClick(selected)}
+            disabled={values.quantity === 0 || values.quantity === ''}
+          >
+            Adicionar
+          </Button>
+        </Grid>
+      </Grid>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <TableContainer>
           <Table
@@ -221,12 +309,13 @@ export default function SortTable(): JSX.Element {
             <TableBody>
               {visibleRows.map((row, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`
-
                 return (
                   <TableRow
                     hover
+                    onClick={() => handleSelected(row)}
                     tabIndex={-1}
                     key={row.name}
+                    selected={row.id === selected.id}
                     sx={{ cursor: 'pointer' }}
                   >
                     <TableCell
@@ -262,24 +351,30 @@ export default function SortTable(): JSX.Element {
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage="Linhas por página:"
-        />
-        <Grid container justifyContent="space-between">
-          <Grid item sx={{ m: 2 }}>
-            <FormControlLabel
-              control={<Switch checked={dense} onChange={handleChangeDense} />}
-              label="Desativar espaçamento"
+        {products.length > rowsPerPage && (
+          <>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              labelRowsPerPage="Linhas por página:"
             />
-          </Grid>
-        </Grid>
+            <Grid container justifyContent="space-between">
+              <Grid item sx={{ m: 2 }}>
+                <FormControlLabel
+                  control={
+                    <Switch checked={dense} onChange={handleChangeDense} />
+                  }
+                  label="Desativar espaçamento"
+                />
+              </Grid>
+            </Grid>
+          </>
+        )}
       </Paper>
     </Grid>
   )

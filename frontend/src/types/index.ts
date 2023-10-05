@@ -1,4 +1,4 @@
-import { Product } from '../interfaces/Products'
+import { Product, ProductSale } from '../interfaces/Products'
 
 export type Order = 'asc' | 'desc'
 
@@ -7,6 +7,8 @@ export type TDataContext = {
   setProducts: (products: Product[]) => void
   searchProducts: Product[]
   setSearchProducts: (searchProducts: Product[]) => void
+  saleProducts: ProductSale[]
+  setSaleProducts: (saleProducts: ProductSale[]) => void
   loading: boolean
   setLoading: (loading: boolean) => void
 }
@@ -29,4 +31,30 @@ export type TFormErrors = {
   stock?: number
   price?: number
   image?: string
+}
+
+export type TSelected = {
+  id: number
+  name: string
+}
+
+export type TSaleProduct = {
+  productId: number
+  quantity: number
+}
+
+export type TProduct = {
+  id: number
+  name: string
+  description: string
+  stock: number
+  price: string
+}
+
+export type TProductSale = {
+  id: number
+  name: string
+  description: string
+  quantity: number
+  price: number
 }
