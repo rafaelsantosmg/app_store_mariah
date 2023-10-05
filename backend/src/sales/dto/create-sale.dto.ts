@@ -1,8 +1,8 @@
 export class CreateSaleDto {
   products: SalesProducts[];
   discont?: number;
-  method?: string;
-  cardMethod?: string;
+  paymentMethod?: string;
+  paymentInstallment?: string;
 }
 
 class SalesProducts {

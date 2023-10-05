@@ -11,12 +11,12 @@ datasource db {
 }
 
 model Payments {
-  id         Int      @id @default(autoincrement())
-  method     String?
-  cardMethod String?  @map("card_method")
-  createdAt  DateTime @default(now()) @map("created_at")
-  Sales      Sales?   @relation(fields: [salesId], references: [id])
-  salesId    Int?
+  id          Int      @id @default(autoincrement())
+  method      String?
+  installment String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  Sales       Sales?   @relation(fields: [salesId], references: [id])
+  salesId     Int?
 
   @@map("payments")
 }

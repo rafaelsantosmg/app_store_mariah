@@ -8,8 +8,8 @@ type ProductPayload = {
 };
 
 type PaymentPayload = {
-  method?: string;
-  cardMethod?: string;
+  paymentMethod?: string;
+  paymentInstallment?: string;
   saleId: number;
 };
 
@@ -18,6 +18,7 @@ export class SalesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createSale: CreateSaleDto) {
+    console.log(createSale);
     const products = await Promise.all(
       createSale.products.map(async (product: ProductPayload) => {
         const productExist = await this.prisma.products.findUnique({
@@ -60,8 +61,10 @@ export class SalesService {
     });
 
     await this.createPayment({
-      method: createSale.method ? createSale.method : null,
-      cardMethod: createSale.cardMethod ? createSale.cardMethod : null,
+      paymentMethod: createSale.paymentMethod ? createSale.paymentMethod : null,
+      paymentInstallment: createSale.paymentInstallment
+        ? createSale.paymentInstallment
+        : null,
       saleId: sale.id,
     });
 
@@ -117,8 +120,10 @@ export class SalesService {
   async createPayment(payment: PaymentPayload) {
     await this.prisma.payments.create({
       data: {
-        method: payment.method ? payment.method : null,
-        cardMethod: payment.cardMethod ? payment.cardMethod : null,
+        method: payment.paymentMethod ? payment.paymentMethod : null,
+        installment: payment.paymentInstallment
+          ? payment.paymentInstallment
+          : null,
         salesId: payment.saleId,
       },
     });
