@@ -1,66 +1,128 @@
-import { Box, Grid, Typography } from '@mui/material'
-import Image from 'next/image'
+import MenuIcon from '@mui/icons-material/Menu'
+import AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Container from '@mui/material/Container'
+import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/navigation'
-import background from '../../asset/images/radix-background.jpg'
+import * as React from 'react'
+import { THeader } from '../../types'
 import theme from '../../theme'
+import Image from 'next/image'
+import Logo from '../../asset/images/logo.svg'
 
-function Header(): JSX.Element {
-  const route = useRouter()
+function Header({ openModal }: THeader) {
+  const router = useRouter()
+  const pages = [
+    {
+      id: 1,
+      title: 'Cadastrar Produto',
+      path: () => router.push('/addproducts'),
+    },
+    {
+      id: 2,
+      title: 'Realizar Venda',
+      path: () => openModal(true),
+    },
+  ]
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
+
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget)
+  }
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null)
+  }
 
   return (
-    <Box
-      sx={{
-        alignItems: 'center',
-        background: theme.gradientPurple,
-        display: 'flex',
-        gridArea: 'header',
-        height: '4rem',
-        justifyContent: 'center',
-        '@media (max-width: 600px)': {
-          height: '6rem',
-        },
-      }}
-    >
-      <Grid
-        container
-        justifyContent="space-between"
-        alignItems="center"
-        md={8}
-        xs={10}
-        sx={{
-          cursor: 'pointer',
-          '& img': {
-            border: '2px solid white',
-            borderRadius: '1rem',
-          },
-          '& h5': {
-            fontWeight: 'bold',
-            textShadow: '1px 1px 1px black',
-          },
-          '@media (max-width: 600px)': {
-            flexDirection: 'column',
-            '& img': {
-              mb: 2,
-            },
-            h5: {
-              fontSize: '1.2rem',
-            },
-          },
-        }}
-        onClick={() => route.push('/home')}
-      >
-        <Image
-          src={background}
-          width={100}
-          height={40}
-          alt="Picture of the author"
-        />
-        <Typography variant="h5" align="center" sx={{ color: theme.white }}>
-          Soluções em Tecnologia
-        </Typography>
-      </Grid>
-    </Box>
+    <AppBar position="static" sx={{ backgroundColor: theme.gainsboro }}>
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          <Box
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+            }}
+          >
+            <Image width={230} src={Logo} alt="Logo da Mariah da Roça" />
+          </Box>
+
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: 'block', md: 'none' },
+              }}
+            >
+              {pages.map((page) => (
+                <MenuItem key={page.id} onClick={page.path}>
+                  <Typography sx={{ color: '#8a5c33' }} textAlign="center">
+                    {page.title}
+                  </Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+          <Box
+            sx={{
+              mr: 2,
+              display: { xs: 'flex', md: 'none' },
+              flexGrow: 1,
+            }}
+          >
+            <Image width={230} src={Logo} alt="Logo da Mariah da Roça" />
+          </Box>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {pages.map((page) => (
+              <Button
+                key={page.id}
+                onClick={page.path}
+                sx={{
+                  my: 2,
+                  mr: 2,
+                  color: '#592e01',
+                  display: 'block',
+                  fontWeight: '700',
+                  '&:hover': {
+                    borderBottom: '1px solid #8a5c33',
+                    height: '2.2rem',
+                  },
+                }}
+              >
+                {page.title}
+              </Button>
+            ))}
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   )
 }
-
 export default Header

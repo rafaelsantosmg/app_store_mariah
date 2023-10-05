@@ -38,15 +38,17 @@ model Sales {
 }
 
 model Products {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String
-  price       Float
-  image       String?
-  stock       Int
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  Sales       Sales[]
+  id           Int      @id @default(autoincrement())
+  name         String
+  description  String
+  costPrice    Float    @map("cost_price")
+  salePrice    Float    @map("sale_price")
+  profitMargin Float    @map("profit_margin")
+  image        String?
+  stock        Int
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  Sales        Sales[]
 
   @@map("products")
 }

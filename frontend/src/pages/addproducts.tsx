@@ -4,14 +4,15 @@ import { useRouter } from 'next/navigation'
 import { useContext } from 'react'
 import * as Yup from 'yup'
 import Form from '../components/Form'
-import Header from '../components/Header'
 import { DataContext } from '../providers/DataProvider'
 import api from '../services'
 import { TFormValues } from '../types'
+import Header from '../components/Header'
 
 export default function AddProducts(): JSX.Element {
   const router = useRouter()
-  const { products, setProducts, setLoading } = useContext(DataContext)
+  const { products, setProducts, setLoading, setOpenModalSale } =
+    useContext(DataContext)
 
   const schema = Yup.object().shape({
     name: Yup.string().required('Campo obrigatório'),
@@ -65,18 +66,20 @@ export default function AddProducts(): JSX.Element {
   })
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: '1fr',
-        gap: 1,
-        gridTemplateRows: 'auto',
-        gridTemplateAreas: `"header header header header" 
+    <>
+      <Header openModal={setOpenModalSale} />
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: '1fr',
+          gap: 1,
+          gridTemplateRows: 'auto',
+          gridTemplateAreas: `"header header header header" 
         "form form form form"`,
-      }}
-    >
-      <Header />
-      <Form form={form} />
-    </Box>
+        }}
+      >
+        <Form form={form} />
+      </Box>
+    </>
   )
 }
