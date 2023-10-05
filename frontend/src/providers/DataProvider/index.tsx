@@ -10,10 +10,12 @@ export const DataProvider = ({ children }: TProviderProps) => {
   const [searchProducts, setSearchProducts] = useState<Product[]>([])
   const [saleProducts, setSaleProducts] = useState<ProductSale[]>([])
   const [loading, setLoading] = useState<boolean>(true)
-
+  const [openModalSale, setOpenModalSale] = useState(false)
   return (
     <DataContext.Provider
       value={{
+        openModalSale,
+        setOpenModalSale,
         products,
         setProducts,
         searchProducts,

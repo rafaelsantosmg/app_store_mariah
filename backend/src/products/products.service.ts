@@ -19,7 +19,10 @@ export class ProductsService {
     }
 
     const product = await this.prisma.products.create({
-      data: createProductDto,
+      data: {
+        ...createProductDto,
+        profitMargin: createProductDto.salePrice - createProductDto.costPrice,
+      },
     });
 
     return product;

@@ -27,7 +27,7 @@ export class SalesService {
 
         const productStock = productExist.stock - product.quantity;
 
-        if (productStock < 1) {
+        if (productStock < 0) {
           throw new Error(
             `Product com ID nº ${product.productId} out of stock`,
           );
@@ -37,7 +37,7 @@ export class SalesService {
     );
 
     const totalPrice = products.reduce((acc, product) => {
-      return acc + product.price * product.quantity;
+      return acc + product.salePrice * product.quantity;
     }, 0);
 
     const salesPrice = createSale.discont

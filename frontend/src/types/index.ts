@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from 'react'
 import { Product, ProductSale } from '../interfaces/Products'
 
 export type Order = 'asc' | 'desc'
@@ -11,6 +12,8 @@ export type TDataContext = {
   setSaleProducts: (saleProducts: ProductSale[]) => void
   loading: boolean
   setLoading: (loading: boolean) => void
+  openModalSale: boolean
+  setOpenModalSale: (value: boolean) => void
 }
 
 export type TProviderProps = {
@@ -57,4 +60,8 @@ export type TProductSale = {
   description: string
   quantity: number
   price: number
+}
+
+export type THeader = {
+  openModal: (value: boolean) => void
 }
