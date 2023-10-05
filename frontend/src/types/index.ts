@@ -24,7 +24,9 @@ export type TFormValues = {
   name: string
   description: string
   stock: number
-  price: number
+  costPrice: number
+  percentage?: number
+  salePrice: number
   image?: string
 }
 

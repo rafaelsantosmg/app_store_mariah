@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Box } from '@mui/material'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/navigation'
@@ -16,12 +17,21 @@ export default function AddProducts(): JSX.Element {
 
   const schema = Yup.object().shape({
     name: Yup.string().required('Campo obrigatório'),
-    description: Yup.string().required('Campo obrigatório'),
+    description: Yup.string().optional(),
     stock: Yup.number()
       .min(0, 'O valor mínimo para estoque é 1')
       .required('Campo obrigatório')
       .nullable(),
-    price: Yup.number()
+    costPrice: Yup.number()
+      .typeError('O valor deve ser um número')
+      .min(0, 'O valor mínimo para preço de custo é 1')
+      .required('Campo obrigatório'),
+    percentage: Yup.number()
+      .typeError('O valor deve ser um número')
+      .min(0, 'O valor mínimo para porcentagem de lucro é 1')
+      .max(100, 'O valor máximo para porcentagem de lucro é 100')
+      .optional(),
+    salePrice: Yup.number()
       .typeError('O valor deve ser um número')
       .min(0, 'O valor não pode ser menor que 0')
       .required('Campo obrigatório'),
@@ -35,7 +45,8 @@ export default function AddProducts(): JSX.Element {
         name: values.name,
         description: values.description,
         stock: Number(values.stock),
-        price: Number(values.price),
+        costPrice: Number(values.costPrice),
+        salePrice: Number(values.salePrice),
         image: values.image,
       }
       const product: any = await api.post('/products', request)
@@ -53,7 +64,9 @@ export default function AddProducts(): JSX.Element {
       name: '',
       description: '',
       stock: 0,
-      price: 0,
+      costPrice: 0,
+      percentage: 0,
+      salePrice: 0,
       image: '',
     },
     validationSchema: schema,

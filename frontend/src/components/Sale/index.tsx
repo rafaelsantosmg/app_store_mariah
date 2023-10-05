@@ -173,7 +173,13 @@ export default function Sale({ ...props }): JSX.Element {
             },
           }}
         >
-          <Button variant="contained" color="success" type="submit">
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{
+              color: theme.brown,
+            }}
+          >
             Finalizar Venda
           </Button>
 

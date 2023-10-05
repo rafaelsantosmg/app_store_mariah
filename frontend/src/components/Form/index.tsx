@@ -2,6 +2,8 @@
 import { Button, Grid, Typography } from '@mui/material'
 import theme from '../../theme'
 import TextFields from '../Inputs/TextFields'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 const style = {
   p: {
@@ -11,9 +13,24 @@ const style = {
 }
 
 export default function Form({ ...props }): JSX.Element {
+  const routes = useRouter()
   const { form } = props
-  const { errors, handleBlur, handleChange, handleSubmit, touched, values } =
-    form
+  const {
+    errors,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    setFieldValue,
+    touched,
+    values,
+  } = form
+
+  useEffect(() => {
+    const salePrice =
+      Number(values.costPrice) +
+      Number(values.costPrice) * (Number(values.percentage) / 100)
+    setFieldValue('salePrice', salePrice)
+  }, [values.percentage])
 
   return (
     <form
@@ -40,9 +57,9 @@ export default function Form({ ...props }): JSX.Element {
             <Typography
               variant="h4"
               sx={{
-                color: theme.black,
+                color: theme.brown,
                 '@media (max-width: 600px)': {
-                  fontSize: '1.3rem',
+                  fontSize: '1.2rem',
                 },
               }}
             >
@@ -75,13 +92,14 @@ export default function Form({ ...props }): JSX.Element {
           </Grid>
           <Grid item xs={12}>
             <TextFields
+              defaultValue={0}
               inputProps={{ min: 0 }}
               label="Estoque"
               name="stock"
               onBlur={handleBlur}
               onChange={handleChange}
               type="number"
-              values={values.stock}
+              value={values.stock}
             />
             {errors.stock && touched.stock && (
               <Typography sx={style.p}>{errors.stock}</Typography>
@@ -89,14 +107,46 @@ export default function Form({ ...props }): JSX.Element {
           </Grid>
           <Grid item xs={12}>
             <TextFields
-              label="Preço"
-              name="price"
+              defaultValue={0}
+              inputProps={{ min: 0 }}
+              label="Preço de Custo"
+              name="costPrice"
               onBlur={handleBlur}
               onChange={handleChange}
-              values={values.price}
+              type="number"
+              value={values.costPrice}
             />
-            {errors.price && touched.price && (
-              <Typography sx={style.p}>{errors.price}</Typography>
+            {errors.costPrice && touched.costPrice && (
+              <Typography sx={style.p}>{errors.costPrice}</Typography>
+            )}
+          </Grid>
+          <Grid item xs={12}>
+            <TextFields
+              defaultValue={0}
+              inputProps={{ min: 0 }}
+              label="Porcentagem de Lucro"
+              name="percentage"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              type="number"
+              value={values.percentage}
+            />
+            {errors.percentage && touched.percentage && (
+              <Typography sx={style.p}>{errors.percentage}</Typography>
+            )}
+          </Grid>
+          <Grid item xs={12}>
+            <TextFields
+              defaultValue={0}
+              label="Preço de Venda"
+              name="salePrice"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              type="number"
+              value={values.salePrice}
+            />
+            {errors.salePrice && touched.salePrice && (
+              <Typography sx={style.p}>{errors.salePrice}</Typography>
             )}
           </Grid>
         </Grid>
@@ -138,15 +188,31 @@ export default function Form({ ...props }): JSX.Element {
             },
           }}
         >
-          <Button variant="contained" color="success" type="submit">
+          <Button
+            variant="outlined"
+            type="submit"
+            sx={{
+              color: theme.white,
+              backgroundColor: theme.brown,
+              '&:hover': {
+                backgroundColor: theme.lightBrown,
+              },
+            }}
+          >
             Cadastrar
           </Button>
 
           <Button
-            variant="contained"
+            variant="outlined"
             color="error"
             type="button"
-            onClick={() => form.resetForm()}
+            onClick={() => {
+              form.resetForm()
+              routes.push('/', { scroll: false })
+            }}
+            sx={{
+              backgroundColor: theme.gainsboro,
+            }}
           >
             Cancelar
           </Button>

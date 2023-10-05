@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import ModalSale from '@/components/ModalSale'
 import { Product } from '@/interfaces/Products'
-import { Box, Button, Grid } from '@mui/material'
+import { Box } from '@mui/material'
 import { useFormik } from 'formik'
-import { useRouter } from 'next/navigation'
 import { useContext, useEffect } from 'react'
 import * as Yup from 'yup'
 import Sale from '../components/Sale'
@@ -11,7 +10,6 @@ import { DataContext } from '../providers/DataProvider'
 import api from '../services'
 
 export default function Home(): JSX.Element {
-  const route = useRouter()
   const {
     setProducts,
     setLoading,
@@ -46,14 +44,21 @@ export default function Home(): JSX.Element {
       search: '',
       products: [],
       paymentMethod: '',
+      paymentInstallments: '',
       quantity: 0,
       discont: 0,
     },
     validationSchema: schema,
     validateOnChange: true,
     onSubmit: async (values, { setSubmitting }) => {
+      const request = {
+        products: values.products,
+        paymentMethod: values.paymentMethod,
+        discount: values.discont,
+        paymentInstallments: values.paymentInstallments,
+      }
       try {
-        await api.post('/sales', values)
+        await api.post('/sales', request)
         form.resetForm()
         setOpenModalSale(false)
       } catch (error) {
