@@ -27,6 +27,7 @@ import { DataContext } from '../../providers/DataProvider'
 import { Order, TSaleProduct, TSelected } from '../../types'
 import TextFields from '../Inputs/TextFields'
 import LoaderSpinner from '../LoaderSpinner'
+import theme from '@/theme'
 
 function createData(
   id: number,
@@ -286,8 +287,17 @@ export default function SortTable({ ...props }): JSX.Element {
         </Grid>
         <Grid item>
           <Button
-            variant="contained"
-            color="primary"
+            variant="outlined"
+            sx={{
+              color: theme.white,
+              backgroundColor: theme.brown,
+              '&:hover': {
+                backgroundColor: theme.lightBrown,
+              },
+              '&:disabled': {
+                backgroundColor: theme.gainsboro,
+              },
+            }}
             onClick={() => handleClick(selected)}
             disabled={values.quantity === 0 || values.quantity === ''}
           >
