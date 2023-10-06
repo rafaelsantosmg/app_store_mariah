@@ -343,11 +343,7 @@ export default function SortTable({ ...props }): JSX.Element {
                     <TableCell align="left">{row.description}</TableCell>
                     <TableCell align="left">{row.stock}</TableCell>
                     <TableCell align="left">
-<<<<<<< Updated upstream
                       {row.salePrice.toLocaleString('pt-br', {
-=======
-                      {row.price?.toLocaleString('pt-br', {
->>>>>>> Stashed changes
                         style: 'currency',
                         currency: 'BRL',
                       })}
