@@ -8,6 +8,10 @@ import * as Yup from 'yup'
 import Sale from '../components/Sale'
 import { DataContext } from '../providers/DataProvider'
 import api from '../services'
+import Header from '../components/Header'
+import Slogan from '../asset/images/slogan.svg'
+import Image from 'next/image'
+import Logo from '../asset/images/logo.svg'
 
 function serializePaymentMethods(paymentMethod: string): string {
   switch (paymentMethod) {
@@ -118,17 +122,20 @@ export default function Home(): JSX.Element {
 
   return (
     <>
+      <Header openModal={setOpenModalSale} />
       <Box
         sx={{
-          alingItems: 'center',
-          display: 'grid',
-          gridTemplateColumns: '1fr',
-          gap: 1,
-          gridTemplateRows: 'auto',
+          alignItems: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          minHeight: '70vh',
           gridTemplateAreas: `"header header header header"
         "button button button button"`,
         }}
       >
+        <Image width={1000} src={Logo} alt="Logo da Mariah da Roça" />
+        <Image width={700} src={Slogan} alt="Slogan da Mariah da Roça" />
         <ModalSale
           open={openModalSale}
           handleClose={() => setOpenModalSale(false)}
