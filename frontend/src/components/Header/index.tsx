@@ -8,27 +8,46 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import * as React from 'react'
 import { THeader } from '../../types'
 import theme from '../../theme'
 import Image from 'next/image'
 import Logo from '../../asset/images/logo.svg'
+import { time } from 'console'
+import Link from 'next/link'
 
 function Header({ openModal }: THeader) {
   const router = useRouter()
+  const pathname = usePathname()
+
   const pages = [
     {
       id: 1,
-      title: 'Cadastrar Produto',
-      path: () => router.push('/addproducts'),
+      title: 'Página Inícial',
+      path: () => router.push('/home'),
     },
     {
       id: 2,
       title: 'Realizar Venda',
       path: () => openModal(true),
     },
+    {
+      id: 3,
+      title: 'Lista dos Produtos',
+      path: () => router.push('/list-products'),
+    },
+    {
+      id: 4,
+      title: 'Cadastrar Produto',
+      path: () => router.push('/addproducts'),
+    },
   ]
+  const links = pages.filter((item) =>
+    pathname === '/addproducts' || pathname === '/list-products'
+      ? item.id !== 2
+      : item
+  )
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -49,7 +68,9 @@ function Header({ openModal }: THeader) {
               display: { xs: 'none', md: 'flex' },
             }}
           >
-            <Image width={230} src={Logo} alt="Logo da Mariah da Roça" />
+            <Link href="/home">
+              <Image width={230} src={Logo} alt="Logo da Mariah da Roça" />
+            </Link>
           </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -100,7 +121,7 @@ function Header({ openModal }: THeader) {
             <Image width={230} src={Logo} alt="Logo da Mariah da Roça" />
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {links.map((page) => (
               <Button
                 key={page.id}
                 onClick={page.path}

@@ -26,11 +26,7 @@ export class SalesService {
         });
 
         const productStock = productExist.stock - product.quantity;
-<<<<<<< Updated upstream
 
-=======
-        console.log(productStock);
->>>>>>> Stashed changes
         if (productStock < 0) {
           throw new Error(
             `Product com ID nº ${product.productId} out of stock`,

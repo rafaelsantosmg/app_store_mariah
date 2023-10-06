@@ -208,7 +208,7 @@ export default function Form({ ...props }): JSX.Element {
             type="button"
             onClick={() => {
               form.resetForm()
-              routes.push('/', { scroll: false })
+              routes.push('/home', { scroll: false })
             }}
             sx={{
               backgroundColor: theme.gainsboro,
