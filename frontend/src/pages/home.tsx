@@ -9,6 +9,21 @@ import Sale from '../components/Sale'
 import { DataContext } from '../providers/DataProvider'
 import api from '../services'
 
+function serializePaymentMethods(paymentMethod: string): string {
+  switch (paymentMethod) {
+    case 'Dinheiro':
+      return 'money'
+    case 'Pix':
+      return 'pix'
+    case 'Cartão de Crédito':
+      return 'credit_card'
+    case 'Cartão de Débito':
+      return 'debit_card'
+    default:
+      return ''
+  }
+}
+
 export default function Home(): JSX.Element {
   const {
     setProducts,
@@ -52,10 +67,10 @@ export default function Home(): JSX.Element {
     validateOnChange: true,
     onSubmit: async (values, { setSubmitting }) => {
       const request = {
-        products: values.products,
-        paymentMethod: values.paymentMethod,
         discount: values.discont,
         paymentInstallments: values.paymentInstallments,
+        paymentMethod: serializePaymentMethods(values.paymentMethod),
+        products: values.products,
       }
       try {
         await api.post('/sales', request)

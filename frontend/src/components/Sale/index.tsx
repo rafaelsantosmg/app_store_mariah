@@ -9,28 +9,25 @@ import SaleTable from '../SaleTable'
 import TextFields from '../Inputs/TextFields'
 import SelectFields from '../Inputs/SelectFields'
 
-function serializePaymentMethods(paymentMethod: string): string {
-  switch (paymentMethod) {
-    case 'Dinheiro':
-      return 'money'
-    case 'Pix':
-      return 'pix'
-    case 'Cartão de Crédito':
-      return 'credit_card'
-    case 'Cartão de Débito':
-      return 'debit_card'
-    default:
-      return ''
-  }
-}
-
 export default function Sale({ ...props }): JSX.Element {
   const MAX_DISCOUNT = 10 // 10%
   const PAYMENT_METHODS = [
     'Dinheiro',
     'Pix',
-    'Cartão de Crédito',
     'Cartão de Débito',
+    'Cartão de Crédito',
+  ]
+  const PAYMENT_INSTALLMENTS = [
+    '1x',
+    '2x',
+    '3x',
+    '4x',
+    '5x',
+    '6x',
+    '7x',
+    '8x',
+    '9x',
+    '10x',
   ]
   const { searchProducts, saleProducts } = useContext(DataContext)
   const { form, handleClose } = props
@@ -51,7 +48,7 @@ export default function Sale({ ...props }): JSX.Element {
 
   useEffect(() => {
     const totalProducts = saleProducts.reduce(
-      (acc, product) => acc + product.price * product.quantity,
+      (acc, product) => acc + product.salePrice * product.quantity,
       0
     )
     const discont = (totalProducts * values.discount) / 100 || 0
@@ -84,9 +81,9 @@ export default function Sale({ ...props }): JSX.Element {
             <Typography
               variant="h4"
               sx={{
-                color: theme.black,
+                color: theme.brown,
                 '@media (max-width: 600px)': {
-                  fontSize: '1.3rem',
+                  fontSize: '1.2rem',
                 },
               }}
             >
@@ -105,7 +102,7 @@ export default function Sale({ ...props }): JSX.Element {
         <Grid container xs={12} justifyContent="space-between" sx={{ mt: 5 }}>
           <Grid item xs={3}>
             <TextFields
-              label="total"
+              label="Total"
               value={total.toLocaleString('pt-br', {
                 style: 'currency',
                 currency: 'BRL',
@@ -113,7 +110,7 @@ export default function Sale({ ...props }): JSX.Element {
               inputProps={{ readOnly: true, min: 0 }}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={2}>
             <TextFields
               label="Desconto %"
               name="discount"
@@ -124,7 +121,7 @@ export default function Sale({ ...props }): JSX.Element {
               value={values.discount}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <SelectFields
               label="Forma de Pagamento"
               name="paymentMethod"
@@ -133,6 +130,18 @@ export default function Sale({ ...props }): JSX.Element {
               value={values.paymentMethod}
               onChange={handleChange}
               onClose={handleChange}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <SelectFields
+              label="Nº de Parcelas"
+              name="paymentInstallments"
+              options={PAYMENT_INSTALLMENTS}
+              clearField={() => setFieldValue('paymentInstallments', '')}
+              value={values.paymentInstallments}
+              onChange={handleChange}
+              onClose={handleChange}
+              disabled={values.paymentMethod !== 'Cartão de Crédito'}
             />
           </Grid>
         </Grid>
@@ -174,22 +183,29 @@ export default function Sale({ ...props }): JSX.Element {
           }}
         >
           <Button
-            variant="contained"
+            variant="outlined"
             type="submit"
             sx={{
-              color: theme.brown,
+              color: theme.white,
+              backgroundColor: theme.brown,
+              '&:hover': {
+                backgroundColor: theme.lightBrown,
+              },
             }}
           >
             Finalizar Venda
           </Button>
 
           <Button
-            variant="contained"
+            variant="outlined"
             color="error"
             type="button"
             onClick={() => {
               resetForm()
               handleClose()
+            }}
+            sx={{
+              backgroundColor: theme.gainsboro,
             }}
           >
             Cancelar

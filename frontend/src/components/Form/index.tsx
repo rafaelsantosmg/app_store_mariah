@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Grid, Typography } from '@mui/material'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import theme from '../../theme'
 import TextFields from '../Inputs/TextFields'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 
 const style = {
   p: {
@@ -208,7 +208,7 @@ export default function Form({ ...props }): JSX.Element {
             type="button"
             onClick={() => {
               form.resetForm()
-              routes.push('/', { scroll: false })
+              routes.push('/home', { scroll: false })
             }}
             sx={{
               backgroundColor: theme.gainsboro,

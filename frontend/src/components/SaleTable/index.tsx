@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect } from 'react'
+import AddIcon from '@mui/icons-material/Add'
+import RemoveIcon from '@mui/icons-material/Remove'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -11,15 +13,16 @@ import Paper from '@mui/material/Paper'
 import { DataContext } from '@/providers/DataProvider'
 import { TProduct, TProductSale, TSaleProduct } from '@/types'
 import { Product } from '@/interfaces/Products'
+import theme from '@/theme'
 
 function createData(
   id: number,
   name: string,
   description: string,
   quantity: number,
-  price: number
+  salePrice: number
 ): TProductSale {
-  return { id, name, description, quantity, price }
+  return { id, name, description, quantity, salePrice }
 }
 
 export default function SaleTable({ ...props }) {
@@ -42,15 +45,51 @@ export default function SaleTable({ ...props }) {
       product.name,
       product.description,
       product.quantity,
-      product.price
+      product.salePrice
     )
   )
 
   const handleDellete = (id: number) => {
-    const products = values.products.filter(
+    const saleProducts = values.products.filter(
       (product: TSaleProduct) => product.productId !== id
     )
-    setFieldValue('products', products)
+    setFieldValue('products', saleProducts)
+  }
+
+  const handleAddQuantity = (id: number) => {
+    const saleProducts = values.products.map((product: TSaleProduct) => {
+      if (product.productId === id) {
+        const productStock = products.find((p: Product) => p.id === id)
+        const quantity =
+          product.quantity === productStock?.stock
+            ? product.quantity
+            : product.quantity + 1
+        return { ...product, quantity: quantity }
+      }
+      return product
+    })
+    setFieldValue('products', saleProducts)
+  }
+
+  const handleRemoveQuantity = (id: number) => {
+    const saleProducts = values.products.map((product: TSaleProduct) => {
+      if (product.productId === id) {
+        return {
+          ...product,
+          quantity:
+            product.quantity === 0 ? product.quantity : product.quantity - 1,
+        }
+      }
+      return product
+    })
+    const product = saleProducts.find(
+      (product: TSaleProduct) => product.quantity === 0
+    )
+    if (product) {
+      handleDellete(id)
+      return
+    }
+    setFieldValue('products', saleProducts)
   }
 
   return (
@@ -59,8 +98,8 @@ export default function SaleTable({ ...props }) {
         <TableHead>
           <TableRow>
             <TableCell>Nome</TableCell>
-            <TableCell align="right">Descrição</TableCell>
-            <TableCell align="right">Quantidade</TableCell>
+            <TableCell align="left">Descrição</TableCell>
+            <TableCell align="center">Quantidade</TableCell>
             <TableCell align="right">Preço</TableCell>
             <TableCell align="center">Remover</TableCell>
           </TableRow>
@@ -75,9 +114,40 @@ export default function SaleTable({ ...props }) {
                 {row.name}
               </TableCell>
               <TableCell align="right">{row.description}</TableCell>
-              <TableCell align="right">{row.quantity}</TableCell>
+              <TableCell
+                align="right"
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-evenly',
+                  width: '100%',
+                }}
+              >
+                <button
+                  style={{
+                    cursor: 'pointer',
+                    border: `1px solid ${theme.brown}`,
+                    borderRadius: '0.5rem',
+                  }}
+                  onClick={() => handleRemoveQuantity(row.id)}
+                >
+                  <RemoveIcon sx={{ color: theme.brown }} />
+                </button>
+                {row.quantity}
+
+                <button
+                  style={{
+                    cursor: 'pointer',
+                    border: `1px solid ${theme.brown}`,
+                    borderRadius: '0.5rem',
+                  }}
+                  onClick={() => handleAddQuantity(row.id)}
+                >
+                  <AddIcon sx={{ color: theme.brown }} />
+                </button>
+              </TableCell>
               <TableCell align="right">
-                {row.price.toLocaleString('pt-br', {
+                {row.salePrice.toLocaleString('pt-br', {
                   style: 'currency',
                   currency: 'BRL',
                 })}
@@ -85,9 +155,13 @@ export default function SaleTable({ ...props }) {
               <TableCell align="center">
                 <button
                   onClick={() => handleDellete(row.id)}
-                  style={{ cursor: 'pointer' }}
+                  style={{
+                    cursor: 'pointer',
+                    border: `1px solid ${theme.brown}`,
+                    borderRadius: '0.5rem',
+                  }}
                 >
-                  <DeleteIcon />
+                  <DeleteIcon sx={{ color: theme.brown }} />
                 </button>
               </TableCell>
             </TableRow>

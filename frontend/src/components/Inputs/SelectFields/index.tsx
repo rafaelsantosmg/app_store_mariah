@@ -16,11 +16,12 @@ export default function SelectFields({
   name: string
   options: string[]
   value: string
+  disabled?: boolean
   clearField: () => void
   onChange: ({ target }: SelectChangeEvent<string>) => void
   onClose?: () => void
 }): JSX.Element {
-  const { label, name, options, value, clearField, ...rest } = props
+  const { label, name, options, value, disabled, clearField, ...rest } = props
 
   return (
     <FormControl variant="outlined" sx={{ width: '100%' }}>
@@ -38,6 +39,7 @@ export default function SelectFields({
         labelId="select-label"
         renderValue={(value: string) => (value ? value : label)}
         value={value}
+        disabled={disabled}
         sx={{
           '& .MuiSelect-iconOutlined': { display: value ? 'none' : '' },
           '&.Mui-focused .MuiIconButton-root': { color: 'primary.main' },

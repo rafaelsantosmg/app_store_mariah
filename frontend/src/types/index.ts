@@ -34,7 +34,9 @@ export type TFormErrors = {
   name?: string
   description?: string
   stock?: number
-  price?: number
+  costPrice: number
+  percentage?: number
+  salePrice: number
   image?: string
 }
 
@@ -53,7 +55,8 @@ export type TProduct = {
   name: string
   description: string
   stock: number
-  price: string
+  costPrice: number
+  salePrice: number
 }
 
 export type TProductSale = {
@@ -61,7 +64,7 @@ export type TProductSale = {
   name: string
   description: string
   quantity: number
-  price: number
+  salePrice: number
 }
 
 export type THeader = {
