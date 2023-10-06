@@ -1,19 +1,27 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import ModalContent from '@/components/ModalContent'
+import SaleScreen from '@/components/SaleScreen'
 import { Box } from '@mui/material'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/navigation'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import * as Yup from 'yup'
-import Form from '../components/Form'
+import Header from '../components/Header'
+import ProductForm from '../components/ProductForm'
 import { DataContext } from '../providers/DataProvider'
 import api from '../services'
 import { TFormValues } from '../types'
-import Header from '../components/Header'
 
 export default function AddProducts(): JSX.Element {
   const router = useRouter()
-  const { products, setProducts, setLoading, setOpenModalSale } =
-    useContext(DataContext)
+  const {
+    form,
+    openModalSale,
+    products,
+    setLoading,
+    setOpenModalSale,
+    setProducts,
+  } = useContext(DataContext)
 
   const schema = Yup.object().shape({
     name: Yup.string().required('Campo obrigatório'),
@@ -59,7 +67,7 @@ export default function AddProducts(): JSX.Element {
     }
   }
 
-  const form = useFormik({
+  const formCadProducts = useFormik({
     initialValues: {
       name: '',
       description: '',
@@ -78,21 +86,24 @@ export default function AddProducts(): JSX.Element {
     },
   })
 
+  useEffect(() => {
+    const { values, setFieldValue } = formCadProducts
+    const salePrice =
+      Number(values.costPrice) +
+      Number(values.costPrice) * (Number(values.percentage) / 100)
+    setFieldValue('salePrice', salePrice)
+  }, [formCadProducts.values.percentage])
+
   return (
     <>
       <Header openModal={setOpenModalSale} />
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: '1fr',
-          gap: 1,
-          gridTemplateRows: 'auto',
-          gridTemplateAreas: `"header header header header" 
-        "form form form form"`,
-        }}
+      <ProductForm form={formCadProducts} type="cad" />
+      <ModalContent
+        open={openModalSale}
+        handleClose={() => setOpenModalSale(false)}
       >
-        <Form form={form} />
-      </Box>
+        <SaleScreen handleClose={() => setOpenModalSale(false)} />
+      </ModalContent>
     </>
   )
 }

@@ -159,10 +159,10 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   )
 }
 
-export default function SortTable({ ...props }): JSX.Element {
-  const { setViewTable, form } = props
+export default function ProductsTable({ ...props }): JSX.Element {
+  const { searchProducts, loading, products, form } = useContext(DataContext)
+  const { setViewTable } = props
   const { setFieldValue, values, handleChange, handleBlur } = form
-  const { searchProducts, loading, products } = useContext(DataContext)
   const [order, setOrder] = useState<Order>('asc')
   const [orderBy, setOrderBy] = useState<keyof Product>('name')
   const [selected, setSelected] = useState<TSelected>({
@@ -326,7 +326,7 @@ export default function SortTable({ ...props }): JSX.Element {
                     hover
                     onClick={() => handleSelected(row)}
                     tabIndex={-1}
-                    key={row.name}
+                    key={row.id}
                     selected={row.id === selected.id}
                     sx={{ cursor: 'pointer' }}
                   >

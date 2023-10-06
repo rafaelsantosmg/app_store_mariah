@@ -12,60 +12,37 @@ const style = {
   },
 }
 
-export default function Form({ ...props }): JSX.Element {
+export default function ProductForm({ ...props }): JSX.Element {
   const routes = useRouter()
-  const { form } = props
-  const {
-    errors,
-    handleBlur,
-    handleChange,
-    handleSubmit,
-    setFieldValue,
-    touched,
-    values,
-  } = form
-
-  useEffect(() => {
-    const salePrice =
-      Number(values.costPrice) +
-      Number(values.costPrice) * (Number(values.percentage) / 100)
-    setFieldValue('salePrice', salePrice)
-  }, [values.percentage])
+  const { form, setProduct, type } = props
+  const { errors, handleBlur, handleChange, handleSubmit, touched, values } =
+    form
 
   return (
     <form
       onSubmit={handleSubmit}
       style={{
-        alignItems: 'center',
         display: 'flex',
-        flexDirection: 'column',
-        gridArea: 'form',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
+        marginTop: '1rem',
         width: '100%',
       }}
     >
-      <>
-        <Grid container md={8} xs={10} rowGap={2}>
-          <Grid
-            item
-            xs={12}
+      <Grid container rowGap={2} justifyContent="center" sx={{ width: '90%' }}>
+        <Grid item xs={12}>
+          <Typography
+            variant="h4"
             sx={{
-              mb: 1,
-              mt: 1,
+              color: theme.brown,
+              '@media (max-width: 600px)': {
+                fontSize: '1.2rem',
+              },
             }}
           >
-            <Typography
-              variant="h4"
-              sx={{
-                color: theme.brown,
-                '@media (max-width: 600px)': {
-                  fontSize: '1.2rem',
-                },
-              }}
-            >
-              Cadastro de Produtos
-            </Typography>
-          </Grid>
+            {type === 'edit' ? 'Editar Produto' : 'Cadastrar Produto'}
+          </Typography>
+        </Grid>
+        <Grid container rowGap={2}>
           <Grid item xs={12}>
             <TextFields
               label="Nome"
@@ -90,9 +67,10 @@ export default function Form({ ...props }): JSX.Element {
               <Typography sx={style.p}>{errors.description}</Typography>
             )}
           </Grid>
-          <Grid item xs={12}>
+        </Grid>
+        <Grid container justifyContent="space-between">
+          <Grid item xs={5}>
             <TextFields
-              defaultValue={0}
               inputProps={{ min: 0 }}
               label="Estoque"
               name="stock"
@@ -105,9 +83,8 @@ export default function Form({ ...props }): JSX.Element {
               <Typography sx={style.p}>{errors.stock}</Typography>
             )}
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={5}>
             <TextFields
-              defaultValue={0}
               inputProps={{ min: 0 }}
               label="Preço de Custo"
               name="costPrice"
@@ -120,9 +97,10 @@ export default function Form({ ...props }): JSX.Element {
               <Typography sx={style.p}>{errors.costPrice}</Typography>
             )}
           </Grid>
-          <Grid item xs={12}>
+        </Grid>
+        <Grid container justifyContent="space-between">
+          <Grid item xs={5}>
             <TextFields
-              defaultValue={0}
               inputProps={{ min: 0 }}
               label="Porcentagem de Lucro"
               name="percentage"
@@ -135,9 +113,8 @@ export default function Form({ ...props }): JSX.Element {
               <Typography sx={style.p}>{errors.percentage}</Typography>
             )}
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={5}>
             <TextFields
-              defaultValue={0}
               label="Preço de Venda"
               name="salePrice"
               onBlur={handleBlur}
@@ -152,8 +129,6 @@ export default function Form({ ...props }): JSX.Element {
         </Grid>
         <Grid
           container
-          md={8}
-          xs={10}
           sx={{
             display: 'flex',
             flexDirection: 'row',
@@ -199,7 +174,7 @@ export default function Form({ ...props }): JSX.Element {
               },
             }}
           >
-            Cadastrar
+            {type === 'edit' ? 'Editar' : 'Cadastrar'}
           </Button>
 
           <Button
@@ -208,7 +183,10 @@ export default function Form({ ...props }): JSX.Element {
             type="button"
             onClick={() => {
               form.resetForm()
-              routes.push('/home', { scroll: false })
+              if (type === 'edit') {
+                setProduct({})
+                routes.push('/list-products')
+              } else routes.push('/home', { scroll: false })
             }}
             sx={{
               backgroundColor: theme.gainsboro,
@@ -217,7 +195,7 @@ export default function Form({ ...props }): JSX.Element {
             Cancelar
           </Button>
         </Grid>
-      </>
+      </Grid>
     </form>
   )
 }

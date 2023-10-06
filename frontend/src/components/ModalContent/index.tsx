@@ -1,8 +1,8 @@
 import CloseIcon from '@mui/icons-material/Close'
 import { Box, IconButton, Modal } from '@mui/material'
 
-export default function ModalSale({ ...props }) {
-  const { children, handleClose, open, renderButtons } = props
+export default function ModalContent({ ...props }) {
+  const { children, handleClose, open = false, renderButtons } = props
   return (
     <Modal open={open}>
       <Box

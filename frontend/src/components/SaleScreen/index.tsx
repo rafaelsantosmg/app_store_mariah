@@ -4,12 +4,12 @@ import { useContext, useEffect, useState } from 'react'
 import { DataContext } from '../../providers/DataProvider'
 import theme from '../../theme'
 import SearchBar from '../SearchBar'
-import SortTable from '../Table'
+import SortTable from '../ProductsTable'
 import SaleTable from '../SaleTable'
 import TextFields from '../Inputs/TextFields'
 import SelectFields from '../Inputs/SelectFields'
 
-export default function Sale({ ...props }): JSX.Element {
+export default function SaleScreen({ ...props }): JSX.Element {
   const MAX_DISCOUNT = 10 // 10%
   const PAYMENT_METHODS = [
     'Dinheiro',
@@ -29,8 +29,8 @@ export default function Sale({ ...props }): JSX.Element {
     '9x',
     '10x',
   ]
-  const { searchProducts, saleProducts } = useContext(DataContext)
-  const { form, handleClose } = props
+  const { searchProducts, saleProducts, form } = useContext(DataContext)
+  const { handleClose } = props
   const {
     handleBlur,
     handleChange,
@@ -69,7 +69,7 @@ export default function Sale({ ...props }): JSX.Element {
       }}
     >
       <>
-        <Grid container xs={12}>
+        <Grid container>
           <Grid
             item
             xs={12}
@@ -90,16 +90,16 @@ export default function Sale({ ...props }): JSX.Element {
               Venda
             </Typography>
           </Grid>
-          <Grid container xs={12}>
-            <SearchBar form={form} />
+          <Grid container>
+            <SearchBar />
             {viewTable ? (
-              <SortTable setViewTable={setViewTable} form={form} />
+              <SortTable setViewTable={setViewTable} />
             ) : (
-              <SaleTable form={form} />
+              <SaleTable />
             )}
           </Grid>
         </Grid>
-        <Grid container xs={12} justifyContent="space-between" sx={{ mt: 5 }}>
+        <Grid container justifyContent="space-between" sx={{ mt: 5 }}>
           <Grid item xs={3}>
             <TextFields
               label="Total"
@@ -112,12 +112,12 @@ export default function Sale({ ...props }): JSX.Element {
           </Grid>
           <Grid item xs={2}>
             <TextFields
+              inputProps={{ min: 0, max: MAX_DISCOUNT }}
               label="Desconto %"
               name="discount"
-              type="number"
-              InputProps={{ min: 0, max: MAX_DISCOUNT }}
-              onChange={handleChange}
               onBlur={handleBlur}
+              onChange={handleChange}
+              type="number"
               value={values.discount}
             />
           </Grid>
@@ -147,7 +147,6 @@ export default function Sale({ ...props }): JSX.Element {
         </Grid>
         <Grid
           container
-          xs={12}
           sx={{
             display: 'flex',
             flexDirection: 'row',

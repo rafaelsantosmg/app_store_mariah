@@ -17,11 +17,10 @@ import Logo from '../../asset/images/logo.svg'
 import { time } from 'console'
 import Link from 'next/link'
 
-function Header({ openModal }: THeader) {
+export default function Header({ openModal }: THeader) {
   const router = useRouter()
-  const pathname = usePathname()
 
-  const pages = [
+  const links = [
     {
       id: 1,
       title: 'Página Inícial',
@@ -40,14 +39,10 @@ function Header({ openModal }: THeader) {
     {
       id: 4,
       title: 'Cadastrar Produto',
-      path: () => router.push('/addproducts'),
+      path: () => router.push('/add-products'),
     },
   ]
-  const links = pages.filter((item) =>
-    pathname === '/addproducts' || pathname === '/list-products'
-      ? item.id !== 2
-      : item
-  )
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -102,7 +97,7 @@ function Header({ openModal }: THeader) {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
+              {links.map((page) => (
                 <MenuItem key={page.id} onClick={page.path}>
                   <Typography sx={{ color: '#8a5c33' }} textAlign="center">
                     {page.title}
@@ -146,4 +141,3 @@ function Header({ openModal }: THeader) {
     </AppBar>
   )
 }
-export default Header

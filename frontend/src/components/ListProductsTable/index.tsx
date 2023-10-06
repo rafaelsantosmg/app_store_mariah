@@ -1,4 +1,5 @@
-import { Grid } from '@mui/material'
+import theme from '@/theme'
+import EditIcon from '@mui/icons-material/Edit'
 import Box from '@mui/material/Box'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Paper from '@mui/material/Paper'
@@ -12,9 +13,18 @@ import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import { visuallyHidden } from '@mui/utils'
-import { ChangeEvent, MouseEvent, useContext, useMemo, useState } from 'react'
+import {
+  ChangeEvent,
+  Component,
+  MouseEvent,
+  useContext,
+  useMemo,
+  useState,
+} from 'react'
 import { Product } from '../../interfaces/Products'
 import { DataContext } from '../../providers/DataProvider'
+import ModalContent from '../ModalContent'
+import EditProduct from '../EditProduct'
 
 function createData(
   id: number,
@@ -131,7 +141,9 @@ function EnhancedTableHead(props: EnhancedTableProps) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.id === 'id' ? 'center' : 'left'}
+            align={
+              ['ID', 'Editar'].includes(headCell.label) ? 'center' : 'left'
+            }
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -149,19 +161,24 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             </TableSortLabel>
           </TableCell>
         ))}
+        <TableCell align="center">Editar</TableCell>
       </TableRow>
     </TableHead>
   )
 }
 
 export default function ListProductsTable() {
-  const { products } = useContext(DataContext)
+  const { products, searchProducts } = useContext(DataContext)
   const [order, setOrder] = useState<Order>('asc')
   const [orderBy, setOrderBy] = useState<keyof Product>('name')
   const [page, setPage] = useState(0)
   const [dense, setDense] = useState(false)
   const [rowsPerPage, setRowsPerPage] = useState(5)
-  const rows = products.map((product: Product) =>
+  const [product, setProduct] = useState<Product>({} as Product)
+
+  const listProducts = searchProducts.length > 0 ? searchProducts : products
+
+  const rows = listProducts.map((product: Product) =>
     createData(
       product.id,
       product.name,
@@ -171,6 +188,11 @@ export default function ListProductsTable() {
       product.salePrice
     )
   )
+
+  const handleEdit = (id: number) => {
+    const product = products.find((product: Product) => product.id === id)
+    setProduct(product as Product)
+  }
 
   const handleRequestSort = (
     event: MouseEvent<unknown>,
@@ -207,8 +229,8 @@ export default function ListProductsTable() {
   )
 
   return (
-    <Grid container justifyContent="center" sx={{ mt: 2 }}>
-      <Box sx={{ width: '90%', mt: 2 }}>
+    <>
+      <Box sx={{ width: '100%' }}>
         <Paper sx={{ width: '100%', mb: 2, p: 2 }}>
           <TableContainer>
             <Table
@@ -245,6 +267,12 @@ export default function ListProductsTable() {
                       <TableCell align="left">{row.stock}</TableCell>
                       <TableCell align="left">{row.costPrice}</TableCell>
                       <TableCell align="left">{row.salePrice}</TableCell>
+                      <TableCell align="center">
+                        <EditIcon
+                          onClick={() => handleEdit(Number(row.id))}
+                          sx={{ cursor: 'pointer', color: theme.brown }}
+                        />
+                      </TableCell>
                     </TableRow>
                   )
                 })}
@@ -276,6 +304,12 @@ export default function ListProductsTable() {
           label="Desativar espaçamento"
         />
       </Box>
-    </Grid>
+      <ModalContent
+        open={product.id ? true : false}
+        handleClose={() => setProduct({} as Product)}
+      >
+        <EditProduct product={product} setProduct={setProduct} />
+      </ModalContent>
+    </>
   )
 }

@@ -14,6 +14,7 @@ export type TDataContext = {
   setLoading: (loading: boolean) => void
   openModalSale: boolean
   setOpenModalSale: (value: boolean) => void
+  form: any
 }
 
 export type TProviderProps = {

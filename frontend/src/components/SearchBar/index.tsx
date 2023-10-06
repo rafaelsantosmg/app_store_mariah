@@ -1,7 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { DataContext } from '@/providers/DataProvider'
 import { Box, Grid, Typography } from '@mui/material'
+import { use, useContext, useEffect } from 'react'
 import theme from '../../theme'
 import TextFields from '../Inputs/TextFields'
+import { Product } from '@/interfaces/Products'
 
 const style = {
   p: {
@@ -10,12 +13,25 @@ const style = {
   },
 }
 
-export default function SearchBar({ ...props }): JSX.Element {
-  const { form } = props
+export default function SearchBar(): JSX.Element {
+  const { form, products, setSearchProducts } = useContext(DataContext)
   const { errors, handleBlur, handleChange, touched, values } = form
 
+  useEffect(() => {
+    const filteredProducts = products.filter(
+      (product: Product) =>
+        (form.values.search !== '' &&
+          product.name
+            .toLowerCase()
+            .includes(form.values.search.toLowerCase())) ||
+        product.id === Number(values.id)
+    )
+
+    setSearchProducts(filteredProducts)
+  }, [form.values.id, form.values.search])
+
   return (
-    <Grid container justifyContent="space-between" alignItems="center" xs={12}>
+    <Grid container justifyContent="space-between" alignItems="center">
       <Box
         sx={{
           background: theme.white,

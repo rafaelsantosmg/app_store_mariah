@@ -1,19 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useEffect } from 'react'
+import { Product } from '@/interfaces/Products'
+import { DataContext } from '@/providers/DataProvider'
+import theme from '@/theme'
+import { TProductSale, TSaleProduct } from '@/types'
 import AddIcon from '@mui/icons-material/Add'
+import DeleteIcon from '@mui/icons-material/Delete'
 import RemoveIcon from '@mui/icons-material/Remove'
+import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
-import DeleteIcon from '@mui/icons-material/Delete'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import Paper from '@mui/material/Paper'
-import { DataContext } from '@/providers/DataProvider'
-import { TProduct, TProductSale, TSaleProduct } from '@/types'
-import { Product } from '@/interfaces/Products'
-import theme from '@/theme'
+import { useContext, useEffect } from 'react'
 
 function createData(
   id: number,
@@ -26,8 +26,7 @@ function createData(
 }
 
 export default function SaleTable({ ...props }) {
-  const { products, setSaleProducts } = useContext(DataContext)
-  const { form } = props
+  const { products, setSaleProducts, form } = useContext(DataContext)
   const { values, setFieldValue } = form
 
   const filteredProducts = values.products.map((product: TSaleProduct) => ({

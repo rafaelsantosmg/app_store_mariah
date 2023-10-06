@@ -18,7 +18,6 @@ export class SalesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createSale: CreateSaleDto) {
-    console.log(createSale);
     const products = await Promise.all(
       createSale.products.map(async (product: ProductPayload) => {
         const productExist = await this.prisma.products.findUnique({

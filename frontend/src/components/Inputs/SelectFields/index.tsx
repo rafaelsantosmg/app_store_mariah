@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import theme from '@/theme'
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
 import {
   FormControl,
@@ -25,7 +26,12 @@ export default function SelectFields({
 
   return (
     <FormControl variant="outlined" sx={{ width: '100%' }}>
-      <InputLabel id="select-label">{label}</InputLabel>
+      <InputLabel
+        id="select-label"
+        sx={{ background: theme.white, pr: 1, pl: 1 }}
+      >
+        {label}
+      </InputLabel>
       <Select
         endAdornment={
           value !== '' && (
