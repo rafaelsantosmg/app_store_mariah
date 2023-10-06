@@ -3,7 +3,8 @@ export interface Product {
   name: string
   description: string
   stock: number
-  price: number
+  costPrice: number
+  salePrice: number
 }
 
 export interface ProductSale {
@@ -11,5 +12,6 @@ export interface ProductSale {
   name: string
   description: string
   quantity: number
-  price: number
+  costPrice: number
+  salePrice: number
 }

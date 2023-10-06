@@ -33,9 +33,10 @@ function createData(
   name: string,
   description: string,
   stock: number,
-  price: number
+  costPrice: number,
+  salePrice: number
 ): Product {
-  return { id, name, description, stock, price }
+  return { id, name, description, stock, costPrice, salePrice }
 }
 
 function orderByStringOfNumber<T>(a: T, b: T, orderBy: keyof T): number {
@@ -114,7 +115,7 @@ const headCells: readonly HeadCell[] = [
     label: 'Estoque',
   },
   {
-    id: 'price',
+    id: 'salePrice',
     numeric: true,
     disablePadding: false,
     label: 'Preço',
@@ -183,7 +184,8 @@ export default function SortTable({ ...props }): JSX.Element {
       product.name,
       product.description,
       product.stock,
-      product.price
+      product.costPrice,
+      product.salePrice
     )
   )
 
@@ -331,7 +333,7 @@ export default function SortTable({ ...props }): JSX.Element {
                     <TableCell align="left">{row.description}</TableCell>
                     <TableCell align="left">{row.stock}</TableCell>
                     <TableCell align="left">
-                      {row.price.toLocaleString('pt-br', {
+                      {row.salePrice.toLocaleString('pt-br', {
                         style: 'currency',
                         currency: 'BRL',
                       })}
