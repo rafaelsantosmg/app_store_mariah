@@ -36,7 +36,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
         const { data } = await api.get('/products')
         setProducts(data)
       } catch (error) {
-        alert('Erro ao buscar produtos' + error)
+        alert('Erro ao buscar produtos \n' + error)
       } finally {
         setLoading(false)
       }
@@ -87,7 +87,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
         form.resetForm()
         setOpenModalSale(false)
       } catch (error) {
-        alert('Erro ao cadastrar venda' + error)
+        alert('Erro ao cadastrar venda \n' + error)
       } finally {
         setSubmitting(false)
         setGetProducts(!getProducts)

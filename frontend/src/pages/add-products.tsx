@@ -60,7 +60,7 @@ export default function AddProducts(): JSX.Element {
       setProducts([...products, data])
       router.push('/home')
     } catch (error) {
-      alert('Erro ao cadastrar produto' + error)
+      alert('Erro ao cadastrar produto \n' + error)
     } finally {
       setLoading(false)
     }

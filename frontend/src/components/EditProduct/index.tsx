@@ -54,7 +54,7 @@ export default function EditProduct({ ...props }): JSX.Element {
       setProducts([...newProducts])
       router.push('/list-products')
     } catch (error) {
-      alert('Erro ao editar produto' + error)
+      alert('Erro ao editar produto \n' + error)
     } finally {
       setLoading(false)
       setProduct({})
