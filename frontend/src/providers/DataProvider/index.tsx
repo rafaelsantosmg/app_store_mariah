@@ -1,9 +1,9 @@
+import api from '@/services'
+import { useFormik } from 'formik'
 import { createContext, useEffect, useState } from 'react'
 import * as Yup from 'yup'
-import { useFormik } from 'formik'
 import { Product, ProductSale } from '../../interfaces/Products'
 import { TDataContext, TProviderProps } from '../../types'
-import api from '@/services'
 
 function serializePaymentMethods(paymentMethod: string): string {
   switch (paymentMethod) {
@@ -36,7 +36,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
         const { data } = await api.get('/products')
         setProducts(data)
       } catch (error) {
-        console.log(error)
+        alert('Erro ao buscar produtos' + error)
       } finally {
         setLoading(false)
       }
@@ -87,7 +87,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
         form.resetForm()
         setOpenModalSale(false)
       } catch (error) {
-        console.log(error)
+        alert('Erro ao cadastrar venda' + error)
       } finally {
         setSubmitting(false)
         setGetProducts(!getProducts)

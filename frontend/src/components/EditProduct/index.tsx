@@ -2,7 +2,6 @@
 import { DataContext } from '@/providers/DataProvider'
 import api from '@/services'
 import { TFormValues } from '@/types'
-import { Box } from '@mui/material'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/navigation'
 import { useContext, useEffect } from 'react'
@@ -55,7 +54,7 @@ export default function EditProduct({ ...props }): JSX.Element {
       setProducts([...newProducts])
       router.push('/list-products')
     } catch (error) {
-      console.log(error)
+      alert('Erro ao editar produto' + error)
     } finally {
       setLoading(false)
       setProduct({})

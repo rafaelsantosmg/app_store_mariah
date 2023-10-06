@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import ModalContent from '@/components/ModalContent'
 import SaleScreen from '@/components/SaleScreen'
-import { Box } from '@mui/material'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/navigation'
 import { useContext, useEffect } from 'react'
@@ -57,11 +56,11 @@ export default function AddProducts(): JSX.Element {
         salePrice: Number(values.salePrice),
         image: values.image,
       }
-      const product: any = await api.post('/products', request)
-      setProducts([...products, product])
+      const { data } = await api.post('/products', request)
+      setProducts([...products, data])
       router.push('/home')
     } catch (error) {
-      console.log(error)
+      alert('Erro ao cadastrar produto' + error)
     } finally {
       setLoading(false)
     }
