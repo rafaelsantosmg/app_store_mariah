@@ -158,7 +158,6 @@ export default function ListProductsTable() {
   const { products } = useContext(DataContext)
   const [order, setOrder] = useState<Order>('asc')
   const [orderBy, setOrderBy] = useState<keyof Product>('name')
-  const [selected, setSelected] = useState<readonly string[]>([])
   const [page, setPage] = useState(0)
   const [dense, setDense] = useState(false)
   const [rowsPerPage, setRowsPerPage] = useState(5)
@@ -204,7 +203,7 @@ export default function ListProductsTable() {
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [order, orderBy, page, rowsPerPage]
+    [order, orderBy, page, rows, rowsPerPage]
   )
 
   return (
