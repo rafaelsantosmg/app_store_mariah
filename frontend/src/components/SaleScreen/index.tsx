@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Grid, Table, Typography } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
+import { Fragment, useContext, useEffect, useState } from 'react'
 import { DataContext } from '../../providers/DataProvider'
 import theme from '../../theme'
 import SearchBar from '../SearchBar'
@@ -8,6 +8,8 @@ import SortTable from '../ProductsTable'
 import SaleTable from '../SaleTable'
 import TextFields from '../Inputs/TextFields'
 import SelectFields from '../Inputs/SelectFields'
+import Logo from '../../asset/images/logo.svg'
+import Image from 'next/image'
 
 export default function SaleScreen({ ...props }): JSX.Element {
   const MAX_DISCOUNT = 10 // 10%
@@ -63,33 +65,33 @@ export default function SaleScreen({ ...props }): JSX.Element {
         alignItems: 'center',
         display: 'flex',
         flexDirection: 'column',
-        gridArea: 'form',
         justifyContent: 'flex-start',
         width: '100%',
       }}
     >
-      <>
+      <Grid
+        container
+        justifyContent="flex-start"
+        alignItems="center"
+        sx={{ mb: 2 }}
+      >
+        <Image width={200} src={Logo} alt="Logo da Mariah da Roça" />
+        <Typography
+          variant="h5"
+          sx={{
+            color: theme.brown,
+            fontWeight: 700,
+            ml: 2,
+            '@media (max-width: 600px)': {
+              fontSize: '1.2rem',
+            },
+          }}
+        >
+          Vendas
+        </Typography>
+      </Grid>
+      <Fragment>
         <Grid container>
-          <Grid
-            item
-            xs={12}
-            sx={{
-              mb: 3,
-              mt: 1,
-            }}
-          >
-            <Typography
-              variant="h4"
-              sx={{
-                color: theme.brown,
-                '@media (max-width: 600px)': {
-                  fontSize: '1.2rem',
-                },
-              }}
-            >
-              Venda
-            </Typography>
-          </Grid>
           <Grid container>
             <SearchBar />
             {viewTable ? (
@@ -210,7 +212,7 @@ export default function SaleScreen({ ...props }): JSX.Element {
             Cancelar
           </Button>
         </Grid>
-      </>
+      </Fragment>
     </form>
   )
 }

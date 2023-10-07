@@ -174,8 +174,11 @@ export default function ProductsTable({ ...props }): JSX.Element {
   const [rowsPerPage, setRowsPerPage] = useState<number>(5)
 
   useEffect(() => {
-    if (searchProducts.length === 1) {
-      setSelected(searchProducts[0])
+    if (searchProducts.length > 0) {
+      setSelected({
+        id: searchProducts[0].id,
+        name: searchProducts[0].name,
+      })
     }
   }, [searchProducts])
 
@@ -241,16 +244,12 @@ export default function ProductsTable({ ...props }): JSX.Element {
   }
 
   const handleSelected = (prod: TSelected) => {
-    if (prod.id === selected.id) {
-      setSelected({
-        id: 0,
-        name: '',
-      })
-    } else
+    if (prod.id !== selected.id) {
       setSelected({
         id: prod.id,
         name: prod.name,
       })
+    }
   }
 
   const handleChangePage = (_event: unknown, newPage: number) => {
@@ -272,7 +271,7 @@ export default function ProductsTable({ ...props }): JSX.Element {
   return loading ? (
     <LoaderSpinner />
   ) : (
-    <Grid container xs={12} sx={{ mt: 2 }}>
+    <Grid container sx={{ mt: 2 }}>
       <Grid container justifyContent="space-between" sx={{ mb: 2 }}>
         <Grid item>
           <TextFields

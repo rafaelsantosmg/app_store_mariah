@@ -4,6 +4,7 @@ import { createContext, useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { Product, ProductSale } from '../../interfaces/Products'
 import { TDataContext, TProviderProps } from '../../types'
+import { toast } from 'react-toastify'
 
 function serializePaymentMethods(paymentMethod: string): string {
   switch (paymentMethod) {
@@ -36,7 +37,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
         const { data } = await api.get('/products')
         setProducts(data)
       } catch (error) {
-        alert('Erro ao buscar produtos \n' + error)
+        toast.error('Erro ao buscar produtos \n' + error)
       } finally {
         setLoading(false)
       }
@@ -87,7 +88,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
         form.resetForm()
         setOpenModalSale(false)
       } catch (error) {
-        alert('Erro ao cadastrar venda \n' + error)
+        toast.error('Erro ao cadastrar venda \n' + error)
       } finally {
         setSubmitting(false)
         setGetProducts(!getProducts)

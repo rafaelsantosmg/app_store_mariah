@@ -4,6 +4,7 @@ import SaleScreen from '@/components/SaleScreen'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/navigation'
 import { useContext, useEffect } from 'react'
+import { toast } from 'react-toastify'
 import * as Yup from 'yup'
 import Header from '../components/Header'
 import ProductForm from '../components/ProductForm'
@@ -60,7 +61,7 @@ export default function AddProducts(): JSX.Element {
       setProducts([...products, data])
       router.push('/home')
     } catch (error) {
-      alert('Erro ao cadastrar produto \n' + error)
+      toast.error('Erro ao cadastrar produto \n' + error)
     } finally {
       setLoading(false)
     }
