@@ -31,7 +31,8 @@ export default function SaleScreen({ ...props }): JSX.Element {
     '9x',
     '10x',
   ]
-  const { searchProducts, saleProducts, form } = useContext(DataContext)
+  const { searchProducts, saleProducts, form, dateTime } =
+    useContext(DataContext)
   const { handleClose } = props
   const {
     handleBlur,
@@ -71,23 +72,31 @@ export default function SaleScreen({ ...props }): JSX.Element {
     >
       <Grid
         container
-        justifyContent="flex-start"
+        justifyContent="space-between"
         alignItems="center"
-        sx={{ mb: 2 }}
+        sx={{ mb: 2, width: '100%' }}
       >
-        <Image width={200} src={Logo} alt="Logo da Mariah da Roça" />
         <Typography
-          variant="h5"
+          variant="h1"
           sx={{
             color: theme.brown,
-            fontWeight: 700,
-            ml: 2,
             '@media (max-width: 600px)': {
               fontSize: '1.2rem',
             },
           }}
         >
-          Vendas
+          Realizar Venda
+        </Typography>
+        <Typography
+          variant="h3"
+          sx={{
+            color: theme.brown,
+            '@media (max-width: 600px)': {
+              fontSize: '1.2rem',
+            },
+          }}
+        >
+          {dateTime}
         </Typography>
       </Grid>
       <Fragment>

@@ -1,5 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close'
 import { Box, IconButton, Modal } from '@mui/material'
+import Image from 'next/image'
+import Logo from '../../asset/images/logo.svg'
 
 export default function ModalContent({ ...props }) {
   const { children, handleClose, open = false, renderButtons } = props
@@ -17,7 +19,7 @@ export default function ModalContent({ ...props }) {
             width: '90%',
           },
           [theme.breakpoints.up('lg')]: {
-            width: '75%',
+            width: '85%',
           },
           [theme.breakpoints.up('xl')]: {
             width: '80%',
@@ -31,7 +33,9 @@ export default function ModalContent({ ...props }) {
           left: '50%',
           maxHeight: '95%',
           minWidth: '300px',
-          p: 5,
+          pl: 5,
+          pr: 5,
+          pt: 6,
           position: 'relative',
           top: '50%',
           transform: 'translate(-50%, -50%)',
@@ -39,11 +43,17 @@ export default function ModalContent({ ...props }) {
       >
         <Box
           sx={{
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
             position: 'absolute',
-            top: '0',
             right: '0',
+            top: '0',
+            width: '100%',
           }}
         >
+          <Image width={200} src={Logo} alt="Logo da Mariah da Roça" />
           <IconButton onClick={handleClose}>
             <CloseIcon fontSize="large" />
           </IconButton>
@@ -54,7 +64,7 @@ export default function ModalContent({ ...props }) {
             borderRadius: '10px',
             height: '85vh',
             overflow: 'auto',
-            padding: '1rem',
+            padding: '0 1rem',
           }}
         >
           {children}

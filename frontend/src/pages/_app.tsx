@@ -8,12 +8,33 @@ import '../styles/globals.css'
 
 const theme = createTheme({
   typography: {
-    fontFamily: ['Gagalin', 'sans-serif'].join(', '),
-    allVariants: {
-      letterSpacing: '0.1em',
-      textTransform: 'none',
+    subtitle1: {
+      fontFamily: ['Gagalin', 'sans-serif'].join(', '),
+      fontSize: 12,
     },
-    fontSize: 15,
+    h1: {
+      fontFamily: ['Gagalin', 'sans-serif'].join(', '),
+      fontSize: 48,
+    },
+    h2: {
+      fontFamily: ['Gagalin', 'sans-serif'].join(', '),
+      fontSize: 40,
+    },
+    h3: {
+      fontFamily: ['Gagalin', 'sans-serif'].join(', '),
+      fontSize: 32,
+    },
+    body1: {
+      fontFamily: ['Roboto', 'sans-serif'].join(', '),
+      fontWeight: 400,
+    },
+    button: {
+      fontFamily: ['Gagalin', 'sans-serif'].join(', '),
+      fontStyle: 'italic',
+      fontWeight: 400,
+      fontSize: 16,
+      letterSpacing: 2.5,
+    },
   },
 })
 

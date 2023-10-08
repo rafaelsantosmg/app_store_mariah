@@ -9,15 +9,18 @@ import MenuItem from '@mui/material/MenuItem'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import { usePathname, useRouter } from 'next/navigation'
-import * as React from 'react'
+import React, { useContext } from 'react'
 import { THeader } from '../../types'
 import theme from '../../theme'
 import Image from 'next/image'
 import Logo from '../../asset/images/logo.svg'
 import { time } from 'console'
 import Link from 'next/link'
+import { DataContext } from '@/providers/DataProvider'
+import { Grid } from '@mui/material'
 
 export default function Header({ openModal }: THeader) {
+  const { dateTime } = useContext(DataContext)
   const router = useRouter()
 
   const links = [
@@ -33,13 +36,8 @@ export default function Header({ openModal }: THeader) {
     },
     {
       id: 3,
-      title: 'Lista dos Produtos',
+      title: 'Lista de Produtos',
       path: () => router.push('/list-products'),
-    },
-    {
-      id: 4,
-      title: 'Cadastrar Produto',
-      path: () => router.push('/add-products'),
     },
   ]
 
@@ -55,19 +53,18 @@ export default function Header({ openModal }: THeader) {
 
   return (
     <AppBar position="static" sx={{ backgroundColor: theme.gainsboro }}>
-      <Container maxWidth="xl">
+      <Grid container justifyContent="space-between" alignItems="center">
+        <Box
+          sx={{
+            ml: 1,
+            display: { xs: 'none', md: 'flex' },
+          }}
+        >
+          <Link href="/home">
+            <Image width={230} src={Logo} alt="Logo da Mariah da Roça" />
+          </Link>
+        </Box>
         <Toolbar disableGutters>
-          <Box
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-            }}
-          >
-            <Link href="/home">
-              <Image width={230} src={Logo} alt="Logo da Mariah da Roça" />
-            </Link>
-          </Box>
-
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -121,14 +118,13 @@ export default function Header({ openModal }: THeader) {
                 key={page.id}
                 onClick={page.path}
                 sx={{
-                  my: 2,
-                  mr: 2,
                   color: '#592e01',
                   display: 'block',
+                  fontSize: '1.3rem',
                   fontWeight: '700',
+                  mr: 2,
                   '&:hover': {
-                    borderBottom: '1px solid #8a5c33',
-                    height: '2.2rem',
+                    borderBottom: '2px solid #8a5c33',
                   },
                 }}
               >
@@ -137,7 +133,29 @@ export default function Header({ openModal }: THeader) {
             ))}
           </Box>
         </Toolbar>
-      </Container>
+        <hr
+          style={{
+            width: '0.2rem',
+            height: '3rem',
+            backgroundColor: '#592e01',
+            border: 'none',
+            margin: '0',
+            padding: '0',
+          }}
+        />
+        <Typography
+          variant="h3"
+          sx={{
+            color: theme.brown,
+            '@media (max-width: 600px)': {
+              fontSize: '1.2rem',
+            },
+            mr: 2,
+          }}
+        >
+          {dateTime}
+        </Typography>
+      </Grid>
     </AppBar>
   )
 }

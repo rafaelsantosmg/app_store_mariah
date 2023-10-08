@@ -2,7 +2,7 @@
 import ModalContent from '@/components/ModalContent'
 import { Box } from '@mui/material'
 import Image from 'next/image'
-import { useContext } from 'react'
+import { Fragment, useContext } from 'react'
 import Logo from '../asset/images/logo.svg'
 import Slogan from '../asset/images/slogan.svg'
 import Header from '../components/Header'
@@ -13,7 +13,7 @@ export default function Home(): JSX.Element {
   const { openModalSale, setOpenModalSale } = useContext(DataContext)
 
   return (
-    <>
+    <Fragment>
       <Header openModal={setOpenModalSale} />
       <Box
         sx={{
@@ -34,6 +34,6 @@ export default function Home(): JSX.Element {
       >
         <SaleScreen handleClose={() => setOpenModalSale(false)} />
       </ModalContent>
-    </>
+    </Fragment>
   )
 }

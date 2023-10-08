@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Grid, Typography } from '@mui/material'
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import theme from '../../theme'
 import TextFields from '../Inputs/TextFields'
 
@@ -13,10 +12,14 @@ const style = {
 }
 
 export default function ProductForm({ ...props }): JSX.Element {
-  const routes = useRouter()
-  const { form, setProduct, type } = props
+  const { form, setProduct, type, setOpenAddProduct } = props
   const { errors, handleBlur, handleChange, handleSubmit, touched, values } =
     form
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (values.name === '') inputRef.current?.focus()
+  }, [values.name])
 
   return (
     <form
@@ -31,7 +34,7 @@ export default function ProductForm({ ...props }): JSX.Element {
       <Grid container rowGap={2} justifyContent="center" sx={{ width: '90%' }}>
         <Grid item xs={12}>
           <Typography
-            variant="h4"
+            variant="h2"
             sx={{
               color: theme.brown,
               '@media (max-width: 600px)': {
@@ -50,12 +53,13 @@ export default function ProductForm({ ...props }): JSX.Element {
               onBlur={handleBlur}
               onChange={handleChange}
               value={values.name}
+              inputProps={{ ref: inputRef }}
             />
             {errors.name && touched.name && (
               <Typography sx={style.p}>{errors.name}</Typography>
             )}
           </Grid>
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <TextFields
               label="Descrição"
               name="description"
@@ -66,7 +70,7 @@ export default function ProductForm({ ...props }): JSX.Element {
             {errors.description && touched.description && (
               <Typography sx={style.p}>{errors.description}</Typography>
             )}
-          </Grid>
+          </Grid> */}
         </Grid>
         <Grid container justifyContent="space-between">
           <Grid item xs={5}>
@@ -83,7 +87,7 @@ export default function ProductForm({ ...props }): JSX.Element {
               <Typography sx={style.p}>{errors.stock}</Typography>
             )}
           </Grid>
-          <Grid item xs={5}>
+          {/* <Grid item xs={5}>
             <TextFields
               inputProps={{ min: 0 }}
               label="Preço de Custo"
@@ -96,10 +100,10 @@ export default function ProductForm({ ...props }): JSX.Element {
             {errors.costPrice && touched.costPrice && (
               <Typography sx={style.p}>{errors.costPrice}</Typography>
             )}
-          </Grid>
+          </Grid> */}
         </Grid>
         <Grid container justifyContent="space-between">
-          <Grid item xs={5}>
+          {/* <Grid item xs={5}>
             <TextFields
               inputProps={{ min: 0 }}
               label="Porcentagem de Lucro"
@@ -112,7 +116,7 @@ export default function ProductForm({ ...props }): JSX.Element {
             {errors.percentage && touched.percentage && (
               <Typography sx={style.p}>{errors.percentage}</Typography>
             )}
-          </Grid>
+          </Grid> */}
           <Grid item xs={5}>
             <TextFields
               label="Preço de Venda"
@@ -183,10 +187,8 @@ export default function ProductForm({ ...props }): JSX.Element {
             type="button"
             onClick={() => {
               form.resetForm()
-              if (type === 'edit') {
-                setProduct({})
-                routes.push('/list-products')
-              } else routes.push('/home', { scroll: false })
+              if (type === 'edit') setProduct({})
+              else setOpenAddProduct(false)
             }}
             sx={{
               backgroundColor: theme.gainsboro,

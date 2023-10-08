@@ -22,8 +22,8 @@ export default function SearchBar(): JSX.Element {
       (product: Product) =>
         (form.values.search !== '' &&
           product.name
-            .toLowerCase()
-            .includes(form.values.search.toLowerCase())) ||
+            .toUpperCase()
+            .includes(form.values.search.toUpperCase())) ||
         product.id === Number(values.id)
     )
 

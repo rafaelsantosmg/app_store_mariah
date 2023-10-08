@@ -15,6 +15,7 @@ export type TDataContext = {
   openModalSale: boolean
   setOpenModalSale: (value: boolean) => void
   form: any
+  dateTime: string
 }
 
 export type TProviderProps = {

@@ -1,28 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import ModalContent from '@/components/ModalContent'
-import SaleScreen from '@/components/SaleScreen'
+import ProductForm from '@/components/ProductForm'
+import { DataContext } from '@/providers/DataProvider'
+import api from '@/services'
+import { TFormValues } from '@/types'
 import { useFormik } from 'formik'
-import { useRouter } from 'next/navigation'
 import { useContext, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import * as Yup from 'yup'
-import Header from '../components/Header'
-import ProductForm from '../components/ProductForm'
-import { DataContext } from '../providers/DataProvider'
-import api from '../services'
-import { TFormValues } from '../types'
 
-export default function AddProducts(): JSX.Element {
-  const router = useRouter()
-  const {
-    form,
-    openModalSale,
-    products,
-    setLoading,
-    setOpenModalSale,
-    setProducts,
-  } = useContext(DataContext)
-
+export default function AddProduct({ ...props }): JSX.Element {
+  const { form, products, setLoading, setProducts } = useContext(DataContext)
+  const { setOpenAddProduct } = props
   const schema = Yup.object().shape({
     name: Yup.string().required('Campo obrigatório'),
     description: Yup.string().optional(),
@@ -37,7 +25,6 @@ export default function AddProducts(): JSX.Element {
     percentage: Yup.number()
       .typeError('O valor deve ser um número')
       .min(0, 'O valor mínimo para porcentagem de lucro é 1')
-      .max(100, 'O valor máximo para porcentagem de lucro é 100')
       .optional(),
     salePrice: Yup.number()
       .typeError('O valor deve ser um número')
@@ -50,8 +37,8 @@ export default function AddProducts(): JSX.Element {
     try {
       setLoading(true)
       const request: TFormValues = {
-        name: values.name,
-        description: values.description,
+        name: values.name.toUpperCase().trim(),
+        description: values.description.toUpperCase().trim(),
         stock: Number(values.stock),
         costPrice: Number(values.costPrice),
         salePrice: Number(values.salePrice),
@@ -59,11 +46,13 @@ export default function AddProducts(): JSX.Element {
       }
       const { data } = await api.post('/products', request)
       setProducts([...products, data])
-      router.push('/home')
+      toast.success(`Produto ${data.name} cadastrado com sucesso!`)
+      // formCadProducts.resetForm()
     } catch (error) {
       toast.error('Erro ao cadastrar produto \n' + error)
     } finally {
       setLoading(false)
+      setOpenAddProduct(false)
     }
   }
 
@@ -95,15 +84,10 @@ export default function AddProducts(): JSX.Element {
   }, [formCadProducts.values.percentage])
 
   return (
-    <>
-      <Header openModal={setOpenModalSale} />
-      <ProductForm form={formCadProducts} type="cad" />
-      <ModalContent
-        open={openModalSale}
-        handleClose={() => setOpenModalSale(false)}
-      >
-        <SaleScreen handleClose={() => setOpenModalSale(false)} />
-      </ModalContent>
-    </>
+    <ProductForm
+      form={formCadProducts}
+      setOpenAddProduct={setOpenAddProduct}
+      type="cad"
+    />
   )
 }

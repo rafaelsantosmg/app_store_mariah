@@ -5,6 +5,14 @@ import * as Yup from 'yup'
 import { Product, ProductSale } from '../../interfaces/Products'
 import { TDataContext, TProviderProps } from '../../types'
 import { toast } from 'react-toastify'
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
+
+const today = new Date()
+
+const dateTime = format(today, "'Dia' dd 'de' MMMM'", {
+  locale: ptBR,
+})
 
 function serializePaymentMethods(paymentMethod: string): string {
   switch (paymentMethod) {
@@ -110,6 +118,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
         loading,
         setLoading,
         form,
+        dateTime,
       }}
     >
       {children}
