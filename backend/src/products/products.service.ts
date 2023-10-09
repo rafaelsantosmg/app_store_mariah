@@ -37,7 +37,12 @@ export class ProductsService {
   }
 
   async findOne(id: number) {
-    const product = await this.prisma.products.findUnique({ where: { id } });
+    const product = await this.prisma.products.findUnique({
+      where: { id },
+      include: {
+        Sales: true,
+      },
+    });
 
     if (!product) {
       throw new Error('Product not found');
@@ -53,13 +58,6 @@ export class ProductsService {
     if (!productExist) {
       throw new Error('Product not found');
     }
-
-    console.log(
-      updateProductDto.stockType === 'KG'
-        ? updateProductDto.stock * 1000
-        : updateProductDto.stock,
-    );
-
     return this.prisma.products.update({
       where: { id },
       data: {
