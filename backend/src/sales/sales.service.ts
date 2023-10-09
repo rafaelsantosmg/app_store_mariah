@@ -18,6 +18,7 @@ export class SalesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createSale: CreateSaleDto) {
+    console.log(createSale);
     const products = await Promise.all(
       createSale.products.map(async (product: ProductPayload) => {
         const productExist = await this.prisma.products.findUnique({
@@ -30,7 +31,7 @@ export class SalesService {
         //     `Product com ID nº ${product.productId} out of stock`,
         //   );
         // }
-        return { ...productExist, quantity: product.quantity };
+        return { ...productExist, quantity: Number(product.quantity) };
       }),
     );
 
@@ -68,6 +69,7 @@ export class SalesService {
 
     await Promise.all(
       products.map(async (product) => {
+        console.log(product.quantity);
         await this.prisma.products.update({
           where: { id: product.id },
           data: { stock: product.stock - product.quantity },

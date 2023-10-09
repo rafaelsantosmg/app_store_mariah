@@ -25,6 +25,7 @@ import { Product } from '../../interfaces/Products'
 import { DataContext } from '../../providers/DataProvider'
 import ModalContent from '../ModalContent'
 import EditProduct from '../EditProduct'
+import { formateValueUnitKg } from '../../utils/formate-values'
 
 function createData(
   id: number,
@@ -180,7 +181,6 @@ export default function ListProductsTable() {
   const [product, setProduct] = useState<Product>({} as Product)
 
   const listProducts = searchProducts.length > 0 ? searchProducts : products
-  console.log(products)
 
   const rows = listProducts.map((product: Product) =>
     createData(
@@ -270,8 +270,10 @@ export default function ListProductsTable() {
                       <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="center">{row.stockType}</TableCell>
                       <TableCell align="left">
-                        {row.stockType === 'KG'
-                          ? (row.stock / 1000).toFixed(3)
+                        {row.stockType === 'KG' && row.stock < 1000
+                          ? formateValueUnitKg(row.stock) + 'g'
+                          : row.stockType === 'KG'
+                          ? formateValueUnitKg(row.stock) + 'kg'
                           : row.stock}
                       </TableCell>
                       <TableCell align="left">{row.costPrice}</TableCell>
