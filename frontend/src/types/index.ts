@@ -25,7 +25,8 @@ export type TProviderProps = {
 export type TFormValues = {
   name: string
   description: string
-  stock: number
+  stockType: string
+  stock: string | number
   costPrice: number
   percentage?: number
   salePrice: number
@@ -35,7 +36,7 @@ export type TFormValues = {
 export type TFormErrors = {
   name?: string
   description?: string
-  stock?: number
+  stock?: string | number
   costPrice: number
   percentage?: number
   salePrice: number
@@ -45,18 +46,21 @@ export type TFormErrors = {
 export type TSelected = {
   id: number
   name: string
+  stockType: string
 }
 
 export type TSaleProduct = {
   productId: number
-  quantity: number
+  quantity: string | number
+  stockType: string
 }
 
 export type TProduct = {
   id: number
   name: string
   description: string
-  stock: number
+  stockType: string
+  stock: string | number
   costPrice: number
   salePrice: number
 }
@@ -64,8 +68,8 @@ export type TProduct = {
 export type TProductSale = {
   id: number
   name: string
-  description: string
-  quantity: number
+  stockType: string
+  quantity: string | number
   salePrice: number
 }
 

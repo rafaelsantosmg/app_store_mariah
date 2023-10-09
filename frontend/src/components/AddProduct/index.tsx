@@ -11,20 +11,19 @@ import * as Yup from 'yup'
 export default function AddProduct({ ...props }): JSX.Element {
   const { form, products, setLoading, setProducts } = useContext(DataContext)
   const { setOpenAddProduct } = props
+
   const schema = Yup.object().shape({
     name: Yup.string().required('Campo obrigatório'),
     description: Yup.string().optional(),
-    stock: Yup.number()
-      .min(0, 'O valor mínimo para estoque é 1')
-      .required('Campo obrigatório')
-      .nullable(),
+    stockType: Yup.string().required('Campo obrigatório'),
+    stock: Yup.string().required('Campo obrigatório').nullable(),
     costPrice: Yup.number()
       .typeError('O valor deve ser um número')
-      .min(0, 'O valor mínimo para preço de custo é 1')
+      .min(0, 'O valor mínimo para preço de custo é 0')
       .required('Campo obrigatório'),
     percentage: Yup.number()
       .typeError('O valor deve ser um número')
-      .min(0, 'O valor mínimo para porcentagem de lucro é 1')
+      .min(0, 'O valor mínimo para porcentagem de lucro é 0')
       .optional(),
     salePrice: Yup.number()
       .typeError('O valor deve ser um número')
@@ -36,10 +35,15 @@ export default function AddProduct({ ...props }): JSX.Element {
   const handleSubmit = async (values: TFormValues) => {
     try {
       setLoading(true)
+      const stock =
+        typeof values.stock === 'number'
+          ? values.stock
+          : values.stock.split(',').join('.')
       const request: TFormValues = {
         name: values.name.toUpperCase().trim(),
         description: values.description.toUpperCase().trim(),
-        stock: Number(values.stock),
+        stockType: values.stockType === 'UNIDADE' ? 'UN' : 'KG',
+        stock: stock,
         costPrice: Number(values.costPrice),
         salePrice: Number(values.salePrice),
         image: values.image,
@@ -47,7 +51,6 @@ export default function AddProduct({ ...props }): JSX.Element {
       const { data } = await api.post('/products', request)
       setProducts([...products, data])
       toast.success(`Produto ${data.name} cadastrado com sucesso!`)
-      // formCadProducts.resetForm()
     } catch (error) {
       toast.error('Erro ao cadastrar produto \n' + error)
     } finally {
@@ -60,7 +63,8 @@ export default function AddProduct({ ...props }): JSX.Element {
     initialValues: {
       name: '',
       description: '',
-      stock: 0,
+      stockType: 'UNIDADE',
+      stock: '',
       costPrice: 0,
       percentage: 0,
       salePrice: 0,

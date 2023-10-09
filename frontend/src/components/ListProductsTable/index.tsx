@@ -30,11 +30,12 @@ function createData(
   id: number,
   name: string,
   description: string,
+  stockType: string,
   stock: number,
   costPrice: number,
   salePrice: number
 ): Product {
-  return { id, name, description, stock, costPrice, salePrice }
+  return { id, name, description, stockType, stock, costPrice, salePrice }
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -97,10 +98,10 @@ const headCells: readonly HeadCell[] = [
     label: 'Produto',
   },
   {
-    id: 'description',
+    id: 'stockType',
     numeric: false,
     disablePadding: false,
-    label: 'Descrição',
+    label: 'Tipo',
   },
   {
     id: 'stock',
@@ -142,7 +143,9 @@ function EnhancedTableHead(props: EnhancedTableProps) {
           <TableCell
             key={headCell.id}
             align={
-              ['ID', 'Editar'].includes(headCell.label) ? 'center' : 'left'
+              ['ID', 'Editar', 'Tipo'].includes(headCell.label)
+                ? 'center'
+                : 'left'
             }
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
@@ -177,12 +180,14 @@ export default function ListProductsTable() {
   const [product, setProduct] = useState<Product>({} as Product)
 
   const listProducts = searchProducts.length > 0 ? searchProducts : products
+  console.log(products)
 
   const rows = listProducts.map((product: Product) =>
     createData(
       product.id,
       product.name,
       product.description,
+      product.stockType,
       product.stock,
       product.costPrice,
       product.salePrice
@@ -263,10 +268,19 @@ export default function ListProductsTable() {
                         {row.id}
                       </TableCell>
                       <TableCell align="left">{row.name}</TableCell>
-                      <TableCell align="left">{row.description}</TableCell>
-                      <TableCell align="left">{row.stock}</TableCell>
+                      <TableCell align="center">{row.stockType}</TableCell>
+                      <TableCell align="left">
+                        {row.stockType === 'KG'
+                          ? (row.stock / 1000).toFixed(3)
+                          : row.stock}
+                      </TableCell>
                       <TableCell align="left">{row.costPrice}</TableCell>
-                      <TableCell align="left">{row.salePrice}</TableCell>
+                      <TableCell align="left">
+                        {row.salePrice.toLocaleString('pt-br', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        })}
+                      </TableCell>
                       <TableCell align="center">
                         <EditIcon
                           onClick={() => handleEdit(Number(row.id))}
@@ -289,7 +303,7 @@ export default function ListProductsTable() {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25, 50, 100]}
+            rowsPerPageOptions={[5, 10, 25, 50, 100, products.length]}
             component="div"
             count={rows.length}
             rowsPerPage={rowsPerPage}

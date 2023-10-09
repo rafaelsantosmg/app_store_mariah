@@ -3,6 +3,7 @@ export class CreateProductDto {
   description: string;
   costPrice: number;
   salePrice: number;
+  stockType: string;
   stock: number;
   image?: string;
 }

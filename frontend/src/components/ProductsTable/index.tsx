@@ -33,11 +33,12 @@ function createData(
   id: number,
   name: string,
   description: string,
+  stockType: string,
   stock: number,
   costPrice: number,
   salePrice: number
 ): Product {
-  return { id, name, description, stock, costPrice, salePrice }
+  return { id, name, description, stockType, stock, costPrice, salePrice }
 }
 
 function orderByStringOfNumber<T>(a: T, b: T, orderBy: keyof T): number {
@@ -168,6 +169,7 @@ export default function ProductsTable({ ...props }): JSX.Element {
   const [selected, setSelected] = useState<TSelected>({
     id: 0,
     name: '',
+    stockType: '',
   })
   const [page, setPage] = useState<number>(0)
   const [dense, setDense] = useState<boolean>(false)
@@ -178,6 +180,7 @@ export default function ProductsTable({ ...props }): JSX.Element {
       setSelected({
         id: searchProducts[0].id,
         name: searchProducts[0].name,
+        stockType: searchProducts[0].stockType,
       })
     }
   }, [searchProducts])
@@ -187,6 +190,7 @@ export default function ProductsTable({ ...props }): JSX.Element {
       product.id,
       product.name,
       product.description,
+      product.stockType,
       product.stock,
       product.costPrice,
       product.salePrice
@@ -248,6 +252,7 @@ export default function ProductsTable({ ...props }): JSX.Element {
       setSelected({
         id: prod.id,
         name: prod.name,
+        stockType: prod.stockType,
       })
     }
   }
@@ -277,7 +282,6 @@ export default function ProductsTable({ ...props }): JSX.Element {
           <TextFields
             name="quantity"
             label="Quantidade"
-            type="number"
             variant="outlined"
             onChange={handleChange}
             onBlur={handleBlur}
@@ -340,7 +344,12 @@ export default function ProductsTable({ ...props }): JSX.Element {
                     </TableCell>
                     <TableCell align="left">{row.name}</TableCell>
                     <TableCell align="left">{row.description}</TableCell>
-                    <TableCell align="left">{row.stock}</TableCell>
+                    <TableCell align="left">{row.stockType}</TableCell>
+                    <TableCell align="left">
+                      {row.stockType === 'KG'
+                        ? (row.stock / 1000).toFixed(3)
+                        : row.stock}
+                    </TableCell>
                     <TableCell align="left">
                       {row.salePrice.toLocaleString('pt-br', {
                         style: 'currency',

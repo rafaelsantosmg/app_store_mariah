@@ -45,7 +45,8 @@ model Products {
   salePrice    Float    @map("sale_price")
   profitMargin Float    @map("profit_margin")
   image        String?
-  stock        Int
+  stockType    String   @map("stock_type")
+  stock        Float
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
   Sales        Sales[]

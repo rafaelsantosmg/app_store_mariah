@@ -18,14 +18,14 @@ import { useContext, useEffect } from 'react'
 function createData(
   id: number,
   name: string,
-  description: string,
-  quantity: number,
+  stockType: string,
+  quantity: string | number,
   salePrice: number
 ): TProductSale {
-  return { id, name, description, quantity, salePrice }
+  return { id, name, stockType, quantity, salePrice }
 }
 
-export default function SaleTable({ ...props }) {
+export default function SaleTable() {
   const { products, setSaleProducts, form } = useContext(DataContext)
   const { values, setFieldValue } = form
 
@@ -42,7 +42,7 @@ export default function SaleTable({ ...props }) {
     createData(
       product.id,
       product.name,
-      product.description,
+      product.stockType,
       product.quantity,
       product.salePrice
     )
@@ -55,14 +55,47 @@ export default function SaleTable({ ...props }) {
     setFieldValue('products', saleProducts)
   }
 
+  const sumAddQuantity = (
+    productQuantity: string | number,
+    productStock: string | number = 0,
+    stockType: string = 'UN'
+  ): number => {
+    if (productQuantity === productStock) {
+      return Number(productQuantity)
+    }
+    const sum = stockType === 'UN' ? 1 : 0.05
+    const quantity = Number(
+      (typeof productQuantity === 'number'
+        ? productQuantity
+        : Number(productQuantity.split(',').join('.'))) + sum
+    )
+    return quantity
+  }
+
+  const subRemoveQuantity = (
+    productQuantity: string | number,
+    stockType: string = 'UN'
+  ): number => {
+    const sub = stockType === 'UN' ? 1 : 0.05
+    const quantity = Number(
+      (typeof productQuantity === 'number'
+        ? productQuantity
+        : Number(productQuantity.split(',').join('.'))) - sub
+    )
+    return quantity
+  }
+
   const handleAddQuantity = (id: number) => {
     const saleProducts = values.products.map((product: TSaleProduct) => {
       if (product.productId === id) {
         const productStock = products.find((p: Product) => p.id === id)
-        const quantity =
-          product.quantity === productStock?.stock
-            ? product.quantity
-            : product.quantity + 1
+        const quantity = Number(
+          sumAddQuantity(
+            product.quantity,
+            productStock?.stock,
+            productStock?.stockType
+          ).toFixed(3)
+        )
         return { ...product, quantity: quantity }
       }
       return product
@@ -73,16 +106,24 @@ export default function SaleTable({ ...props }) {
   const handleRemoveQuantity = (id: number) => {
     const saleProducts = values.products.map((product: TSaleProduct) => {
       if (product.productId === id) {
+        const productStock = products.find((p: Product) => p.id === id)
+        const quantity = Number(
+          subRemoveQuantity(product.quantity, productStock?.stockType).toFixed(
+            3
+          )
+        )
         return {
           ...product,
-          quantity:
-            product.quantity === 0 ? product.quantity : product.quantity - 1,
+          quantity: quantity,
         }
       }
       return product
     })
     const product = saleProducts.find(
-      (product: TSaleProduct) => product.quantity === 0
+      (product: TSaleProduct) =>
+        (typeof product.quantity === 'number'
+          ? product.quantity
+          : Number(product.quantity.split(',').join('.'))) === 0
     )
     if (product) {
       handleDellete(id)
@@ -97,7 +138,7 @@ export default function SaleTable({ ...props }) {
         <TableHead>
           <TableRow>
             <TableCell>Nome</TableCell>
-            <TableCell align="left">Descrição</TableCell>
+            <TableCell align="left">Tipo</TableCell>
             <TableCell align="center">Quantidade</TableCell>
             <TableCell align="right">Preço</TableCell>
             <TableCell align="center">Remover</TableCell>
@@ -112,7 +153,7 @@ export default function SaleTable({ ...props }) {
               <TableCell component="th" scope="row">
                 {row.name}
               </TableCell>
-              <TableCell align="right">{row.description}</TableCell>
+              <TableCell align="left">{row.stockType}</TableCell>
               <TableCell
                 align="right"
                 sx={{

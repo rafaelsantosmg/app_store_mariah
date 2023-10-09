@@ -22,6 +22,10 @@ export class ProductsService {
       data: {
         ...createProductDto,
         profitMargin: createProductDto.salePrice - createProductDto.costPrice,
+        stock:
+          createProductDto.stockType === 'KG'
+            ? createProductDto.stock * 1000
+            : createProductDto.stock,
       },
     });
 
@@ -50,9 +54,21 @@ export class ProductsService {
       throw new Error('Product not found');
     }
 
+    console.log(
+      updateProductDto.stockType === 'KG'
+        ? updateProductDto.stock * 1000
+        : updateProductDto.stock,
+    );
+
     return this.prisma.products.update({
       where: { id },
-      data: updateProductDto,
+      data: {
+        ...updateProductDto,
+        stock:
+          updateProductDto.stockType === 'KG'
+            ? updateProductDto.stock * 1000
+            : updateProductDto.stock,
+      },
     });
   }
 

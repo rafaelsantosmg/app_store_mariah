@@ -1,15 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Grid, Table, Typography } from '@mui/material'
+import { Button, Grid, Typography } from '@mui/material'
 import { Fragment, useContext, useEffect, useState } from 'react'
 import { DataContext } from '../../providers/DataProvider'
 import theme from '../../theme'
-import SearchBar from '../SearchBar'
+import SelectFields from '../Inputs/SelectFields'
+import TextFields from '../Inputs/TextFields'
 import SortTable from '../ProductsTable'
 import SaleTable from '../SaleTable'
-import TextFields from '../Inputs/TextFields'
-import SelectFields from '../Inputs/SelectFields'
-import Logo from '../../asset/images/logo.svg'
-import Image from 'next/image'
+import SearchBar from '../SearchBar'
 
 export default function SaleScreen({ ...props }): JSX.Element {
   const MAX_DISCOUNT = 10 // 10%
@@ -51,7 +49,12 @@ export default function SaleScreen({ ...props }): JSX.Element {
 
   useEffect(() => {
     const totalProducts = saleProducts.reduce(
-      (acc, product) => acc + product.salePrice * product.quantity,
+      (acc, product) =>
+        acc +
+        product.salePrice *
+          (typeof product.quantity === 'number'
+            ? product.quantity
+            : Number(product.quantity.split(',').join('.'))),
       0
     )
     const discont = (totalProducts * values.discount) / 100 || 0

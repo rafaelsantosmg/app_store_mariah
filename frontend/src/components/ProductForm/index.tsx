@@ -3,6 +3,7 @@ import { Button, Grid, Typography } from '@mui/material'
 import { useEffect, useRef } from 'react'
 import theme from '../../theme'
 import TextFields from '../Inputs/TextFields'
+import SelectFields from '../Inputs/SelectFields'
 
 const style = {
   p: {
@@ -10,6 +11,8 @@ const style = {
     ml: 1,
   },
 }
+
+const stockTypes = ['UNIDADE', 'QUILOGRAMA']
 
 export default function ProductForm({ ...props }): JSX.Element {
   const { form, setProduct, type, setOpenAddProduct } = props
@@ -59,6 +62,16 @@ export default function ProductForm({ ...props }): JSX.Element {
               <Typography sx={style.p}>{errors.name}</Typography>
             )}
           </Grid>
+          <Grid item xs={12}>
+            <SelectFields
+              label="Tipo de Dado"
+              name="stockType"
+              onChange={handleChange}
+              options={stockTypes}
+              value={values.stockType}
+              clearField={() => form.setFieldValue('stockType', '')}
+            />
+          </Grid>
           {/* <Grid item xs={12}>
             <TextFields
               label="Descrição"
@@ -75,12 +88,10 @@ export default function ProductForm({ ...props }): JSX.Element {
         <Grid container justifyContent="space-between">
           <Grid item xs={5}>
             <TextFields
-              inputProps={{ min: 0 }}
               label="Estoque"
               name="stock"
               onBlur={handleBlur}
               onChange={handleChange}
-              type="number"
               value={values.stock}
             />
             {errors.stock && touched.stock && (
