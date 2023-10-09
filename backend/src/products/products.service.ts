@@ -54,12 +54,6 @@ export class ProductsService {
       throw new Error('Product not found');
     }
 
-    console.log(
-      updateProductDto.stockType === 'KG'
-        ? updateProductDto.stock * 1000
-        : updateProductDto.stock,
-    );
-
     return this.prisma.products.update({
       where: { id },
       data: {

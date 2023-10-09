@@ -22,10 +22,7 @@ export default function EditProduct({ ...props }): JSX.Element {
       .typeError('O valor deve ser um número')
       .min(0, 'O valor mínimo para preço de custo é 0')
       .required('Campo obrigatório'),
-    percentage: Yup.number()
-      .typeError('O valor deve ser um número')
-      .min(0, 'O valor mínimo para porcentagem de lucro é 0')
-      .optional(),
+    percentage: Yup.number().typeError('O valor deve ser um número').optional(),
     salePrice: Yup.number()
       .typeError('O valor deve ser um número')
       .min(0, 'O valor não pode ser menor que 0')
