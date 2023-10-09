@@ -176,7 +176,7 @@ export default function ListProductsTable() {
   const [order, setOrder] = useState<Order>('asc')
   const [orderBy, setOrderBy] = useState<keyof Product>('name')
   const [page, setPage] = useState(0)
-  const [dense, setDense] = useState(false)
+  const [dense, setDense] = useState(true)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [product, setProduct] = useState<Product>({} as Product)
 
@@ -200,7 +200,7 @@ export default function ListProductsTable() {
   }
 
   const handleRequestSort = (
-    event: MouseEvent<unknown>,
+    _event: MouseEvent<unknown>,
     property: keyof Product
   ) => {
     const isAsc = orderBy === property && order === 'asc'
@@ -276,7 +276,12 @@ export default function ListProductsTable() {
                           ? formateValueUnitKg(row.stock) + 'kg'
                           : row.stock}
                       </TableCell>
-                      <TableCell align="left">{row.costPrice}</TableCell>
+                      <TableCell align="left">
+                        {row.costPrice.toLocaleString('pt-br', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        })}
+                      </TableCell>
                       <TableCell align="left">
                         {row.salePrice.toLocaleString('pt-br', {
                           style: 'currency',
@@ -305,7 +310,7 @@ export default function ListProductsTable() {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25, 50, 100, products.length]}
+            rowsPerPageOptions={[5, 10, 25, 50, 100, listProducts.length]}
             component="div"
             count={rows.length}
             rowsPerPage={rowsPerPage}
