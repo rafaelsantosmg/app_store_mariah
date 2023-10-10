@@ -18,7 +18,7 @@ export default function SearchBar(): JSX.Element {
   const { errors, handleBlur, handleChange, touched, values } = form
 
   useEffect(() => {
-    const filteredProducts = products.filter(
+    const filteredProducts = products?.filter(
       (product: Product) =>
         (form.values.search !== '' &&
           product.name

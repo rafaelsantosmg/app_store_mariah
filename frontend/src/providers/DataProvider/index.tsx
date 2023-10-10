@@ -78,7 +78,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
       search: '',
       products: [],
       paymentMethod: '',
-      paymentInstallments: '',
+      paymentInstallment: '',
       quantity: 0,
       discont: 0,
     },
@@ -97,7 +97,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
       )
       const request = {
         discount: values.discont,
-        paymentInstallments: values.paymentInstallments,
+        paymentInstallment: values.paymentInstallment,
         paymentMethod: serializePaymentMethods(values.paymentMethod),
         products: productsSerialize,
       }

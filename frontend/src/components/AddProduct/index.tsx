@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import ProductForm from '@/components/ProductForm'
+import { Product } from '@/interfaces/Products'
 import { DataContext } from '@/providers/DataProvider'
 import api from '@/services'
 import { TFormValues } from '@/types'
@@ -43,13 +44,15 @@ export default function AddProduct({ ...props }): JSX.Element {
         name: values.name.toUpperCase().trim(),
         description: values.description.toUpperCase().trim(),
         stockType: values.stockType === 'UNIDADE' ? 'UN' : 'KG',
-        stock: stock,
+        stock: Number(stock),
         costPrice: Number(values.costPrice),
         salePrice: Number(values.salePrice),
         image: values.image,
       }
       const { data } = await api.post('/products', request)
-      setProducts([...products, data])
+      const newProducts: Product[] = await api.get('/products')
+      setProducts(newProducts)
+      // setProducts([...products, data])
       toast.success(`Produto ${data.name} cadastrado com sucesso!`)
     } catch (error) {
       toast.error('Erro ao cadastrar produto \n' + error)

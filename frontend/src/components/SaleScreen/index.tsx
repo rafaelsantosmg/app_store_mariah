@@ -18,7 +18,7 @@ export default function SaleScreen({ ...props }): JSX.Element {
     'Cartão de Crédito',
   ]
   const PAYMENT_INSTALLMENTS = [
-    '1x',
+    'A VISTA',
     '2x',
     '3x',
     '4x',
@@ -149,10 +149,10 @@ export default function SaleScreen({ ...props }): JSX.Element {
           <Grid item xs={2}>
             <SelectFields
               label="Nº de Parcelas"
-              name="paymentInstallments"
+              name="paymentInstallment"
               options={PAYMENT_INSTALLMENTS}
-              clearField={() => setFieldValue('paymentInstallments', '')}
-              value={values.paymentInstallments}
+              clearField={() => setFieldValue('paymentInstallment', '')}
+              value={values.paymentInstallment}
               onChange={handleChange}
               onClose={handleChange}
               disabled={values.paymentMethod !== 'Cartão de Crédito'}

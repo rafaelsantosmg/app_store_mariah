@@ -49,7 +49,13 @@ export default function EditProduct({ ...props }): JSX.Element {
       const newProducts = products
       const { data } = await api.patch(`/products/${product.id}`, request)
       const index = products.findIndex((p) => p.id === data.id)
+      if (index < 0) {
+        throw new Error('Produto não encontrado')
+      }
+      console.log(newProducts[index])
+      console.log(data)
       newProducts[index] = data
+      console.log(newProducts[index])
       setProducts([...newProducts])
       router.push('/list-products')
     } catch (error) {
