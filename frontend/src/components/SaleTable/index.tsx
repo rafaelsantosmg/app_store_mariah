@@ -15,6 +15,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { ChangeEvent, Fragment, HTMLProps, useContext, useEffect } from 'react'
 import TextFields from '../Inputs/TextFields'
+import { Typography } from '@mui/material'
 
 function createData(
   id: number,
@@ -57,14 +58,16 @@ function AddRemoveQuantityUn({ ...props }): JSX.Element {
 
 function AddRemoveQuantityKg({ ...props }): JSX.Element {
   const { row, handleChanceQuantity } = props
+  let error = false
   return (
     <TextFields
       name="quantity"
       value={row.quantity}
       sx={{ width: '6rem' }}
-      onChange={({ target }: ChangeEvent<HTMLInputElement>) =>
-        handleChanceQuantity(target.value, row.id)
-      }
+      onChange={({ target }: ChangeEvent<HTMLInputElement>) => {
+        if (!isNaN(Number(target.value)))
+          handleChanceQuantity(target.value, row.id)
+      }}
     />
   )
 }
@@ -102,6 +105,25 @@ export default function SaleTable(): JSX.Element {
   const handleChanceQuantity = (value: string, id: number) => {
     const saleProducts = values.products.map((product: TSaleProduct) => {
       if (product.productId === id) {
+        const productStock = products.find((p: Product) => p.id === id) || {
+          stock: 0,
+        }
+        if (Number(value) * 1000 > productStock.stock) {
+          return {
+            ...product,
+            quantity: productStock.stock / 1000,
+          }
+        } else {
+          if (value?.toString().includes('.')) {
+            const quantity =
+              value.toString().split('.')[1].length > 3
+                ? value.toString().split('.')[0] +
+                  '.' +
+                  value.toString().split('.')[1].slice(0, 3)
+                : value
+            return { ...product, quantity: quantity }
+          }
+        }
         return { ...product, quantity: value }
       }
       return product
@@ -193,6 +215,7 @@ export default function SaleTable(): JSX.Element {
             <TableCell align="left">Tipo</TableCell>
             <TableCell align="center">Quantidade</TableCell>
             <TableCell align="right">Preço</TableCell>
+            <TableCell align="center">Total</TableCell>
             <TableCell align="center">Remover</TableCell>
           </TableRow>
         </TableHead>
@@ -225,6 +248,17 @@ export default function SaleTable(): JSX.Element {
               </TableCell>
               <TableCell align="right">
                 {row.salePrice.toLocaleString('pt-br', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
+              </TableCell>
+              <TableCell align="center">
+                {(
+                  row.salePrice *
+                  (typeof row.quantity === 'number'
+                    ? row.quantity
+                    : Number(row.quantity.split(',').join('.')))
+                ).toLocaleString('pt-br', {
                   style: 'currency',
                   currency: 'BRL',
                 })}

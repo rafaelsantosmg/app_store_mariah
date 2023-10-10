@@ -105,10 +105,10 @@ const headCells: readonly HeadCell[] = [
     label: 'Produto',
   },
   {
-    id: 'description',
+    id: 'stockType',
     numeric: false,
     disablePadding: false,
-    label: 'Descrição',
+    label: 'Tipo',
   },
   {
     id: 'stock',
@@ -184,6 +184,31 @@ export default function ProductsTable({ ...props }): JSX.Element {
       })
     }
   }, [searchProducts])
+
+  useEffect(() => {
+    const product = products.find(
+      (product: Product) => product.id === selected.id
+    ) || { stock: 0 }
+    if (selected.stockType === 'KG') {
+      if (Number(values.quantity) * 1000 > product.stock) {
+        setFieldValue('quantity', product.stock / 1000)
+      } else {
+        if (values.quantity?.toString().includes('.')) {
+          const quantity =
+            values.quantity.toString().split('.')[1].length > 3
+              ? values.quantity.toString().split('.')[0] +
+                '.' +
+                values.quantity.toString().split('.')[1].slice(0, 3)
+              : values.quantity
+          setFieldValue('quantity', quantity)
+        }
+      }
+    } else {
+      if (Number(values.quantity) > product?.stock) {
+        setFieldValue('quantity', product.stock)
+      } else setFieldValue('quantity', Number(values.quantity))
+    }
+  }, [values.quantity])
 
   const rows = searchProducts.map((product: Product) =>
     createData(
@@ -314,7 +339,6 @@ export default function ProductsTable({ ...props }): JSX.Element {
                       {row.id}
                     </TableCell>
                     <TableCell align="left">{row.name}</TableCell>
-                    <TableCell align="left">{row.description}</TableCell>
                     <TableCell align="left">{row.stockType}</TableCell>
                     <TableCell align="left">
                       {row.stockType === 'KG'
@@ -373,7 +397,9 @@ export default function ProductsTable({ ...props }): JSX.Element {
             name="quantity"
             label="Quantidade"
             variant="outlined"
-            onChange={handleChange}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              if (!isNaN(Number(event.target.value))) handleChange(event)
+            }}
             onBlur={handleBlur}
             value={values.quantity}
           />

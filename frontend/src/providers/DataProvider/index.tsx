@@ -114,11 +114,6 @@ export const DataProvider = ({ children }: TProviderProps) => {
     },
   })
 
-  useEffect(() => {
-    console.log(form.values)
-    console.log(form.errors)
-  }, [form.values, form.errors])
-
   return (
     <DataContext.Provider
       value={{
