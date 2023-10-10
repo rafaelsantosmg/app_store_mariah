@@ -1,0 +1,53 @@
+.listaDeProdutos {
+  max-width: 100%;
+  padding-top: 5px;
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.title {
+  text-align: center;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabelaTh,
+.tabelaTd {
+  border: 1px solid #ddd;
+  padding: 2px;
+  text-align: left;
+}
+
+.tabelaTh {
+  background-color: #f2f2f2;
+}
+
+/* Largura específica para a coluna ID */
+.tabela .tabelaTd:first-child,
+.tabela .tabelaTh:first-child {
+  width: 80px; /* Ajuste conforme necessário */
+}
+
+.botaoImprimir {
+  display: block;
+}
+
+/* Ocultar o botão de impressão ao imprimir */
+@media print {
+  .listaDeProdutos {
+    padding-top: 0;
+  }
+
+  .tabela {
+    margin-top: 0;
+  }
+  .botaoImprimir {
+    display: none;
+  }
+}
