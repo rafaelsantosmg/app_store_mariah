@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { DataContext } from '@/providers/DataProvider'
 import { Button, Grid, Typography } from '@mui/material'
-import { useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import theme from '../../theme'
-import TextFields from '../Inputs/TextFields'
 import SelectFields from '../Inputs/SelectFields'
+import TextFields from '../Inputs/TextFields'
 
 const style = {
   p: {
@@ -15,6 +16,7 @@ const style = {
 const stockTypes = ['UNIDADE', 'QUILOGRAMA']
 
 export default function ProductForm({ ...props }): JSX.Element {
+  const { products } = useContext(DataContext)
   const { form, setProduct, type, setOpenAddProduct } = props
   const { errors, handleBlur, handleChange, handleSubmit, touched, values } =
     form
@@ -28,14 +30,15 @@ export default function ProductForm({ ...props }): JSX.Element {
     <form
       onSubmit={handleSubmit}
       style={{
+        alignItems: 'center',
         display: 'flex',
         justifyContent: 'center',
         marginTop: '1rem',
         width: '100%',
       }}
     >
-      <Grid container rowGap={2} justifyContent="center" sx={{ width: '90%' }}>
-        <Grid item xs={12}>
+      <Grid container rowGap={3} justifyContent="center" sx={{ width: '90%' }}>
+        <Grid container justifyContent="space-between">
           <Typography
             variant="h2"
             sx={{
@@ -47,8 +50,16 @@ export default function ProductForm({ ...props }): JSX.Element {
           >
             {type === 'edit' ? 'Editar Produto' : 'Cadastrar Produto'}
           </Typography>
+          <Grid item xs={2}>
+            <TextFields
+              label="Código"
+              name="id"
+              value={values.id || products[products.length - 1].id + 1}
+              disabled
+            />
+          </Grid>
         </Grid>
-        <Grid container rowGap={2}>
+        <Grid container justifyContent="space-between">
           <Grid item xs={12}>
             <TextFields
               label="Nome"
@@ -62,7 +73,9 @@ export default function ProductForm({ ...props }): JSX.Element {
               <Typography sx={style.p}>{errors.name}</Typography>
             )}
           </Grid>
-          <Grid item xs={12}>
+        </Grid>
+        <Grid container justifyContent="space-between">
+          <Grid item xs={5}>
             <SelectFields
               label="Tipo de Dado"
               name="stockType"
@@ -72,20 +85,6 @@ export default function ProductForm({ ...props }): JSX.Element {
               clearField={() => form.setFieldValue('stockType', '')}
             />
           </Grid>
-          {/* <Grid item xs={12}>
-            <TextFields
-              label="Descrição"
-              name="description"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              value={values.description}
-            />
-            {errors.description && touched.description && (
-              <Typography sx={style.p}>{errors.description}</Typography>
-            )}
-          </Grid> */}
-        </Grid>
-        <Grid container justifyContent="space-between">
           <Grid item xs={5}>
             <TextFields
               label="Estoque"
@@ -98,7 +97,9 @@ export default function ProductForm({ ...props }): JSX.Element {
               <Typography sx={style.p}>{errors.stock}</Typography>
             )}
           </Grid>
-          {/* <Grid item xs={5}>
+        </Grid>
+        <Grid container justifyContent="space-between">
+          <Grid item xs={3}>
             <TextFields
               inputProps={{ min: 0 }}
               label="Preço de Custo"
@@ -111,10 +112,8 @@ export default function ProductForm({ ...props }): JSX.Element {
             {errors.costPrice && touched.costPrice && (
               <Typography sx={style.p}>{errors.costPrice}</Typography>
             )}
-          </Grid> */}
-        </Grid>
-        <Grid container justifyContent="space-between">
-          {/* <Grid item xs={5}>
+          </Grid>
+          <Grid item xs={3}>
             <TextFields
               inputProps={{ min: 0 }}
               label="Porcentagem de Lucro"
@@ -127,8 +126,8 @@ export default function ProductForm({ ...props }): JSX.Element {
             {errors.percentage && touched.percentage && (
               <Typography sx={style.p}>{errors.percentage}</Typography>
             )}
-          </Grid> */}
-          <Grid item xs={5}>
+          </Grid>
+          <Grid item xs={3}>
             <TextFields
               label="Preço de Venda"
               name="salePrice"

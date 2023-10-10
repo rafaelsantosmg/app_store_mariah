@@ -223,17 +223,19 @@ export default function ProductsTable({ ...props }): JSX.Element {
   }
 
   const handleClick = (prod: TSelected) => {
-    const productId = products.find(
+    const { id, stockType } = products.find(
       (product: Product) =>
         product.id === prod.id || product.name.includes(prod.name)
-    )?.id
+    ) || { id: 0, stockType: 'UN' }
+
     const product = {
-      productId,
+      productId: id,
       quantity: values.quantity,
+      stockType,
     }
     if (values.products.length > 0) {
       const productIndex = values.products.findIndex(
-        (prod: TSaleProduct) => prod.productId === productId
+        (prod: TSaleProduct) => prod.productId === id
       )
       if (productIndex !== -1) {
         const products = values.products
@@ -277,37 +279,6 @@ export default function ProductsTable({ ...props }): JSX.Element {
     <LoaderSpinner />
   ) : (
     <Grid container sx={{ mt: 2 }}>
-      <Grid container justifyContent="space-between" sx={{ mb: 2 }}>
-        <Grid item>
-          <TextFields
-            name="quantity"
-            label="Quantidade"
-            variant="outlined"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.quantity}
-          />
-        </Grid>
-        <Grid item>
-          <Button
-            variant="outlined"
-            sx={{
-              color: theme.white,
-              backgroundColor: theme.brown,
-              '&:hover': {
-                backgroundColor: theme.lightBrown,
-              },
-              '&:disabled': {
-                backgroundColor: theme.gainsboro,
-              },
-            }}
-            onClick={() => handleClick(selected)}
-            disabled={values.quantity === 0 || values.quantity === ''}
-          >
-            Adicionar
-          </Button>
-        </Grid>
-      </Grid>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <TableContainer>
           <Table
@@ -396,6 +367,37 @@ export default function ProductsTable({ ...props }): JSX.Element {
           </>
         )}
       </Paper>
+      <Grid container justifyContent="space-between" sx={{ mb: 2 }}>
+        <Grid item>
+          <TextFields
+            name="quantity"
+            label="Quantidade"
+            variant="outlined"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.quantity}
+          />
+        </Grid>
+        <Grid item>
+          <Button
+            variant="outlined"
+            sx={{
+              color: theme.white,
+              backgroundColor: theme.brown,
+              '&:hover': {
+                backgroundColor: theme.lightBrown,
+              },
+              '&:disabled': {
+                backgroundColor: theme.gainsboro,
+              },
+            }}
+            onClick={() => handleClick(selected)}
+            disabled={values.quantity === 0 || values.quantity === ''}
+          >
+            Adicionar
+          </Button>
+        </Grid>
+      </Grid>
     </Grid>
   )
 }

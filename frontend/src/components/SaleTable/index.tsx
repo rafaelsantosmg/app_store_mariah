@@ -13,7 +13,8 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import { useContext, useEffect } from 'react'
+import { ChangeEvent, Fragment, HTMLProps, useContext, useEffect } from 'react'
+import TextFields from '../Inputs/TextFields'
 
 function createData(
   id: number,
@@ -25,7 +26,50 @@ function createData(
   return { id, name, stockType, quantity, salePrice }
 }
 
-export default function SaleTable() {
+function AddRemoveQuantityUn({ ...props }): JSX.Element {
+  const { handleAddQuantity, handleRemoveQuantity, row } = props
+  return (
+    <Fragment>
+      <button
+        style={{
+          cursor: 'pointer',
+          border: `1px solid ${theme.brown}`,
+          borderRadius: '0.5rem',
+        }}
+        onClick={() => handleRemoveQuantity(row.id)}
+      >
+        <RemoveIcon sx={{ color: theme.brown }} />
+      </button>
+      {row.quantity}
+      <button
+        style={{
+          cursor: 'pointer',
+          border: `1px solid ${theme.brown}`,
+          borderRadius: '0.5rem',
+        }}
+        onClick={() => handleAddQuantity(row.id)}
+      >
+        <AddIcon sx={{ color: theme.brown }} />
+      </button>
+    </Fragment>
+  )
+}
+
+function AddRemoveQuantityKg({ ...props }): JSX.Element {
+  const { row, handleChanceQuantity } = props
+  return (
+    <TextFields
+      name="quantity"
+      value={row.quantity}
+      sx={{ width: '6rem' }}
+      onChange={({ target }: ChangeEvent<HTMLInputElement>) =>
+        handleChanceQuantity(target.value, row.id)
+      }
+    />
+  )
+}
+
+export default function SaleTable(): JSX.Element {
   const { products, setSaleProducts, form } = useContext(DataContext)
   const { values, setFieldValue } = form
 
@@ -52,6 +96,16 @@ export default function SaleTable() {
     const saleProducts = values.products.filter(
       (product: TSaleProduct) => product.productId !== id
     )
+    setFieldValue('products', saleProducts)
+  }
+
+  const handleChanceQuantity = (value: string, id: number) => {
+    const saleProducts = values.products.map((product: TSaleProduct) => {
+      if (product.productId === id) {
+        return { ...product, quantity: value }
+      }
+      return product
+    })
     setFieldValue('products', saleProducts)
   }
 
@@ -89,12 +143,10 @@ export default function SaleTable() {
     const saleProducts = values.products.map((product: TSaleProduct) => {
       if (product.productId === id) {
         const productStock = products.find((p: Product) => p.id === id)
-        const quantity = Number(
-          sumAddQuantity(
-            product.quantity,
-            productStock?.stock,
-            productStock?.stockType
-          ).toFixed(3)
+        const quantity = sumAddQuantity(
+          product.quantity,
+          productStock?.stock,
+          productStock?.stockType
         )
         return { ...product, quantity: quantity }
       }
@@ -107,11 +159,11 @@ export default function SaleTable() {
     const saleProducts = values.products.map((product: TSaleProduct) => {
       if (product.productId === id) {
         const productStock = products.find((p: Product) => p.id === id)
-        const quantity = Number(
-          subRemoveQuantity(product.quantity, productStock?.stockType).toFixed(
-            3
-          )
+        const quantity = subRemoveQuantity(
+          product.quantity,
+          productStock?.stockType
         )
+
         return {
           ...product,
           quantity: quantity,
@@ -155,7 +207,7 @@ export default function SaleTable() {
               </TableCell>
               <TableCell align="left">{row.stockType}</TableCell>
               <TableCell
-                align="right"
+                align="center"
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
@@ -163,28 +215,13 @@ export default function SaleTable() {
                   width: '100%',
                 }}
               >
-                <button
-                  style={{
-                    cursor: 'pointer',
-                    border: `1px solid ${theme.brown}`,
-                    borderRadius: '0.5rem',
-                  }}
-                  onClick={() => handleRemoveQuantity(row.id)}
-                >
-                  <RemoveIcon sx={{ color: theme.brown }} />
-                </button>
-                {row.quantity}
-
-                <button
-                  style={{
-                    cursor: 'pointer',
-                    border: `1px solid ${theme.brown}`,
-                    borderRadius: '0.5rem',
-                  }}
-                  onClick={() => handleAddQuantity(row.id)}
-                >
-                  <AddIcon sx={{ color: theme.brown }} />
-                </button>
+                {row.stockType === 'UN' ? (
+                  <AddRemoveQuantityUn
+                    {...{ handleAddQuantity, handleRemoveQuantity, row }}
+                  />
+                ) : (
+                  <AddRemoveQuantityKg {...{ row, handleChanceQuantity }} />
+                )}
               </TableCell>
               <TableCell align="right">
                 {row.salePrice.toLocaleString('pt-br', {

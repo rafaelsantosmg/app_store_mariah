@@ -174,7 +174,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 export default function ListProductsTable() {
   const { products, searchProducts } = useContext(DataContext)
   const [order, setOrder] = useState<Order>('asc')
-  const [orderBy, setOrderBy] = useState<keyof Product>('name')
+  const [orderBy, setOrderBy] = useState<keyof Product>('id')
   const [page, setPage] = useState(0)
   const [dense, setDense] = useState(true)
   const [rowsPerPage, setRowsPerPage] = useState(5)

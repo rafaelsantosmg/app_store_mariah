@@ -8,4 +8,5 @@ export class CreateSaleDto {
 class SalesProducts {
   productId: number;
   quantity: number;
+  stockType: string;
 }

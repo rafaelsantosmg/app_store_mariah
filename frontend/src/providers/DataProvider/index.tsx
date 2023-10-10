@@ -3,7 +3,7 @@ import { useFormik } from 'formik'
 import { createContext, useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { Product, ProductSale } from '../../interfaces/Products'
-import { TDataContext, TProviderProps } from '../../types'
+import { TDataContext, TProviderProps, TSaleProduct } from '../../types'
 import { toast } from 'react-toastify'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -60,7 +60,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
       .of(
         Yup.object().shape({
           productId: Yup.number().required(),
-          quantity: Yup.number().required(),
+          quantity: Yup.string().required(),
         })
       )
       .required('Selecione pelo menos um produto'),
@@ -85,11 +85,21 @@ export const DataProvider = ({ children }: TProviderProps) => {
     validationSchema: schema,
     validateOnChange: true,
     onSubmit: async (values, { setSubmitting }) => {
+      const productsSerialize = values.products.map(
+        (product: TSaleProduct) => ({
+          productId: product.productId,
+          quantity:
+            product.stockType === 'UN'
+              ? Number(product.quantity)
+              : Number(product.quantity.split(',').join('.')) * 1000,
+          stockType: product.stockType,
+        })
+      )
       const request = {
         discount: values.discont,
         paymentInstallments: values.paymentInstallments,
         paymentMethod: serializePaymentMethods(values.paymentMethod),
-        products: values.products,
+        products: productsSerialize,
       }
       try {
         await api.post('/sales', request)
@@ -103,6 +113,11 @@ export const DataProvider = ({ children }: TProviderProps) => {
       }
     },
   })
+
+  useEffect(() => {
+    console.log(form.values)
+    console.log(form.errors)
+  }, [form.values, form.errors])
 
   return (
     <DataContext.Provider

@@ -51,8 +51,8 @@ export type TSelected = {
 
 export type TSaleProduct = {
   productId: number
-  quantity: string | number
-  stockType: string
+  quantity: string
+  stockType?: string
 }
 
 export type TProduct = {

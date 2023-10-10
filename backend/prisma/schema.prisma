@@ -21,35 +21,81 @@ model Payments {
   @@map("payments")
 }
 
-model Sales {
-  id         Int      @id @default(autoincrement())
-  quantity   Int
-  discont    Float
-  totalPrice Float    @map("total_price")
-  salesPrice Float    @map("sales_price")
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+// model Sales {
+//   id           Int      @id @default(autoincrement())
+//   quantityUnit Int
+//   quantityKg   Float
+//   discont      Float
+//   totalPrice   Float    @map("total_price")
+//   salesPrice   Float    @map("sales_price")
+//   createdAt    DateTime @default(now()) @map("created_at")
+//   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  Products   Products[]
-  Payments   Payments[]
-  paymentsId Int?
+//   Products     Products[]
+//   Payments     Payments[]
+//   paymentsId   Int?
+
+//   @@map("sales")
+// }
+
+// model Products {
+//   id           Int      @id @default(autoincrement())
+//   name         String
+//   description  String
+//   costPrice    Float    @map("cost_price")
+//   salePrice    Float    @map("sale_price")
+//   profitMargin Float    @map("profit_margin")
+//   image        String?
+//   stockType    String   @map("stock_type")
+//   stock        Float
+//   createdAt    DateTime @default(now()) @map("created_at")
+//   updatedAt    DateTime @updatedAt @map("updated_at")
+//   Sales        Sales[]
+
+//   @@map("products")
+// }
+
+model Sales {
+  id          Int       @id @default(autoincrement())
+  discount    Float
+  totalPrice  Float     @map("total_price")
+  salesPrice  Float     @map("sales_price")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  SalesProducts SalesProduct[]  // Relação com a tabela intermediária
+  Payments      Payments[]
+  paymentId     Int?      @map("payment_id")
 
   @@map("sales")
 }
 
 model Products {
-  id           Int      @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   name         String
-  description  String
-  costPrice    Float    @map("cost_price")
-  salePrice    Float    @map("sale_price")
+  description  String?
+  costPrice    Float     @map("cost_price")
+  salePrice    Float     @map("sale_price")
   profitMargin Float    @map("profit_margin")
   image        String?
-  stockType    String   @map("stock_type")
+  stockType    String    @map("stock_type")
   stock        Float
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-  Sales        Sales[]
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  SalesProducts SalesProduct[]  // Relação com a tabela intermediária
 
   @@map("products")
+}
+
+model SalesProduct {
+  id         Int       @id @default(autoincrement())
+  saleId     Int       @map("sale_id")
+  productId  Int       @map("product_id")
+  quantity   Float
+
+  Sale       Sales     @relation(fields: [saleId], references: [id])
+  Product    Products  @relation(fields: [productId], references: [id])
+
+  @@map("sales_products")
 }

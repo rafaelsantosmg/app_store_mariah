@@ -62,6 +62,7 @@ export default function EditProduct({ ...props }): JSX.Element {
 
   const formEditProducts = useFormik({
     initialValues: {
+      id: product.id,
       name: product.name,
       description: product.description,
       stockType: product.stockType === 'UN' ? 'UNIDADE' : 'QUILOGRAMA',
