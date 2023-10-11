@@ -13,9 +13,16 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import { ChangeEvent, Fragment, HTMLProps, useContext, useEffect } from 'react'
+import {
+  ChangeEvent,
+  Fragment,
+  HTMLProps,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 import TextFields from '../Inputs/TextFields'
-import { Typography } from '@mui/material'
+import { TextField, Typography } from '@mui/material'
 
 function createData(
   id: number,
@@ -58,7 +65,7 @@ function AddRemoveQuantityUn({ ...props }): JSX.Element {
 
 function AddRemoveQuantityKg({ ...props }): JSX.Element {
   const { row, handleChanceQuantity } = props
-  let error = false
+
   return (
     <TextFields
       name="quantity"
@@ -72,14 +79,65 @@ function AddRemoveQuantityKg({ ...props }): JSX.Element {
   )
 }
 
+function ChangePrice({ ...props }): JSX.Element {
+  const { row, price, handleChangePrice } = props
+
+  return (
+    <div
+      style={{
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'flex-end',
+      }}
+    >
+      <label
+        htmlFor="salePrice"
+        style={{
+          fontSize: '1.2rem',
+          fontWeight: 'bold',
+          marginRight: '0.5rem',
+        }}
+      >
+        R$
+      </label>
+      <input
+        id="salePrice"
+        name="salePrice"
+        value={price}
+        onChange={({ target }: ChangeEvent<HTMLInputElement>) => {
+          if (!isNaN(Number(target.value))) {
+            handleChangePrice(target.value, row.id)
+          }
+        }}
+        style={{
+          height: '2rem',
+          textAlign: 'center',
+          fontSize: '1rem',
+          width: '5rem',
+        }}
+      />
+    </div>
+  )
+}
+
 export default function SaleTable(): JSX.Element {
   const { products, setSaleProducts, form } = useContext(DataContext)
   const { values, setFieldValue } = form
+  const [price, setPrice] = useState('')
 
-  const filteredProducts = values.products.map((product: TSaleProduct) => ({
-    ...products.find((p: Product) => p.id === product.productId),
-    quantity: product.quantity,
-  }))
+  const filteredProducts = values.products.map((product: TSaleProduct) => {
+    const findProduct = products.find(
+      (p: Product) => p.id === product.productId
+    )
+    return {
+      ...findProduct,
+      salePrice:
+        findProduct?.name === 'DIVERSOS' ? price : findProduct?.salePrice,
+      quantity: product.quantity,
+    }
+  })
 
   useEffect(() => {
     setSaleProducts(filteredProducts)
@@ -206,9 +264,32 @@ export default function SaleTable(): JSX.Element {
     setFieldValue('products', saleProducts)
   }
 
+  const handleChangePrice = (value: string, id: number) => {
+    const saleProducts = values.products.map((product: TSaleProduct) => {
+      if (product.productId === id) {
+        const index = filteredProducts.findIndex((p: Product) => p.id === id)
+        if (index === -1) {
+          return product
+        }
+        setPrice(
+          value.split('.').length > 1
+            ? value.split('.')[0] + '.' + value.split('.')[1].slice(0, 2)
+            : value
+        )
+        return {
+          ...product,
+          quantity: product.quantity,
+          productPrice: Number(Number(value).toFixed(2)),
+        }
+      }
+      return product
+    })
+    setFieldValue('products', saleProducts)
+  }
+
   return (
     <TableContainer component={Paper} sx={{ mt: 2 }}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
             <TableCell>Nome</TableCell>
@@ -220,63 +301,70 @@ export default function SaleTable(): JSX.Element {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row: TProductSale) => (
-            <TableRow
-              key={row.id}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="left">{row.stockType}</TableCell>
-              <TableCell
-                align="center"
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-evenly',
-                  width: '100%',
-                }}
+          {rows.map((row: TProductSale) => {
+            console.log(row)
+            return (
+              <TableRow
+                key={row.id}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
-                {row.stockType === 'UN' ? (
-                  <AddRemoveQuantityUn
-                    {...{ handleAddQuantity, handleRemoveQuantity, row }}
-                  />
-                ) : (
-                  <AddRemoveQuantityKg {...{ row, handleChanceQuantity }} />
-                )}
-              </TableCell>
-              <TableCell align="right">
-                {row.salePrice.toLocaleString('pt-br', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
-              </TableCell>
-              <TableCell align="center">
-                {(
-                  row.salePrice *
-                  (typeof row.quantity === 'number'
-                    ? row.quantity
-                    : Number(row.quantity.split(',').join('.')))
-                ).toLocaleString('pt-br', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
-              </TableCell>
-              <TableCell align="center">
-                <button
-                  onClick={() => handleDellete(row.id)}
-                  style={{
-                    cursor: 'pointer',
-                    border: `1px solid ${theme.brown}`,
-                    borderRadius: '0.5rem',
+                <TableCell component="th" scope="row">
+                  {row.name}
+                </TableCell>
+                <TableCell align="left">{row.stockType}</TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-evenly',
+                    width: '100%',
                   }}
                 >
-                  <DeleteIcon sx={{ color: theme.brown }} />
-                </button>
-              </TableCell>
-            </TableRow>
-          ))}
+                  {row.stockType === 'UN' ? (
+                    <AddRemoveQuantityUn
+                      {...{ handleAddQuantity, handleRemoveQuantity, row }}
+                    />
+                  ) : (
+                    <AddRemoveQuantityKg {...{ row, handleChanceQuantity }} />
+                  )}
+                </TableCell>
+                <TableCell align="right">
+                  {row.name === 'DIVERSOS' ? (
+                    <ChangePrice {...{ row, price, handleChangePrice }} />
+                  ) : (
+                    row.salePrice.toLocaleString('pt-br', {
+                      style: 'currency',
+                      currency: 'BRL',
+                    })
+                  )}
+                </TableCell>
+                <TableCell align="center">
+                  {(
+                    row.salePrice *
+                    (typeof row.quantity === 'number'
+                      ? row.quantity
+                      : Number(row.quantity.split(',').join('.')))
+                  ).toLocaleString('pt-br', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  })}
+                </TableCell>
+                <TableCell align="center">
+                  <button
+                    onClick={() => handleDellete(row.id)}
+                    style={{
+                      cursor: 'pointer',
+                      border: `1px solid ${theme.brown}`,
+                      borderRadius: '0.5rem',
+                    }}
+                  >
+                    <DeleteIcon sx={{ color: theme.brown }} />
+                  </button>
+                </TableCell>
+              </TableRow>
+            )
+          })}
         </TableBody>
       </Table>
     </TableContainer>

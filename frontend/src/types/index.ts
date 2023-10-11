@@ -53,6 +53,8 @@ export type TSaleProduct = {
   productId: number
   quantity: string
   stockType?: string
+  productName?: string
+  productPrice?: number
 }
 
 export type TProduct = {

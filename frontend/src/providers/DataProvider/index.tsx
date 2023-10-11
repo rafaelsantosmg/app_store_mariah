@@ -87,12 +87,12 @@ export const DataProvider = ({ children }: TProviderProps) => {
     onSubmit: async (values, { setSubmitting }) => {
       const productsSerialize = values.products.map(
         (product: TSaleProduct) => ({
+          ...product,
           productId: product.productId,
           quantity:
             product.stockType === 'UN'
               ? Number(product.quantity)
               : Number(product.quantity.split(',').join('.')) * 1000,
-          stockType: product.stockType,
         })
       )
       const request = {
@@ -113,6 +113,8 @@ export const DataProvider = ({ children }: TProviderProps) => {
       }
     },
   })
+
+  console.log(form.values?.products)
 
   return (
     <DataContext.Provider

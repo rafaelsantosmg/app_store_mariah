@@ -9,4 +9,6 @@ class SalesProducts {
   productId: number;
   quantity: number;
   stockType: string;
+  productName?: string;
+  productPrice?: number;
 }
