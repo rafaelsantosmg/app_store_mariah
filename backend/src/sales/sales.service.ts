@@ -26,7 +26,6 @@ export class SalesService {
         const productExist = await this.prisma.products.findUnique({
           where: { id: product.productId },
         });
-        console.log(productExist);
 
         const productStock = productExist.stock - product.quantity;
         if (productStock < 0) {
@@ -36,7 +35,7 @@ export class SalesService {
         }
 
         const productPrice =
-          product.productName === 'DIVERSOS'
+          productExist.name === 'DIVERSOS'
             ? product.productPrice
             : productExist.salePrice;
 
@@ -48,13 +47,14 @@ export class SalesService {
       }),
     );
 
-    console.log(products);
-
     const totalPrice = products.reduce((acc, product) => {
-      return acc + product.salePrice * product.quantity;
+      if (product.stockType === 'UN') {
+        return acc + product.salePrice * product.quantity;
+      } else {
+        const salePrice = (product.quantity / 1000) * product.salePrice;
+        return acc + salePrice;
+      }
     }, 0);
-
-    console.log(totalPrice);
 
     const salesPrice = createSale.discont
       ? totalPrice - (totalPrice * createSale.discont) / 100
@@ -63,8 +63,8 @@ export class SalesService {
     const sale = await this.prisma.sales.create({
       data: {
         discount: createSale.discont ? createSale.discont : 0,
-        totalPrice,
-        salesPrice,
+        totalPrice: Number(totalPrice.toFixed(2)),
+        salesPrice: Number(salesPrice.toFixed(2)),
       },
     });
 

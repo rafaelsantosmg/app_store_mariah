@@ -9,42 +9,17 @@ import SortTable from '../ProductsTable'
 import SaleTable from '../SaleTable'
 import SearchBar from '../SearchBar'
 
-export default function SaleScreen({ ...props }): JSX.Element {
-  const MAX_DISCOUNT = 10 // 10%
-  const PAYMENT_METHODS = [
-    'Dinheiro',
-    'Pix',
-    'Cartão de Débito',
-    'Cartão de Crédito',
-  ]
-  const PAYMENT_INSTALLMENTS = [
-    'A VISTA',
-    '2x',
-    '3x',
-    '4x',
-    '5x',
-    '6x',
-    '7x',
-    '8x',
-    '9x',
-    '10x',
-  ]
+export default function SaleScreenSpun({ ...props }): JSX.Element {
   const { searchProducts, saleProducts, form, dateTime } =
     useContext(DataContext)
   const { handleClose } = props
-  const {
-    handleBlur,
-    handleChange,
-    handleSubmit,
-    resetForm,
-    setFieldValue,
-    values,
-  } = form
+  const { handleSubmit, resetForm, setFieldValue, values } = form
   const [viewTable, setViewTable] = useState<boolean>(false)
   const [total, setTotal] = useState<number>(0)
 
   useEffect(() => {
-    setFieldValue('saleType', 'sale')
+    setFieldValue('saleType', 'saleSpun')
+    setFieldValue('paymentMethod', 'money')
   }, [])
 
   useEffect(() => {
@@ -92,7 +67,7 @@ export default function SaleScreen({ ...props }): JSX.Element {
             },
           }}
         >
-          Realizar Venda
+          Realizar Venda Fiada
         </Typography>
         <Typography
           variant="h3"
@@ -126,40 +101,6 @@ export default function SaleScreen({ ...props }): JSX.Element {
                 currency: 'BRL',
               })}
               inputProps={{ readOnly: true, min: 0 }}
-            />
-          </Grid>
-          <Grid item xs={2}>
-            <TextFields
-              inputProps={{ min: 0, max: MAX_DISCOUNT }}
-              label="Desconto %"
-              name="discount"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              type="number"
-              value={values.discount}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <SelectFields
-              label="Forma de Pagamento"
-              name="paymentMethod"
-              options={PAYMENT_METHODS}
-              clearField={() => setFieldValue('paymentMethod', '')}
-              value={values.paymentMethod}
-              onChange={handleChange}
-              onClose={handleChange}
-            />
-          </Grid>
-          <Grid item xs={2}>
-            <SelectFields
-              label="Nº de Parcelas"
-              name="paymentInstallment"
-              options={PAYMENT_INSTALLMENTS}
-              clearField={() => setFieldValue('paymentInstallment', '')}
-              value={values.paymentInstallment}
-              onChange={handleChange}
-              onClose={handleChange}
-              disabled={values.paymentMethod !== 'Cartão de Crédito'}
             />
           </Grid>
         </Grid>

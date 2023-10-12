@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import ModalContent from '@/components/ModalContent'
+import SaleScreenSpun from '@/components/SaleScreenSpun'
 import { Box } from '@mui/material'
 import Image from 'next/image'
 import { Fragment, useContext } from 'react'
@@ -10,11 +11,19 @@ import SaleScreen from '../components/SaleScreen'
 import { DataContext } from '../providers/DataProvider'
 
 export default function Home(): JSX.Element {
-  const { openModalSale, setOpenModalSale } = useContext(DataContext)
+  const {
+    openModalSale,
+    setOpenModalSale,
+    openModalSaleSpun,
+    setOpenModalSaleSpun,
+  } = useContext(DataContext)
 
   return (
     <Fragment>
-      <Header openModal={setOpenModalSale} />
+      <Header
+        openModalSale={setOpenModalSale}
+        openModalSaleSpun={setOpenModalSaleSpun}
+      />
       <Box
         sx={{
           alignItems: 'center',
@@ -29,10 +38,18 @@ export default function Home(): JSX.Element {
         <Image width={400} src={Slogan} alt="Slogan da Mariah da Roça" />
       </Box>
       <ModalContent
-        open={openModalSale}
-        handleClose={() => setOpenModalSale(false)}
+        open={openModalSale || openModalSaleSpun}
+        handleClose={() => {
+          setOpenModalSale(false)
+          setOpenModalSaleSpun(false)
+        }}
       >
-        <SaleScreen handleClose={() => setOpenModalSale(false)} />
+        {openModalSale && (
+          <SaleScreen handleClose={() => setOpenModalSale(false)} />
+        )}
+        {openModalSaleSpun && (
+          <SaleScreenSpun handleClose={() => setOpenModalSaleSpun(false)} />
+        )}
       </ModalContent>
     </Fragment>
   )

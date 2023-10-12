@@ -19,7 +19,7 @@ import Link from 'next/link'
 import { DataContext } from '@/providers/DataProvider'
 import { Grid } from '@mui/material'
 
-export default function Header({ openModal }: THeader) {
+export default function Header({ openModalSale, openModalSaleSpun }: THeader) {
   const { dateTime } = useContext(DataContext)
   const router = useRouter()
 
@@ -31,11 +31,16 @@ export default function Header({ openModal }: THeader) {
     },
     {
       id: 2,
-      title: 'Realizar Venda',
-      path: () => openModal(true),
+      title: 'Venda',
+      path: () => openModalSale(true),
     },
     {
       id: 3,
+      title: 'Venda Fiado',
+      path: () => openModalSaleSpun(true),
+    },
+    {
+      id: 4,
       title: 'Lista de Produtos',
       path: () => router.push('/list-products'),
     },

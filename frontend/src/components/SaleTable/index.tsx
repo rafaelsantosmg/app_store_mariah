@@ -302,7 +302,6 @@ export default function SaleTable(): JSX.Element {
         </TableHead>
         <TableBody>
           {rows.map((row: TProductSale) => {
-            console.log(row)
             return (
               <TableRow
                 key={row.id}
