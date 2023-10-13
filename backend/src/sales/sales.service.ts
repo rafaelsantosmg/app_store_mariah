@@ -6,6 +6,8 @@ type ProductPayload = {
   productId: number;
   quantity: number;
   stockType: string;
+  productName?: string;
+  productPrice?: number;
 };
 
 type PaymentPayload = {
@@ -32,12 +34,26 @@ export class SalesService {
           );
         }
 
-        return { ...productExist, quantity: Number(product.quantity) };
+        const productPrice =
+          productExist.name === 'DIVERSOS'
+            ? product.productPrice
+            : productExist.salePrice;
+
+        return {
+          ...productExist,
+          quantity: Number(product.quantity),
+          salePrice: productPrice,
+        };
       }),
     );
 
     const totalPrice = products.reduce((acc, product) => {
-      return acc + product.salePrice * product.quantity;
+      if (product.stockType === 'UN') {
+        return acc + product.salePrice * product.quantity;
+      } else {
+        const salePrice = (product.quantity / 1000) * product.salePrice;
+        return acc + salePrice;
+      }
     }, 0);
 
     const salesPrice = createSale.discont
@@ -47,8 +63,8 @@ export class SalesService {
     const sale = await this.prisma.sales.create({
       data: {
         discount: createSale.discont ? createSale.discont : 0,
-        totalPrice,
-        salesPrice,
+        totalPrice: Number(totalPrice.toFixed(2)),
+        salesPrice: Number(salesPrice.toFixed(2)),
       },
     });
 
@@ -64,7 +80,9 @@ export class SalesService {
       products.map(async (product) => {
         await this.prisma.products.update({
           where: { id: product.id },
-          data: { stock: product.stock - product.quantity },
+          data: {
+            stock: product.stock - product.quantity,
+          },
         });
       }),
     );

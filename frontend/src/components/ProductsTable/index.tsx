@@ -172,7 +172,6 @@ export default function ProductsTable({ ...props }): JSX.Element {
     stockType: '',
   })
   const [page, setPage] = useState<number>(0)
-  const [dense, setDense] = useState<boolean>(false)
   const [rowsPerPage, setRowsPerPage] = useState<number>(5)
 
   useEffect(() => {
@@ -248,16 +247,16 @@ export default function ProductsTable({ ...props }): JSX.Element {
   }
 
   const handleClick = (prod: TSelected) => {
-    const { id, stockType } = products.find(
-      (product: Product) =>
-        product.id === prod.id || product.name.includes(prod.name)
-    ) || { id: 0, stockType: 'UN' }
-
-    const product = {
+    const { id, stockType, name } = products.find(
+      (product: Product) => product.id === prod.id || product.name === prod.name
+    ) || { id: 0, stockType: 'UN', name: '' }
+    const product: TSaleProduct = {
       productId: id,
       quantity: values.quantity,
       stockType,
+      productName: name,
     }
+    if (name !== 'DIVERSOS') delete product.productName
     if (values.products.length > 0) {
       const productIndex = values.products.findIndex(
         (prod: TSaleProduct) => prod.productId === id
@@ -293,10 +292,6 @@ export default function ProductsTable({ ...props }): JSX.Element {
     setPage(0)
   }
 
-  const handleChangeDense = (event: ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked)
-  }
-
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
@@ -309,7 +304,7 @@ export default function ProductsTable({ ...props }): JSX.Element {
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
+            size="small"
           >
             <EnhancedTableHead
               order={order}
@@ -355,11 +350,7 @@ export default function ProductsTable({ ...props }): JSX.Element {
                 )
               })}
               {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
+                <TableRow>
                   <TableCell colSpan={6} />
                 </TableRow>
               )}
@@ -378,16 +369,6 @@ export default function ProductsTable({ ...props }): JSX.Element {
               onRowsPerPageChange={handleChangeRowsPerPage}
               labelRowsPerPage="Linhas por página:"
             />
-            <Grid container justifyContent="space-between">
-              <Grid item sx={{ m: 2 }}>
-                <FormControlLabel
-                  control={
-                    <Switch checked={dense} onChange={handleChangeDense} />
-                  }
-                  label="Desativar espaçamento"
-                />
-              </Grid>
-            </Grid>
           </>
         )}
       </Paper>

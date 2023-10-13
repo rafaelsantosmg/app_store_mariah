@@ -30,6 +30,12 @@ export default function SearchBar(): JSX.Element {
     setSearchProducts(filteredProducts)
   }, [form.values.id, form.values.search])
 
+  const handleChangeId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isNaN(Number(event.target.value))) {
+      handleChange(event)
+    }
+  }
+
   return (
     <Grid container justifyContent="space-between" alignItems="center">
       <Box
@@ -47,7 +53,7 @@ export default function SearchBar(): JSX.Element {
               label="Código"
               name="id"
               onBlur={handleBlur}
-              onChange={handleChange}
+              onChange={handleChangeId}
               value={values.id}
             />
             {errors.id && touched.id && (

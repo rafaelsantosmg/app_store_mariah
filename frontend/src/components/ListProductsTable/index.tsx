@@ -176,7 +176,6 @@ export default function ListProductsTable() {
   const [order, setOrder] = useState<Order>('asc')
   const [orderBy, setOrderBy] = useState<keyof Product>('id')
   const [page, setPage] = useState(0)
-  const [dense, setDense] = useState(true)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [product, setProduct] = useState<Product>({} as Product)
 
@@ -217,10 +216,6 @@ export default function ListProductsTable() {
     setPage(0)
   }
 
-  const handleChangeDense = (event: ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked)
-  }
-
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
@@ -241,7 +236,7 @@ export default function ListProductsTable() {
             <Table
               sx={{ minWidth: 750 }}
               aria-labelledby="tableTitle"
-              size={dense ? 'small' : 'medium'}
+              size="small"
             >
               <EnhancedTableHead
                 order={order}
@@ -298,11 +293,7 @@ export default function ListProductsTable() {
                   )
                 })}
                 {emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: (dense ? 33 : 53) * emptyRows,
-                    }}
-                  >
+                  <TableRow>
                     <TableCell colSpan={6} />
                   </TableRow>
                 )}
@@ -320,10 +311,6 @@ export default function ListProductsTable() {
             labelRowsPerPage="Linhas por página"
           />
         </Paper>
-        <FormControlLabel
-          control={<Switch checked={dense} onChange={handleChangeDense} />}
-          label="Desativar espaçamento"
-        />
       </Box>
       <ModalContent
         open={product.id ? true : false}

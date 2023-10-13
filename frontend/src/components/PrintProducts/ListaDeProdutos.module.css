@@ -3,18 +3,29 @@
   padding-top: 5px;
 }
 
+.buttonsWrapper {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding: 0 2rem;
+}
+
 .container {
-  width: 100%;
   margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
 }
 
 .title {
+  margin: 0;
   text-align: center;
 }
 
 .tabela {
-  width: 100%;
   border-collapse: collapse;
+  margin-top: 1rem;
+  width: 100%;
 }
 
 .tabelaTh,
@@ -44,9 +55,19 @@
     padding-top: 0;
   }
 
+  .container {
+    padding: 0 0.5rem;
+  }
+
   .tabela {
     margin-top: 0;
   }
+
+  .tabelaTh,
+  .tabelaTd {
+    font-size: 0.7rem;
+  }
+
   .botaoImprimir {
     display: none;
   }

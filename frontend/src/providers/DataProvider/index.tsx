@@ -37,6 +37,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
   const [saleProducts, setSaleProducts] = useState<ProductSale[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [openModalSale, setOpenModalSale] = useState(false)
+  const [openModalSaleSpun, setOpenModalSaleSpun] = useState(false)
   const [getProducts, setGetProducts] = useState<boolean>(false)
 
   useEffect(() => {
@@ -70,7 +71,41 @@ export const DataProvider = ({ children }: TProviderProps) => {
       .min(0)
       .max(10, 'O desconto máximo é de 10%')
       .optional(),
+    saleType: Yup.string().required('Selecione o tipo de venda'),
   })
+
+  const handleSubmit = async (values: any, { setSubmitting }: any) => {
+    const productsSerialize = values.products.map((product: TSaleProduct) => ({
+      ...product,
+      productId: product.productId,
+      quantity:
+        product.stockType === 'UN'
+          ? Number(product.quantity)
+          : Number(product.quantity.split(',').join('.')) * 1000,
+    }))
+    const request = {
+      discount: values.discont,
+      paymentInstallment: values.paymentInstallment,
+      paymentMethod: serializePaymentMethods(values.paymentMethod),
+      products: productsSerialize,
+    }
+    try {
+      if (values.saleType === 'sale') {
+        await api.post('/sales', request)
+      } else {
+        await api.post('/sales-spun', request)
+      }
+      form.resetForm()
+    } catch (error) {
+      toast.error('Erro ao cadastrar venda \n' + error)
+    } finally {
+      values.saleType === 'sale'
+        ? setOpenModalSale(false)
+        : setOpenModalSaleSpun(false)
+      setSubmitting(false)
+      setGetProducts(!getProducts)
+    }
+  }
 
   const form = useFormik({
     initialValues: {
@@ -81,54 +116,31 @@ export const DataProvider = ({ children }: TProviderProps) => {
       paymentInstallment: '',
       quantity: 0,
       discont: 0,
+      saleType: 'sale',
     },
     validationSchema: schema,
-    validateOnChange: true,
-    onSubmit: async (values, { setSubmitting }) => {
-      const productsSerialize = values.products.map(
-        (product: TSaleProduct) => ({
-          productId: product.productId,
-          quantity:
-            product.stockType === 'UN'
-              ? Number(product.quantity)
-              : Number(product.quantity.split(',').join('.')) * 1000,
-          stockType: product.stockType,
-        })
-      )
-      const request = {
-        discount: values.discont,
-        paymentInstallment: values.paymentInstallment,
-        paymentMethod: serializePaymentMethods(values.paymentMethod),
-        products: productsSerialize,
-      }
-      try {
-        await api.post('/sales', request)
-        form.resetForm()
-        setOpenModalSale(false)
-      } catch (error) {
-        toast.error('Erro ao cadastrar venda \n' + error)
-      } finally {
-        setSubmitting(false)
-        setGetProducts(!getProducts)
-      }
-    },
+    onSubmit: handleSubmit,
   })
+
+  console.log(form.errors)
 
   return (
     <DataContext.Provider
       value={{
-        openModalSale,
-        setOpenModalSale,
-        products,
-        setProducts,
-        searchProducts,
-        setSearchProducts,
-        saleProducts,
-        setSaleProducts,
-        loading,
-        setLoading,
-        form,
         dateTime,
+        form,
+        loading,
+        openModalSale,
+        openModalSaleSpun,
+        products,
+        saleProducts,
+        searchProducts,
+        setLoading,
+        setOpenModalSale,
+        setOpenModalSaleSpun,
+        setProducts,
+        setSaleProducts,
+        setSearchProducts,
       }}
     >
       {children}
