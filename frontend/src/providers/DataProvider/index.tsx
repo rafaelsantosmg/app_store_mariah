@@ -96,10 +96,12 @@ export const DataProvider = ({ children }: TProviderProps) => {
         await api.post('/sales-spun', request)
       }
       form.resetForm()
-      setOpenModalSale(false)
     } catch (error) {
       toast.error('Erro ao cadastrar venda \n' + error)
     } finally {
+      values.saleType === 'sale'
+        ? setOpenModalSale(false)
+        : setOpenModalSaleSpun(false)
       setSubmitting(false)
       setGetProducts(!getProducts)
     }
@@ -119,6 +121,8 @@ export const DataProvider = ({ children }: TProviderProps) => {
     validationSchema: schema,
     onSubmit: handleSubmit,
   })
+
+  console.log(form.errors)
 
   return (
     <DataContext.Provider
