@@ -15,45 +15,31 @@ model Payments {
   method      String?
   installment String?
   createdAt   DateTime @default(now()) @map("created_at")
-  Sales       Sales?   @relation(fields: [salesId], references: [id])
   salesId     Int?
+  dailySalesId Int?     @map("daily_sales_id")
+
+  Sales       Sales?   @relation(fields: [salesId], references: [id])
+  DailySales   DailySales? @relation(fields: [dailySalesId], references: [id])
 
   @@map("payments")
 }
 
-// model Sales {
-//   id           Int      @id @default(autoincrement())
-//   quantityUnit Int
-//   quantityKg   Float
-//   discont      Float
-//   totalPrice   Float    @map("total_price")
-//   salesPrice   Float    @map("sales_price")
-//   createdAt    DateTime @default(now()) @map("created_at")
-//   updatedAt    DateTime @updatedAt @map("updated_at")
+model DailySales {
+  id               Int @id @default(autoincrement())
+  date             DateTime
+  cashAmount       Float   @map("cash_amount")
+  pixAmount        Float   @map("pix_amount")
+  creditAmount     Float   @map("credit_amount")
+  debitAmount      Float   @map("debit_amount")
+  totalAmount      Float   @map("total_amount")
+  totalDiscount    Float   @map("total_discount")
+  totalProfit      Float   @map("total_profit")
+  totalSales       Float   @map("total_sales")
 
-//   Products     Products[]
-//   Payments     Payments[]
-//   paymentsId   Int?
-
-//   @@map("sales")
-// }
-
-// model Products {
-//   id           Int      @id @default(autoincrement())
-//   name         String
-//   description  String
-//   costPrice    Float    @map("cost_price")
-//   salePrice    Float    @map("sale_price")
-//   profitMargin Float    @map("profit_margin")
-//   image        String?
-//   stockType    String   @map("stock_type")
-//   stock        Float
-//   createdAt    DateTime @default(now()) @map("created_at")
-//   updatedAt    DateTime @updatedAt @map("updated_at")
-//   Sales        Sales[]
-
-//   @@map("products")
-// }
+  Sales           Sales[]
+  Payments        Payments[]
+  @@map("daily_sales")
+}
 
 model Sales {
   id          Int       @id @default(autoincrement())
@@ -62,10 +48,12 @@ model Sales {
   salesPrice  Float     @map("sales_price")
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
+  paymentId     Int?      @map("payment_id")
+  dailySalesId  Int?      @map("daily_sales_id")
 
   SalesProducts SalesProduct[]  // Relação com a tabela intermediária
   Payments      Payments[]
-  paymentId     Int?      @map("payment_id")
+  DailySales    DailySales? @relation(fields: [dailySalesId], references: [id])
 
   @@map("sales")
 }
