@@ -1,36 +1,73 @@
+import AddProduct from '@/components/AddProduct'
 import ModalContent from '@/components/ModalContent'
 import SaleScreen from '@/components/SaleScreen'
+import SaleScreenSpun from '@/components/SaleScreenSpun'
 import SearchBar from '@/components/SearchBar'
-import { Button, Grid, MenuItem, Typography } from '@mui/material'
+import theme from '@/theme'
+import { Box, Button, Grid, Typography } from '@mui/material'
 import { Fragment, useContext, useState } from 'react'
 import Header from '../components/Header'
 import ListProductsTable from '../components/ListProductsTable'
 import { DataContext } from '../providers/DataProvider'
-import theme from '@/theme'
-import AddProduct from '@/components/AddProduct'
+import { useRouter } from 'next/navigation'
 
 export default function ListProducts() {
-  const { openModalSale, setOpenModalSale } = useContext(DataContext)
+  const router = useRouter()
+  const {
+    openModalSale,
+    setOpenModalSale,
+    openModalSaleSpun,
+    setOpenModalSaleSpun,
+  } = useContext(DataContext)
   const [openAddProduct, setOpenAddProduct] = useState<boolean>(false)
 
   return (
     <Fragment>
-      <Header openModal={setOpenModalSale} />
+      <Header
+        openModalSale={setOpenModalSale}
+        openModalSaleSpun={setOpenModalSaleSpun}
+      />
       <Grid container justifyContent="center" sx={{ mt: 2 }}>
         <Grid item xs={10}>
           <Grid container justifyContent="space-between" alignItems="center">
-            <Typography
-              variant="h2"
+            <Box
               sx={{
-                color: theme.brown,
-                '@media (max-width: 600px)': {
-                  fontSize: '1.2rem',
-                },
-                mb: 1,
+                alignItems: 'center',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
               }}
             >
-              Lista de Produtos
-            </Typography>
+              <Typography
+                variant="h2"
+                sx={{
+                  width: 'fit-content',
+                  color: theme.brown,
+                  '@media (max-width: 600px)': {
+                    fontSize: '1.2rem',
+                  },
+                  mb: 1,
+                }}
+              >
+                Lista de Produtos
+              </Typography>
+              <Button
+                variant="outlined"
+                type="button"
+                onClick={() => router.push('/print-products')}
+                sx={{
+                  backgroundColor: theme.brown,
+                  '&:hover': {
+                    backgroundColor: theme.lightBrown,
+                  },
+                  color: theme.white,
+                  displayPrint: 'none',
+                  ml: 5,
+                }}
+              >
+                Imprimir Lista
+              </Button>
+            </Box>
             <Button
               variant="outlined"
               type="button"
@@ -61,10 +98,18 @@ export default function ListProducts() {
         <AddProduct setOpenAddProduct={setOpenAddProduct} />
       </ModalContent>
       <ModalContent
-        open={openModalSale}
-        handleClose={() => setOpenModalSale(false)}
+        open={openModalSale || openModalSaleSpun}
+        handleClose={() => {
+          setOpenModalSale(false)
+          setOpenModalSaleSpun(false)
+        }}
       >
-        <SaleScreen handleClose={() => setOpenModalSale(false)} />
+        {openModalSale && (
+          <SaleScreen handleClose={() => setOpenModalSale(false)} />
+        )}
+        {openModalSaleSpun && (
+          <SaleScreenSpun handleClose={() => setOpenModalSaleSpun(false)} />
+        )}
       </ModalContent>
     </Fragment>
   )
