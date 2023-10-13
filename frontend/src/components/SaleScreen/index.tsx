@@ -45,6 +45,7 @@ export default function SaleScreen({ ...props }): JSX.Element {
 
   useEffect(() => {
     setFieldValue('saleType', 'sale')
+    setFieldValue('paymentMethod', '')
   }, [])
 
   useEffect(() => {
