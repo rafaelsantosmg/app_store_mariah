@@ -1,4 +1,4 @@
-export const formateValueUnitKg = (value: number): number | string => {
+export function formateValueUnitKg(value: number): number | string {
   const fvalue = value / 1000
   const numberToText = Number(fvalue.toString().split('.')[1])
 

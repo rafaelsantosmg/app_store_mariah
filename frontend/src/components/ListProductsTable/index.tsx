@@ -1,9 +1,8 @@
 import theme from '@/theme'
+import { filterListProducts } from '@/utils/filterProducts'
 import EditIcon from '@mui/icons-material/Edit'
 import Box from '@mui/material/Box'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import Paper from '@mui/material/Paper'
-import Switch from '@mui/material/Switch'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -13,22 +12,16 @@ import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import { visuallyHidden } from '@mui/utils'
-import {
-  ChangeEvent,
-  Component,
-  MouseEvent,
-  useContext,
-  useMemo,
-  useState,
-} from 'react'
+import { ChangeEvent, MouseEvent, useContext, useMemo, useState } from 'react'
 import { Product } from '../../interfaces/Products'
 import { DataContext } from '../../providers/DataProvider'
-import ModalContent from '../ModalContent'
-import EditProduct from '../EditProduct'
 import { formateValueUnitKg } from '../../utils/formate-values'
+import EditProduct from '../EditProduct'
+import ModalContent from '../ModalContent'
 
 function createData(
   id: number,
+  code: string,
   name: string,
   description: string,
   stockType: string,
@@ -36,7 +29,7 @@ function createData(
   costPrice: number,
   salePrice: number
 ): Product {
-  return { id, name, description, stockType, stock, costPrice, salePrice }
+  return { id, code, name, description, stockType, stock, costPrice, salePrice }
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -91,6 +84,12 @@ const headCells: readonly HeadCell[] = [
     numeric: true,
     disablePadding: true,
     label: 'ID',
+  },
+  {
+    id: 'code',
+    numeric: false,
+    disablePadding: false,
+    label: 'Código',
   },
   {
     id: 'name',
@@ -172,18 +171,19 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 }
 
 export default function ListProductsTable() {
-  const { products, searchProducts } = useContext(DataContext)
+  const { products, form } = useContext(DataContext)
   const [order, setOrder] = useState<Order>('asc')
   const [orderBy, setOrderBy] = useState<keyof Product>('id')
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [product, setProduct] = useState<Product>({} as Product)
 
-  const listProducts = searchProducts.length > 0 ? searchProducts : products
+  const listProducts = filterListProducts(products, form.values?.search)
 
   const rows = listProducts.map((product: Product) =>
     createData(
       product.id,
+      product.code,
       product.name,
       product.description,
       product.stockType,
@@ -245,8 +245,6 @@ export default function ListProductsTable() {
               />
               <TableBody>
                 {visibleRows.map((row, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`
-
                   return (
                     <TableRow
                       hover
@@ -254,14 +252,10 @@ export default function ListProductsTable() {
                       key={row.id}
                       sx={{ cursor: 'pointer' }}
                     >
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
+                      <TableCell component="th" scope="row" padding="none">
                         {row.id}
                       </TableCell>
+                      <TableCell align="left">{row.code}</TableCell>
                       <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="center">{row.stockType}</TableCell>
                       <TableCell align="left">

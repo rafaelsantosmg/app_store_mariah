@@ -55,8 +55,6 @@ export const DataProvider = ({ children }: TProviderProps) => {
   }, [getProducts])
 
   const schema = Yup.object().shape({
-    id: Yup.string().optional(),
-    search: Yup.string().optional(),
     products: Yup.array()
       .of(
         Yup.object().shape({
@@ -109,7 +107,8 @@ export const DataProvider = ({ children }: TProviderProps) => {
 
   const form = useFormik({
     initialValues: {
-      id: '',
+      searchId: '',
+      searchName: '',
       search: '',
       products: [],
       paymentMethod: '',
@@ -122,7 +121,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
     onSubmit: handleSubmit,
   })
 
-  console.log(form.errors)
+  // console.log(form.errors)
 
   return (
     <DataContext.Provider

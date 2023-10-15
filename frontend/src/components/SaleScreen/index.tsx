@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { filterProductsInSale } from '@/utils/filterProducts'
 import { Button, Grid, Typography } from '@mui/material'
 import { Fragment, useContext, useEffect, useState } from 'react'
 import { DataContext } from '../../providers/DataProvider'
 import theme from '../../theme'
 import SelectFields from '../Inputs/SelectFields'
 import TextFields from '../Inputs/TextFields'
-import SortTable from '../ProductsTable'
+import ProductsTable from '../ProductsTable'
 import SaleTable from '../SaleTable'
 import SearchBar from '../SearchBar'
 
@@ -29,8 +30,7 @@ export default function SaleScreen({ ...props }): JSX.Element {
     '9x',
     '10x',
   ]
-  const { searchProducts, saleProducts, form, dateTime } =
-    useContext(DataContext)
+  const { products, saleProducts, form, dateTime } = useContext(DataContext)
   const { handleClose } = props
   const {
     handleBlur,
@@ -49,10 +49,6 @@ export default function SaleScreen({ ...props }): JSX.Element {
   }, [])
 
   useEffect(() => {
-    searchProducts.length > 0 ? setViewTable(true) : setViewTable(false)
-  }, [searchProducts])
-
-  useEffect(() => {
     const totalProducts = saleProducts.reduce(
       (acc, product) =>
         acc +
@@ -66,6 +62,15 @@ export default function SaleScreen({ ...props }): JSX.Element {
 
     setTotal(totalProducts - discont)
   }, [saleProducts, values.discount])
+
+  useEffect(() => {
+    const listProducts = filterProductsInSale(products, values?.search)
+    if (listProducts.length === 0 || values?.search === '') {
+      setViewTable(false)
+    } else {
+      setViewTable(true)
+    }
+  }, [values?.search])
 
   return (
     <form
@@ -111,11 +116,7 @@ export default function SaleScreen({ ...props }): JSX.Element {
         <Grid container>
           <Grid container>
             <SearchBar />
-            {viewTable ? (
-              <SortTable setViewTable={setViewTable} />
-            ) : (
-              <SaleTable />
-            )}
+            {viewTable ? <ProductsTable /> : <SaleTable />}
           </Grid>
         </Grid>
         <Grid container justifyContent="space-between" sx={{ mt: 5 }}>

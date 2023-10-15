@@ -74,6 +74,7 @@ export type TProductSale = {
   name: string
   stockType: string
   quantity: string | number
+  stock: string | number
   salePrice: number
 }
 

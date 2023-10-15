@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import theme from '@/theme'
+import { filterListProducts } from '@/utils/filterProducts'
 import { Button, Grid } from '@mui/material'
 import Box from '@mui/material/Box'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import Paper from '@mui/material/Paper'
-import Switch from '@mui/material/Switch'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -27,7 +27,6 @@ import { DataContext } from '../../providers/DataProvider'
 import { Order, TSaleProduct, TSelected } from '../../types'
 import TextFields from '../Inputs/TextFields'
 import LoaderSpinner from '../LoaderSpinner'
-import theme from '@/theme'
 
 function createData(
   id: number,
@@ -161,11 +160,10 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 }
 
 export default function ProductsTable({ ...props }): JSX.Element {
-  const { searchProducts, loading, products, form } = useContext(DataContext)
-  const { setViewTable } = props
+  const { loading, products, form } = useContext(DataContext)
   const { setFieldValue, values, handleChange, handleBlur } = form
   const [order, setOrder] = useState<Order>('asc')
-  const [orderBy, setOrderBy] = useState<keyof Product>('name')
+  const [orderBy, setOrderBy] = useState<keyof Product>('id')
   const [selected, setSelected] = useState<TSelected>({
     id: 0,
     name: '',
@@ -174,15 +172,18 @@ export default function ProductsTable({ ...props }): JSX.Element {
   const [page, setPage] = useState<number>(0)
   const [rowsPerPage, setRowsPerPage] = useState<number>(5)
 
+  const listProducts = filterListProducts(products, form.values?.search)
+  console.log(listProducts)
+
   useEffect(() => {
-    if (searchProducts.length > 0) {
+    if (listProducts.length > 0) {
       setSelected({
-        id: searchProducts[0].id,
-        name: searchProducts[0].name,
-        stockType: searchProducts[0].stockType,
+        id: listProducts[0].id,
+        name: listProducts[0].name,
+        stockType: listProducts[0].stockType,
       })
     }
-  }, [searchProducts])
+  }, [listProducts])
 
   useEffect(() => {
     const product = products.find(
@@ -209,7 +210,7 @@ export default function ProductsTable({ ...props }): JSX.Element {
     }
   }, [values.quantity])
 
-  const rows = searchProducts.map((product: Product) =>
+  const rows = listProducts.map((product: Product) =>
     createData(
       product.id,
       product.name,
@@ -241,9 +242,9 @@ export default function ProductsTable({ ...props }): JSX.Element {
 
   const handleClear = () => {
     setFieldValue('quantity', 0)
-    setFieldValue('id', 0)
+    setFieldValue('searchId', '')
+    setFieldValue('searchName', '')
     setFieldValue('search', '')
-    setViewTable(false)
   }
 
   const handleClick = (prod: TSelected) => {
@@ -357,7 +358,7 @@ export default function ProductsTable({ ...props }): JSX.Element {
             </TableBody>
           </Table>
         </TableContainer>
-        {products.length > rowsPerPage && (
+        {listProducts.length > rowsPerPage && (
           <>
             <TablePagination
               rowsPerPageOptions={[5, 10]}

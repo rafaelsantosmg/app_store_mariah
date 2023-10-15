@@ -1,11 +1,17 @@
 import React from 'react'
-import styles from './ListaDeProdutos.module.css' // Importe o arquivo de estilos
+import styles from './listProductPrint.module.css' // Importe o arquivo de estilos
 import { Button } from '@mui/material'
 import theme from '../../theme'
 import { useRouter } from 'next/navigation'
+import { Product } from '@/interfaces/Products'
 
-const ListaDeProdutos = ({ produtos }: any) => {
+type ProductProps = {
+  products: Product[]
+}
+
+export default function ListProductPrint({ products }: ProductProps) {
   const router = useRouter()
+
   return (
     <div className={styles.listaDeProdutos}>
       <div className={styles.buttonsWrapper}>
@@ -55,13 +61,13 @@ const ListaDeProdutos = ({ produtos }: any) => {
             </tr>
           </thead>
           <tbody>
-            {produtos.map((produto: any) => (
-              <tr key={produto.id}>
-                <td className={styles.tabelaTd}>{produto.id}</td>
-                <td className={styles.tabelaTd}>{produto.name}</td>
-                <td className={styles.tabelaTd}>{produto.stockType}</td>
-                <td className={styles.tabelaTd}>{produto.stock}</td>
-                <td className={styles.tabelaTd}>{produto.salePrice}</td>
+            {products.map((product: Product) => (
+              <tr key={product.id}>
+                <td className={styles.tabelaTd}>{product.id}</td>
+                <td className={styles.tabelaTd}>{product.name}</td>
+                <td className={styles.tabelaTd}>{product.stockType}</td>
+                <td className={styles.tabelaTd}>{product.stock}</td>
+                <td className={styles.tabelaTd}>{product.salePrice}</td>
               </tr>
             ))}
           </tbody>
@@ -70,5 +76,3 @@ const ListaDeProdutos = ({ produtos }: any) => {
     </div>
   )
 }
-
-export default ListaDeProdutos

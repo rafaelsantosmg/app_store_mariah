@@ -29,9 +29,10 @@ function createData(
   name: string,
   stockType: string,
   quantity: string | number,
+  stock: string | number,
   salePrice: number
 ): TProductSale {
-  return { id, name, stockType, quantity, salePrice }
+  return { id, name, stockType, quantity, stock, salePrice }
 }
 
 function AddRemoveQuantityUn({ ...props }): JSX.Element {
@@ -149,6 +150,7 @@ export default function SaleTable(): JSX.Element {
       product.name,
       product.stockType,
       product.quantity,
+      product.stock,
       product.salePrice
     )
   )
@@ -295,6 +297,7 @@ export default function SaleTable(): JSX.Element {
             <TableCell>Nome</TableCell>
             <TableCell align="left">Tipo</TableCell>
             <TableCell align="center">Quantidade</TableCell>
+            <TableCell align="right">Estoque</TableCell>
             <TableCell align="right">Preço</TableCell>
             <TableCell align="center">Total</TableCell>
             <TableCell align="center">Remover</TableCell>
@@ -328,6 +331,7 @@ export default function SaleTable(): JSX.Element {
                     <AddRemoveQuantityKg {...{ row, handleChanceQuantity }} />
                   )}
                 </TableCell>
+                <TableCell>{row.stock}</TableCell>
                 <TableCell align="right">
                   {row.name === 'DIVERSOS' ? (
                     <ChangePrice {...{ row, price, handleChangePrice }} />

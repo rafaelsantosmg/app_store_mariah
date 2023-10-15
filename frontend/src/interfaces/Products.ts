@@ -1,5 +1,6 @@
 export interface Product {
   id: number
+  code: string
   name: string
   description: string
   stockType: string
@@ -10,6 +11,7 @@ export interface Product {
 
 export interface ProductSale {
   id: number
+  code: string
   name: string
   description: string
   quantity: string | number
