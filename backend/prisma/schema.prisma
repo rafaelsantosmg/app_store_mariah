@@ -72,6 +72,7 @@ model Sales {
 
 model Products {
   id           Int       @id @default(autoincrement())
+  code         String?    @unique
   name         String
   description  String?
   costPrice    Float     @map("cost_price")
