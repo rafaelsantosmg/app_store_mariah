@@ -7,7 +7,7 @@ export function filterListProducts(
   return products?.filter(
     (product: Product) =>
       product.name.toUpperCase().includes(search?.trim().toUpperCase()) ||
-      product.id === Number(search?.trim())
+      product.code === search?.trim()
   )
 }
 
@@ -19,6 +19,6 @@ export function filterProductsInSale(
     if (isNaN(Number(search?.trim()))) {
       return product.name.toUpperCase().includes(search?.trim().toUpperCase())
     }
-    return product.id === Number(search?.trim())
+    return product.code === search?.trim()
   })
 }

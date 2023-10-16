@@ -13,26 +13,19 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import {
-  ChangeEvent,
-  Fragment,
-  HTMLProps,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { ChangeEvent, Fragment, useContext, useEffect, useState } from 'react'
 import TextFields from '../Inputs/TextFields'
-import { TextField, Typography } from '@mui/material'
 
 function createData(
   id: number,
+  code: string,
   name: string,
   stockType: string,
   quantity: string | number,
   stock: string | number,
   salePrice: number
 ): TProductSale {
-  return { id, name, stockType, quantity, stock, salePrice }
+  return { id, code, name, stockType, quantity, stock, salePrice }
 }
 
 function AddRemoveQuantityUn({ ...props }): JSX.Element {
@@ -45,7 +38,7 @@ function AddRemoveQuantityUn({ ...props }): JSX.Element {
           border: `1px solid ${theme.brown}`,
           borderRadius: '0.5rem',
         }}
-        onClick={() => handleRemoveQuantity(row.id)}
+        onClick={() => handleRemoveQuantity(row.code)}
       >
         <RemoveIcon sx={{ color: theme.brown }} />
       </button>
@@ -56,7 +49,7 @@ function AddRemoveQuantityUn({ ...props }): JSX.Element {
           border: `1px solid ${theme.brown}`,
           borderRadius: '0.5rem',
         }}
-        onClick={() => handleAddQuantity(row.id)}
+        onClick={() => handleAddQuantity(row.code)}
       >
         <AddIcon sx={{ color: theme.brown }} />
       </button>
@@ -73,8 +66,9 @@ function AddRemoveQuantityKg({ ...props }): JSX.Element {
       value={row.quantity}
       sx={{ width: '6rem' }}
       onChange={({ target }: ChangeEvent<HTMLInputElement>) => {
-        if (!isNaN(Number(target.value)))
-          handleChanceQuantity(target.value, row.id)
+        if (!isNaN(parseFloat(target.value))) {
+          handleChanceQuantity(target.value, row.code)
+        } else handleChanceQuantity('', row.code)
       }}
     />
   )
@@ -108,8 +102,8 @@ function ChangePrice({ ...props }): JSX.Element {
         name="salePrice"
         value={price}
         onChange={({ target }: ChangeEvent<HTMLInputElement>) => {
-          if (!isNaN(Number(target.value))) {
-            handleChangePrice(target.value, row.id)
+          if (!isNaN(parseFloat(target.value))) {
+            handleChangePrice(target.value, row.code)
           }
         }}
         style={{
@@ -130,7 +124,7 @@ export default function SaleTable(): JSX.Element {
 
   const filteredProducts = values.products.map((product: TSaleProduct) => {
     const findProduct = products.find(
-      (p: Product) => p.id === product.productId
+      (p: Product) => p.code === product.productCode
     )
     return {
       ...findProduct,
@@ -147,6 +141,7 @@ export default function SaleTable(): JSX.Element {
   const rows = filteredProducts.map((product: TProductSale) =>
     createData(
       product.id,
+      product.code,
       product.name,
       product.stockType,
       product.quantity,
@@ -155,36 +150,42 @@ export default function SaleTable(): JSX.Element {
     )
   )
 
-  const handleDellete = (id: number) => {
+  const handleDellete = (code: string) => {
     const saleProducts = values.products.filter(
-      (product: TSaleProduct) => product.productId !== id
+      (product: TSaleProduct) => product.productCode !== code
     )
     setFieldValue('products', saleProducts)
   }
 
-  const handleChanceQuantity = (value: string, id: number) => {
+  const handleChanceQuantity = (value: string, code: string) => {
+    const inputValue = value.replace(',', '.')
     const saleProducts = values.products.map((product: TSaleProduct) => {
-      if (product.productId === id) {
-        const productStock = products.find((p: Product) => p.id === id) || {
+      if (product.productCode === code) {
+        const productStock = products.find((p: Product) => p.code === code) || {
           stock: 0,
         }
         if (Number(value) * 1000 > productStock.stock) {
           return {
             ...product,
-            quantity: productStock.stock / 1000,
+            quantity: parseFloat((productStock.stock / 1000).toFixed(3)),
           }
         } else {
-          if (value?.toString().includes('.')) {
-            const quantity =
-              value.toString().split('.')[1].length > 3
-                ? value.toString().split('.')[0] +
+          let newValue
+          if (inputValue?.toString().includes('.')) {
+            newValue =
+              inputValue.toString().split('.')[1].length > 3
+                ? inputValue.toString().split('.')[0] +
                   '.' +
-                  value.toString().split('.')[1].slice(0, 3)
-                : value
-            return { ...product, quantity: quantity }
-          }
+                  inputValue.toString().split('.')[1].slice(0, 3)
+                : inputValue
+          } else newValue = inputValue
+          const quantity =
+            Number(newValue) * 1000 > productStock.stock
+              ? (productStock.stock / 1000).toFixed(3)
+              : newValue
+          console.log(quantity)
+          return { ...product, quantity }
         }
-        return { ...product, quantity: value }
       }
       return product
     })
@@ -221,10 +222,10 @@ export default function SaleTable(): JSX.Element {
     return quantity
   }
 
-  const handleAddQuantity = (id: number) => {
+  const handleAddQuantity = (code: string) => {
     const saleProducts = values.products.map((product: TSaleProduct) => {
-      if (product.productId === id) {
-        const productStock = products.find((p: Product) => p.id === id)
+      if (product.productCode === code) {
+        const productStock = products.find((p: Product) => p.code === code)
         const quantity = sumAddQuantity(
           product.quantity,
           productStock?.stock,
@@ -237,10 +238,10 @@ export default function SaleTable(): JSX.Element {
     setFieldValue('products', saleProducts)
   }
 
-  const handleRemoveQuantity = (id: number) => {
+  const handleRemoveQuantity = (code: string) => {
     const saleProducts = values.products.map((product: TSaleProduct) => {
-      if (product.productId === id) {
-        const productStock = products.find((p: Product) => p.id === id)
+      if (product.productCode === code) {
+        const productStock = products.find((p: Product) => p.code === code)
         const quantity = subRemoveQuantity(
           product.quantity,
           productStock?.stockType
@@ -260,16 +261,18 @@ export default function SaleTable(): JSX.Element {
           : Number(product.quantity.split(',').join('.'))) === 0
     )
     if (product) {
-      handleDellete(id)
+      handleDellete(code)
       return
     }
     setFieldValue('products', saleProducts)
   }
 
-  const handleChangePrice = (value: string, id: number) => {
+  const handleChangePrice = (value: string, code: string) => {
     const saleProducts = values.products.map((product: TSaleProduct) => {
-      if (product.productId === id) {
-        const index = filteredProducts.findIndex((p: Product) => p.id === id)
+      if (product.productCode === code) {
+        const index = filteredProducts.findIndex(
+          (p: Product) => p.code === code
+        )
         if (index === -1) {
           return product
         }
@@ -294,6 +297,7 @@ export default function SaleTable(): JSX.Element {
       <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
+            <TableCell>Cod</TableCell>
             <TableCell>Nome</TableCell>
             <TableCell align="left">Tipo</TableCell>
             <TableCell align="center">Quantidade</TableCell>
@@ -307,9 +311,10 @@ export default function SaleTable(): JSX.Element {
           {rows.map((row: TProductSale) => {
             return (
               <TableRow
-                key={row.id}
+                key={row.code}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
+                <TableCell>{row.code}</TableCell>
                 <TableCell component="th" scope="row">
                   {row.name}
                 </TableCell>
@@ -355,7 +360,7 @@ export default function SaleTable(): JSX.Element {
                 </TableCell>
                 <TableCell align="center">
                   <button
-                    onClick={() => handleDellete(row.id)}
+                    onClick={() => handleDellete(row.code)}
                     style={{
                       cursor: 'pointer',
                       border: `1px solid ${theme.brown}`,

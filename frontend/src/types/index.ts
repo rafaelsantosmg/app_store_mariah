@@ -25,6 +25,7 @@ export type TProviderProps = {
 }
 
 export type TFormValues = {
+  code: string
   name: string
   description: string
   stockType: string
@@ -47,12 +48,14 @@ export type TFormErrors = {
 
 export type TSelected = {
   id: number
+  code: string
   name: string
   stockType: string
 }
 
 export type TSaleProduct = {
   productId: number
+  productCode: string
   quantity: string
   stockType?: string
   productName?: string
@@ -60,7 +63,7 @@ export type TSaleProduct = {
 }
 
 export type TProduct = {
-  id: number
+  code: string
   name: string
   description: string
   stockType: string
@@ -71,6 +74,7 @@ export type TProduct = {
 
 export type TProductSale = {
   id: number
+  code: string
   name: string
   stockType: string
   quantity: string | number

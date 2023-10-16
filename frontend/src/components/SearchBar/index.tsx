@@ -1,17 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { DataContext } from '@/providers/DataProvider'
-import { Box, Grid, Typography } from '@mui/material'
-import { use, useContext, useEffect } from 'react'
+import { Box, Grid } from '@mui/material'
+import { useContext } from 'react'
 import theme from '../../theme'
 import TextFields from '../Inputs/TextFields'
-import { Product } from '@/interfaces/Products'
-
-const style = {
-  p: {
-    color: theme.red,
-    ml: 1,
-  },
-}
 
 export default function SearchBar(): JSX.Element {
   const { form } = useContext(DataContext)
@@ -44,14 +36,14 @@ export default function SearchBar(): JSX.Element {
               id="outlined-number"
               inputProps={{ min: 0 }}
               label="Código"
-              name="searchId"
+              name="searchCode"
               onBlur={handleBlur}
               onChange={handleChangeId}
               onFocus={() => {
                 setFieldValue('search', '')
                 setFieldValue('searchName', '')
               }}
-              value={values.searchId}
+              value={values.searchCode}
             />
           </Grid>
           <Grid item xs={10}>
@@ -63,7 +55,7 @@ export default function SearchBar(): JSX.Element {
               onChange={handleChangeName}
               onFocus={() => {
                 setFieldValue('search', '')
-                setFieldValue('searchId', '')
+                setFieldValue('searchCode', '')
               }}
               type="search"
               value={values.searchName}

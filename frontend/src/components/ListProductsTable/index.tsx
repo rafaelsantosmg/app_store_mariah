@@ -80,12 +80,6 @@ interface HeadCell {
 
 const headCells: readonly HeadCell[] = [
   {
-    id: 'id',
-    numeric: true,
-    disablePadding: true,
-    label: 'ID',
-  },
-  {
     id: 'code',
     numeric: false,
     disablePadding: false,
@@ -173,7 +167,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 export default function ListProductsTable() {
   const { products, form } = useContext(DataContext)
   const [order, setOrder] = useState<Order>('asc')
-  const [orderBy, setOrderBy] = useState<keyof Product>('id')
+  const [orderBy, setOrderBy] = useState<keyof Product>('code')
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [product, setProduct] = useState<Product>({} as Product)
@@ -193,8 +187,8 @@ export default function ListProductsTable() {
     )
   )
 
-  const handleEdit = (id: number) => {
-    const product = products.find((product: Product) => product.id === id)
+  const handleEdit = (code: string) => {
+    const product = products.find((product: Product) => product.code === code)
     setProduct(product as Product)
   }
 
@@ -249,13 +243,12 @@ export default function ListProductsTable() {
                     <TableRow
                       hover
                       tabIndex={-1}
-                      key={row.id}
+                      key={row.code}
                       sx={{ cursor: 'pointer' }}
                     >
                       <TableCell component="th" scope="row" padding="none">
-                        {row.id}
+                        {row.code}
                       </TableCell>
-                      <TableCell align="left">{row.code}</TableCell>
                       <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="center">{row.stockType}</TableCell>
                       <TableCell align="left">
@@ -279,7 +272,7 @@ export default function ListProductsTable() {
                       </TableCell>
                       <TableCell align="center">
                         <EditIcon
-                          onClick={() => handleEdit(Number(row.id))}
+                          onClick={() => handleEdit(row.code)}
                           sx={{ cursor: 'pointer', color: theme.brown }}
                         />
                       </TableCell>
@@ -307,7 +300,7 @@ export default function ListProductsTable() {
         </Paper>
       </Box>
       <ModalContent
-        open={product.id ? true : false}
+        open={product.code ? true : false}
         handleClose={() => setProduct({} as Product)}
       >
         <EditProduct product={product} setProduct={setProduct} />

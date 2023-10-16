@@ -20,11 +20,11 @@ export default function ProductForm({ ...props }): JSX.Element {
   const { form, setProduct, type, setOpenAddProduct } = props
   const { errors, handleBlur, handleChange, handleSubmit, touched, values } =
     form
-  const inputRef = useRef<HTMLInputElement>(null)
+  const inputRefName = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    if (values.name === '') inputRef.current?.focus()
-  }, [values.name])
+    inputRefName.current?.focus()
+  }, [])
 
   return (
     <form
@@ -53,8 +53,11 @@ export default function ProductForm({ ...props }): JSX.Element {
           <Grid item xs={2}>
             <TextFields
               label="Código"
-              name="id"
-              value={values.id || products[products.length - 1].id + 1}
+              value={
+                type === 'edit'
+                  ? values.code
+                  : Number(products[products.length - 1].code) + 1
+              }
               disabled
             />
           </Grid>
@@ -67,7 +70,7 @@ export default function ProductForm({ ...props }): JSX.Element {
               onBlur={handleBlur}
               onChange={handleChange}
               value={values.name}
-              inputProps={{ ref: inputRef }}
+              inputProps={{ ref: inputRefName }}
             />
             {errors.name && touched.name && (
               <Typography sx={style.p}>{errors.name}</Typography>

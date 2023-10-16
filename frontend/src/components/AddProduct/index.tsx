@@ -41,6 +41,7 @@ export default function AddProduct({ ...props }): JSX.Element {
           ? values.stock
           : values.stock.split(',').join('.')
       const request: TFormValues = {
+        code: String(Number(products[products.length - 1].code) + 1),
         name: values.name.toUpperCase().trim(),
         description: values.description.toUpperCase().trim(),
         stockType: values.stockType === 'UNIDADE' ? 'UN' : 'KG',
@@ -62,6 +63,7 @@ export default function AddProduct({ ...props }): JSX.Element {
 
   const formCadProducts = useFormik({
     initialValues: {
+      code: '',
       name: '',
       description: '',
       stockType: 'UNIDADE',

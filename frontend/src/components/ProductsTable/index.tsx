@@ -2,27 +2,15 @@
 import theme from '@/theme'
 import { filterListProducts } from '@/utils/filterProducts'
 import { Button, Grid } from '@mui/material'
-import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
 import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
-import TableSortLabel from '@mui/material/TableSortLabel'
-import { visuallyHidden } from '@mui/utils'
-import {
-  ChangeEvent,
-  MouseEvent,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { ChangeEvent, useContext, useEffect, useMemo, useState } from 'react'
 import { Product } from '../../interfaces/Products'
-import { EnhancedTableProps, HeadCell } from '../../interfaces/Table'
 import { DataContext } from '../../providers/DataProvider'
 import { Order, TSaleProduct, TSelected } from '../../types'
 import TextFields from '../Inputs/TextFields'
@@ -30,6 +18,7 @@ import LoaderSpinner from '../LoaderSpinner'
 
 function createData(
   id: number,
+  code: string,
   name: string,
   description: string,
   stockType: string,
@@ -37,7 +26,7 @@ function createData(
   costPrice: number,
   salePrice: number
 ): Product {
-  return { id, name, description, stockType, stock, costPrice, salePrice }
+  return { id, code, name, description, stockType, stock, costPrice, salePrice }
 }
 
 function orderByStringOfNumber<T>(a: T, b: T, orderBy: keyof T): number {
@@ -90,82 +79,14 @@ function stableSort<T>(
   return stabilizedThis.map((el) => el[0])
 }
 
-const headCells: readonly HeadCell[] = [
-  {
-    id: 'id',
-    numeric: true,
-    disablePadding: true,
-    label: 'ID',
-  },
-  {
-    id: 'name',
-    numeric: false,
-    disablePadding: false,
-    label: 'Produto',
-  },
-  {
-    id: 'stockType',
-    numeric: false,
-    disablePadding: false,
-    label: 'Tipo',
-  },
-  {
-    id: 'stock',
-    numeric: false,
-    disablePadding: false,
-    label: 'Estoque',
-  },
-  {
-    id: 'salePrice',
-    numeric: true,
-    disablePadding: false,
-    label: 'Preço',
-  },
-]
-
-function EnhancedTableHead(props: EnhancedTableProps) {
-  const { order, orderBy, onRequestSort } = props
-  const createSortHandler =
-    (property: keyof Product) => (event: MouseEvent<unknown>) => {
-      onRequestSort(event, property)
-    }
-
-  return (
-    <TableHead>
-      <TableRow>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.id === 'id' ? 'center' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  )
-}
-
-export default function ProductsTable({ ...props }): JSX.Element {
-  const { loading, products, form } = useContext(DataContext)
-  const { setFieldValue, values, handleChange, handleBlur } = form
-  const [order, setOrder] = useState<Order>('asc')
-  const [orderBy, setOrderBy] = useState<keyof Product>('id')
+export default function ProductsTable(): JSX.Element {
+  const { loading, products, form, saleProducts } = useContext(DataContext)
+  const { setFieldValue, values, handleBlur } = form
+  const [order] = useState<Order>('asc')
+  const [orderBy] = useState<keyof Product>('code')
   const [selected, setSelected] = useState<TSelected>({
     id: 0,
+    code: '0000',
     name: '',
     stockType: '',
   })
@@ -173,46 +94,22 @@ export default function ProductsTable({ ...props }): JSX.Element {
   const [rowsPerPage, setRowsPerPage] = useState<number>(5)
 
   const listProducts = filterListProducts(products, form.values?.search)
-  console.log(listProducts)
 
   useEffect(() => {
-    if (listProducts.length > 0) {
+    if (listProducts.length && listProducts[0].code !== selected.code) {
       setSelected({
         id: listProducts[0].id,
+        code: listProducts[0].code,
         name: listProducts[0].name,
         stockType: listProducts[0].stockType,
       })
     }
-  }, [listProducts])
-
-  useEffect(() => {
-    const product = products.find(
-      (product: Product) => product.id === selected.id
-    ) || { stock: 0 }
-    if (selected.stockType === 'KG') {
-      if (Number(values.quantity) * 1000 > product.stock) {
-        setFieldValue('quantity', product.stock / 1000)
-      } else {
-        if (values.quantity?.toString().includes('.')) {
-          const quantity =
-            values.quantity.toString().split('.')[1].length > 3
-              ? values.quantity.toString().split('.')[0] +
-                '.' +
-                values.quantity.toString().split('.')[1].slice(0, 3)
-              : values.quantity
-          setFieldValue('quantity', quantity)
-        }
-      }
-    } else {
-      if (Number(values.quantity) > product?.stock) {
-        setFieldValue('quantity', product.stock)
-      } else setFieldValue('quantity', Number(values.quantity))
-    }
-  }, [values.quantity])
+  }, [form.values.search])
 
   const rows = listProducts.map((product: Product) =>
     createData(
       product.id,
+      product.code,
       product.name,
       product.description,
       product.stockType,
@@ -231,28 +128,21 @@ export default function ProductsTable({ ...props }): JSX.Element {
     [order, orderBy, page, rows, rowsPerPage]
   )
 
-  const handleRequestSort = (
-    _event: MouseEvent<unknown>,
-    property: keyof Product
-  ) => {
-    const isAsc = orderBy === property && order === 'asc'
-    setOrder(isAsc ? 'desc' : 'asc')
-    setOrderBy(property)
-  }
-
   const handleClear = () => {
     setFieldValue('quantity', 0)
-    setFieldValue('searchId', '')
+    setFieldValue('searchCode', '')
     setFieldValue('searchName', '')
     setFieldValue('search', '')
   }
 
   const handleClick = (prod: TSelected) => {
-    const { id, stockType, name } = products.find(
-      (product: Product) => product.id === prod.id || product.name === prod.name
-    ) || { id: 0, stockType: 'UN', name: '' }
+    const { id, code, stockType, name } = products.find(
+      (product: Product) =>
+        product.code === prod.code || product.name === prod.name
+    ) || { id: 0, code: '0000', stockType: 'UN', name: '' }
     const product: TSaleProduct = {
       productId: id,
+      productCode: code,
       quantity: values.quantity,
       stockType,
       productName: name,
@@ -260,7 +150,7 @@ export default function ProductsTable({ ...props }): JSX.Element {
     if (name !== 'DIVERSOS') delete product.productName
     if (values.products.length > 0) {
       const productIndex = values.products.findIndex(
-        (prod: TSaleProduct) => prod.productId === id
+        (prod: TSaleProduct) => prod.productCode === code
       )
       if (productIndex !== -1) {
         const products = values.products
@@ -274,10 +164,67 @@ export default function ProductsTable({ ...props }): JSX.Element {
     handleClear()
   }
 
+  const handleChangeQuantity = (event: ChangeEvent<HTMLInputElement>) => {
+    if (selected.code) {
+      const searchProduct = saleProducts.find(
+        (prod) => prod.code === selected.code
+      ) || { quantity: 0 }
+      const product = products.find(
+        (product) => product.code === selected.code
+      ) || { stock: 0, stockType: 'UN' }
+      if (product.stockType === 'UN') {
+        if (!isNaN(Number(event.target.value))) {
+          if (Number(searchProduct.quantity) > 0) {
+            const quantity =
+              Number(event.target.value) >
+              product.stock - Number(searchProduct.quantity)
+                ? product.stock - Number(searchProduct.quantity)
+                : Number(event.target.value)
+            setFieldValue('quantity', quantity)
+          } else {
+            const quantity =
+              Number(event.target.value) > product.stock
+                ? product.stock
+                : Number(event.target.value)
+            setFieldValue('quantity', quantity)
+          }
+        }
+      } else {
+        if (!isNaN(parseFloat(event.target.value))) {
+          const inputValue = event.target.value.replace(',', '.')
+          if (Number(searchProduct.quantity) > 0) {
+            const quantity =
+              Number(inputValue) * 1000 >
+              product.stock - Number(searchProduct.quantity) * 1000
+                ? (product.stock - Number(searchProduct.quantity)) * 1000
+                : parseFloat(inputValue)
+            setFieldValue('quantity', quantity)
+          } else {
+            let value
+            if (inputValue?.toString().includes('.')) {
+              value =
+                inputValue.toString().split('.')[1].length > 3
+                  ? inputValue.toString().split('.')[0] +
+                    '.' +
+                    inputValue.toString().split('.')[1].slice(0, 3)
+                  : inputValue
+            } else value = inputValue
+            const quantity =
+              Number(value) * 1000 > product.stock
+                ? (product.stock / 1000).toFixed(3)
+                : value
+            setFieldValue('quantity', quantity)
+          }
+        } else setFieldValue('quantity', '')
+      }
+    }
+  }
+
   const handleSelected = (prod: TSelected) => {
-    if (prod.id !== selected.id) {
+    if (prod.code !== selected.code) {
       setSelected({
         id: prod.id,
+        code: prod.code,
         name: prod.name,
         stockType: prod.stockType,
       })
@@ -307,12 +254,6 @@ export default function ProductsTable({ ...props }): JSX.Element {
             aria-labelledby="tableTitle"
             size="small"
           >
-            <EnhancedTableHead
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
             <TableBody>
               {visibleRows.map((row, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`
@@ -321,8 +262,8 @@ export default function ProductsTable({ ...props }): JSX.Element {
                     hover
                     onClick={() => handleSelected(row)}
                     tabIndex={-1}
-                    key={row.id}
-                    selected={row.id === selected.id}
+                    key={row.code}
+                    selected={row.code === selected.code}
                     sx={{ cursor: 'pointer' }}
                   >
                     <TableCell
@@ -332,10 +273,12 @@ export default function ProductsTable({ ...props }): JSX.Element {
                       padding="none"
                       align="center"
                     >
-                      {row.id}
+                      {row.code}
                     </TableCell>
                     <TableCell align="left">{row.name}</TableCell>
-                    <TableCell align="left">{row.stockType}</TableCell>
+                    <TableCell align="left" padding="none">
+                      {row.stockType}
+                    </TableCell>
                     <TableCell align="left">
                       {row.stockType === 'KG'
                         ? (row.stock / 1000).toFixed(3)
@@ -379,9 +322,7 @@ export default function ProductsTable({ ...props }): JSX.Element {
             name="quantity"
             label="Quantidade"
             variant="outlined"
-            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              if (!isNaN(Number(event.target.value))) handleChange(event)
-            }}
+            onChange={handleChangeQuantity}
             onBlur={handleBlur}
             value={values.quantity}
           />

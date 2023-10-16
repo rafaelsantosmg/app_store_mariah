@@ -38,6 +38,7 @@ export default function EditProduct({ ...props }): JSX.Element {
           ? values.stock
           : values.stock.split(',').join('.')
       const request: TFormValues = {
+        code: values.code,
         name: values.name.toUpperCase().trim(),
         description: values.description.toUpperCase().trim(),
         stockType: values.stockType === 'UNIDADE' ? 'UN' : 'KG',
@@ -47,15 +48,12 @@ export default function EditProduct({ ...props }): JSX.Element {
         image: values.image,
       }
       const newProducts = products
-      const { data } = await api.patch(`/products/${product.id}`, request)
-      const index = products.findIndex((p) => p.id === data.id)
+      const { data } = await api.patch(`/products/${product.code}`, request)
+      const index = products.findIndex((p) => p.code === data.code)
       if (index < 0) {
         throw new Error('Produto não encontrado')
       }
-      console.log(newProducts[index])
-      console.log(data)
       newProducts[index] = data
-      console.log(newProducts[index])
       setProducts([...newProducts])
       router.push('/list-products')
     } catch (error) {
@@ -68,7 +66,7 @@ export default function EditProduct({ ...props }): JSX.Element {
 
   const formEditProducts = useFormik({
     initialValues: {
-      id: product.id,
+      code: product.code,
       name: product.name,
       description: product.description,
       stockType: product.stockType === 'UN' ? 'UNIDADE' : 'QUILOGRAMA',
