@@ -22,10 +22,7 @@ export class ProductsService {
       data: {
         ...createProductDto,
         profitMargin: createProductDto.salePrice - createProductDto.costPrice,
-        stock:
-          createProductDto.stockType === 'KG'
-            ? createProductDto.stock * 1000
-            : createProductDto.stock,
+        stock: createProductDto.stock,
       },
     });
 
@@ -62,10 +59,7 @@ export class ProductsService {
       where: { id },
       data: {
         ...updateProductDto,
-        stock:
-          updateProductDto.stockType === 'KG'
-            ? updateProductDto.stock * 1000
-            : updateProductDto.stock,
+        stock: updateProductDto.stock,
       },
     });
   }

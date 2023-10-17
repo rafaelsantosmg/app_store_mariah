@@ -1,7 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import theme from '@/theme'
 import { filterListProducts } from '@/utils/filterProducts'
-import { Button, Grid } from '@mui/material'
+import {
+  formateValueInputNumeric,
+  formateValueUnitKg,
+} from '@/utils/formate-values'
+import { Button, Grid, TableHead } from '@mui/material'
 import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -10,12 +14,11 @@ import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import { ChangeEvent, useContext, useEffect, useMemo, useState } from 'react'
-import { Product, ProductSale } from '../../interfaces/Products'
+import { Product } from '../../interfaces/Products'
 import { DataContext } from '../../providers/DataProvider'
 import { Order, TSaleProduct, TSelected } from '../../types'
 import TextFields from '../Inputs/TextFields'
 import LoaderSpinner from '../LoaderSpinner'
-import { formateValueInputNumeric } from '@/utils/formate-values'
 
 function createData(
   id: number,
@@ -134,7 +137,7 @@ export default function ProductsTable(): JSX.Element {
   )
 
   const handleClear = () => {
-    setFieldValue('quantity', 0)
+    setFieldValue('quantity', '')
     setFieldValue('searchCode', '')
     setFieldValue('searchName', '')
     setFieldValue('search', '')
@@ -164,7 +167,7 @@ export default function ProductsTable(): JSX.Element {
         if (products[productIndex].stockType === 'UN') {
           products[productIndex].quantity = sumQuantity
         } else {
-          products[productIndex].quantity = sumQuantity.toFixed(3)
+          products[productIndex].quantity = sumQuantity.toString()
         }
         setFieldValue('products', products)
         handleClear()
@@ -201,19 +204,16 @@ export default function ProductsTable(): JSX.Element {
   ) => {
     if (Number(searchProduct.quantity) > 0) {
       const quantity =
-        parseFloat(inputQuantity) * 1000 >
-        product.stock - Number(searchProduct.quantity) * 1000
-          ? (
-              (product.stock - Number(searchProduct.quantity) * 1000) /
-              1000
-            ).toFixed(3)
+        parseFloat(inputQuantity) >
+        product.stock - Number(searchProduct.quantity)
+          ? (product.stock - Number(searchProduct.quantity)).toFixed(3)
           : inputQuantity
       setFieldValue('quantity', quantity)
       return
     }
     const quantity =
-      parseFloat(inputQuantity) * 1000 > product.stock
-        ? (product.stock / 1000).toFixed(3)
+      parseFloat(inputQuantity) > product.stock
+        ? product.stock.toFixed(3)
         : inputQuantity
     setFieldValue('quantity', quantity)
     return
@@ -268,6 +268,17 @@ export default function ProductsTable(): JSX.Element {
             aria-labelledby="tableTitle"
             size="small"
           >
+            <TableHead>
+              <TableRow>
+                <TableCell>Cod</TableCell>
+                <TableCell>Nome</TableCell>
+                <TableCell align="left" padding="none">
+                  Tipo
+                </TableCell>
+                <TableCell align="left">Estoque</TableCell>
+                <TableCell align="left">Preço</TableCell>
+              </TableRow>
+            </TableHead>
             <TableBody>
               {visibleRows.map((row, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`
@@ -294,8 +305,10 @@ export default function ProductsTable(): JSX.Element {
                       {row.stockType}
                     </TableCell>
                     <TableCell align="left">
-                      {row.stockType === 'KG'
-                        ? (row.stock / 1000).toFixed(3)
+                      {row.stockType === 'KG' && row.stock < 1
+                        ? formateValueUnitKg(row.stock) + 'g'
+                        : row.stockType === 'KG'
+                        ? formateValueUnitKg(row.stock) + 'kg'
                         : row.stock}
                     </TableCell>
                     <TableCell align="left">

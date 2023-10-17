@@ -256,7 +256,7 @@ export default function ListProductsTable() {
                       <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="center">{row.stockType}</TableCell>
                       <TableCell align="left">
-                        {row.stockType === 'KG' && row.stock < 1000
+                        {row.stockType === 'KG' && row.stock < 1
                           ? formateValueUnitKg(row.stock) + 'g'
                           : row.stockType === 'KG'
                           ? formateValueUnitKg(row.stock) + 'kg'

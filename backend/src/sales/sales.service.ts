@@ -47,14 +47,10 @@ export class SalesService {
       }),
     );
 
-    const totalPrice = products.reduce((acc, product) => {
-      if (product.stockType === 'UN') {
-        return acc + product.salePrice * product.quantity;
-      } else {
-        const salePrice = (product.quantity / 1000) * product.salePrice;
-        return acc + salePrice;
-      }
-    }, 0);
+    const totalPrice = products.reduce(
+      (acc, product) => acc + product.salePrice * product.quantity,
+      0,
+    );
 
     const salesPrice = createSale.discont
       ? totalPrice - (totalPrice * createSale.discont) / 100

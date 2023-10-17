@@ -60,7 +60,7 @@ function AddRemoveQuantityUn({ ...props }): JSX.Element {
 
 function AddRemoveQuantityKg({ ...props }): JSX.Element {
   const { row, handleChanceQuantity } = props
-  console.log(row)
+
   return (
     <TextFields
       name="quantity"
@@ -134,7 +134,6 @@ export default function SaleTable(): JSX.Element {
   })
 
   useEffect(() => {
-    console.log(filteredProducts)
     setSaleProducts(filteredProducts)
   }, [values.products])
 
@@ -158,17 +157,16 @@ export default function SaleTable(): JSX.Element {
   }
 
   const handleChanceQuantity = (value: string, code: string) => {
-    console.log(value)
     const inputQuantity = formateValueInputNumeric(value)
     const saleProducts = values.products.map((product: TSaleProduct) => {
       if (product.productCode === code) {
         const productStock = products.find((p: Product) => p.code === code) || {
           stock: 0,
         }
-        if (Number(inputQuantity) * 1000 > productStock.stock) {
+        if (Number(inputQuantity) > productStock.stock) {
           return {
             ...product,
-            quantity: (productStock.stock / 1000).toFixed(3),
+            quantity: productStock.stock.toFixed(3),
           }
         }
         return {
@@ -178,7 +176,6 @@ export default function SaleTable(): JSX.Element {
       }
       return product
     })
-    console.log(saleProducts)
     setFieldValue('products', saleProducts)
   }
 
@@ -317,7 +314,7 @@ export default function SaleTable(): JSX.Element {
                 </TableCell>
                 <TableCell align="right">
                   {row.stockType === 'KG'
-                    ? (Number(row.stock) / 1000).toFixed(3)
+                    ? Number(row.stock).toFixed(3)
                     : row.stock}
                 </TableCell>
                 <TableCell align="right">
