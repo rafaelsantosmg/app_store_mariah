@@ -10,11 +10,12 @@ import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import { ChangeEvent, useContext, useEffect, useMemo, useState } from 'react'
-import { Product } from '../../interfaces/Products'
+import { Product, ProductSale } from '../../interfaces/Products'
 import { DataContext } from '../../providers/DataProvider'
 import { Order, TSaleProduct, TSelected } from '../../types'
 import TextFields from '../Inputs/TextFields'
 import LoaderSpinner from '../LoaderSpinner'
+import { formateValueInputNumeric } from '@/utils/formate-values'
 
 function createData(
   id: number,
@@ -93,7 +94,11 @@ export default function ProductsTable(): JSX.Element {
   const [page, setPage] = useState<number>(0)
   const [rowsPerPage, setRowsPerPage] = useState<number>(5)
 
-  const listProducts = filterListProducts(products, form.values?.search)
+  const listProducts = filterListProducts(
+    products,
+    form.values?.searchCode,
+    form.values?.searchName
+  )
 
   useEffect(() => {
     if (listProducts.length && listProducts[0].code !== selected.code) {
@@ -154,7 +159,13 @@ export default function ProductsTable(): JSX.Element {
       )
       if (productIndex !== -1) {
         const products = values.products
-        products[productIndex].quantity += values.quantity
+        const sumQuantity =
+          Number(products[productIndex].quantity) + Number(values.quantity)
+        if (products[productIndex].stockType === 'UN') {
+          products[productIndex].quantity = sumQuantity
+        } else {
+          products[productIndex].quantity = sumQuantity.toFixed(3)
+        }
         setFieldValue('products', products)
         handleClear()
         return
@@ -164,7 +175,52 @@ export default function ProductsTable(): JSX.Element {
     handleClear()
   }
 
+  const handleQuantityUN = (
+    searchProduct: any,
+    product: any,
+    inputQuantity: string
+  ) => {
+    if (Number(searchProduct.quantity) > 0) {
+      const quantity =
+        Number(inputQuantity) > product.stock - Number(searchProduct.quantity)
+          ? product.stock - Number(searchProduct.quantity)
+          : inputQuantity
+      setFieldValue('quantity', quantity)
+      return
+    }
+    const quantity =
+      Number(inputQuantity) > product.stock ? product.stock : inputQuantity
+    setFieldValue('quantity', quantity)
+    return
+  }
+
+  const handleQuantityKG = (
+    searchProduct: any,
+    product: any,
+    inputQuantity: string
+  ) => {
+    if (Number(searchProduct.quantity) > 0) {
+      const quantity =
+        parseFloat(inputQuantity) * 1000 >
+        product.stock - Number(searchProduct.quantity) * 1000
+          ? (
+              (product.stock - Number(searchProduct.quantity) * 1000) /
+              1000
+            ).toFixed(3)
+          : inputQuantity
+      setFieldValue('quantity', quantity)
+      return
+    }
+    const quantity =
+      parseFloat(inputQuantity) * 1000 > product.stock
+        ? (product.stock / 1000).toFixed(3)
+        : inputQuantity
+    setFieldValue('quantity', quantity)
+    return
+  }
+
   const handleChangeQuantity = (event: ChangeEvent<HTMLInputElement>) => {
+    const inputQuantity = formateValueInputNumeric(event.target.value)
     if (selected.code) {
       const searchProduct = saleProducts.find(
         (prod) => prod.code === selected.code
@@ -173,50 +229,8 @@ export default function ProductsTable(): JSX.Element {
         (product) => product.code === selected.code
       ) || { stock: 0, stockType: 'UN' }
       if (product.stockType === 'UN') {
-        if (!isNaN(Number(event.target.value))) {
-          if (Number(searchProduct.quantity) > 0) {
-            const quantity =
-              Number(event.target.value) >
-              product.stock - Number(searchProduct.quantity)
-                ? product.stock - Number(searchProduct.quantity)
-                : Number(event.target.value)
-            setFieldValue('quantity', quantity)
-          } else {
-            const quantity =
-              Number(event.target.value) > product.stock
-                ? product.stock
-                : Number(event.target.value)
-            setFieldValue('quantity', quantity)
-          }
-        }
-      } else {
-        if (!isNaN(parseFloat(event.target.value))) {
-          const inputValue = event.target.value.replace(',', '.')
-          if (Number(searchProduct.quantity) > 0) {
-            const quantity =
-              Number(inputValue) * 1000 >
-              product.stock - Number(searchProduct.quantity) * 1000
-                ? (product.stock - Number(searchProduct.quantity)) * 1000
-                : parseFloat(inputValue)
-            setFieldValue('quantity', quantity)
-          } else {
-            let value
-            if (inputValue?.toString().includes('.')) {
-              value =
-                inputValue.toString().split('.')[1].length > 3
-                  ? inputValue.toString().split('.')[0] +
-                    '.' +
-                    inputValue.toString().split('.')[1].slice(0, 3)
-                  : inputValue
-            } else value = inputValue
-            const quantity =
-              Number(value) * 1000 > product.stock
-                ? (product.stock / 1000).toFixed(3)
-                : value
-            setFieldValue('quantity', quantity)
-          }
-        } else setFieldValue('quantity', '')
-      }
+        handleQuantityUN(searchProduct, product, inputQuantity)
+      } else handleQuantityKG(searchProduct, product, inputQuantity)
     }
   }
 

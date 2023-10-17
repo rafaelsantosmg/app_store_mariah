@@ -33,7 +33,7 @@ export class ProductsService {
   }
 
   async findAll() {
-    return await this.prisma.products.findMany({ orderBy: { id: 'asc' } });
+    return await this.prisma.products.findMany({ orderBy: { code: 'asc' } });
   }
 
   async findOne(id: number) {

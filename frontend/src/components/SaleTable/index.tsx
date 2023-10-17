@@ -15,6 +15,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { ChangeEvent, Fragment, useContext, useEffect, useState } from 'react'
 import TextFields from '../Inputs/TextFields'
+import { formateValueInputNumeric } from '@/utils/formate-values'
 
 function createData(
   id: number,
@@ -59,17 +60,15 @@ function AddRemoveQuantityUn({ ...props }): JSX.Element {
 
 function AddRemoveQuantityKg({ ...props }): JSX.Element {
   const { row, handleChanceQuantity } = props
-
+  console.log(row)
   return (
     <TextFields
       name="quantity"
       value={row.quantity}
       sx={{ width: '6rem' }}
-      onChange={({ target }: ChangeEvent<HTMLInputElement>) => {
-        if (!isNaN(parseFloat(target.value))) {
-          handleChanceQuantity(target.value, row.code)
-        } else handleChanceQuantity('', row.code)
-      }}
+      onChange={({ target }: ChangeEvent<HTMLInputElement>) =>
+        handleChanceQuantity(target.value, row.code)
+      }
     />
   )
 }
@@ -135,6 +134,7 @@ export default function SaleTable(): JSX.Element {
   })
 
   useEffect(() => {
+    console.log(filteredProducts)
     setSaleProducts(filteredProducts)
   }, [values.products])
 
@@ -150,7 +150,7 @@ export default function SaleTable(): JSX.Element {
     )
   )
 
-  const handleDellete = (code: string) => {
+  const handleDelete = (code: string) => {
     const saleProducts = values.products.filter(
       (product: TSaleProduct) => product.productCode !== code
     )
@@ -158,42 +158,32 @@ export default function SaleTable(): JSX.Element {
   }
 
   const handleChanceQuantity = (value: string, code: string) => {
-    const inputValue = value.replace(',', '.')
+    console.log(value)
+    const inputQuantity = formateValueInputNumeric(value)
     const saleProducts = values.products.map((product: TSaleProduct) => {
       if (product.productCode === code) {
         const productStock = products.find((p: Product) => p.code === code) || {
           stock: 0,
         }
-        if (Number(value) * 1000 > productStock.stock) {
+        if (Number(inputQuantity) * 1000 > productStock.stock) {
           return {
             ...product,
-            quantity: parseFloat((productStock.stock / 1000).toFixed(3)),
+            quantity: (productStock.stock / 1000).toFixed(3),
           }
-        } else {
-          let newValue
-          if (inputValue?.toString().includes('.')) {
-            newValue =
-              inputValue.toString().split('.')[1].length > 3
-                ? inputValue.toString().split('.')[0] +
-                  '.' +
-                  inputValue.toString().split('.')[1].slice(0, 3)
-                : inputValue
-          } else newValue = inputValue
-          const quantity =
-            Number(newValue) * 1000 > productStock.stock
-              ? (productStock.stock / 1000).toFixed(3)
-              : newValue
-          console.log(quantity)
-          return { ...product, quantity }
+        }
+        return {
+          ...product,
+          quantity: inputQuantity,
         }
       }
       return product
     })
+    console.log(saleProducts)
     setFieldValue('products', saleProducts)
   }
 
   const sumAddQuantity = (
-    productQuantity: string | number,
+    productQuantity: string,
     productStock: string | number = 0,
     stockType: string = 'UN'
   ): number => {
@@ -201,25 +191,15 @@ export default function SaleTable(): JSX.Element {
       return Number(productQuantity)
     }
     const sum = stockType === 'UN' ? 1 : 0.05
-    const quantity = Number(
-      (typeof productQuantity === 'number'
-        ? productQuantity
-        : Number(productQuantity.split(',').join('.'))) + sum
-    )
-    return quantity
+    return Number(productQuantity) + sum
   }
 
   const subRemoveQuantity = (
-    productQuantity: string | number,
+    productQuantity: string,
     stockType: string = 'UN'
   ): number => {
     const sub = stockType === 'UN' ? 1 : 0.05
-    const quantity = Number(
-      (typeof productQuantity === 'number'
-        ? productQuantity
-        : Number(productQuantity.split(',').join('.'))) - sub
-    )
-    return quantity
+    return Number(productQuantity) - sub
   }
 
   const handleAddQuantity = (code: string) => {
@@ -246,7 +226,6 @@ export default function SaleTable(): JSX.Element {
           product.quantity,
           productStock?.stockType
         )
-
         return {
           ...product,
           quantity: quantity,
@@ -261,7 +240,7 @@ export default function SaleTable(): JSX.Element {
           : Number(product.quantity.split(',').join('.'))) === 0
     )
     if (product) {
-      handleDellete(code)
+      handleDelete(code)
       return
     }
     setFieldValue('products', saleProducts)
@@ -336,7 +315,11 @@ export default function SaleTable(): JSX.Element {
                     <AddRemoveQuantityKg {...{ row, handleChanceQuantity }} />
                   )}
                 </TableCell>
-                <TableCell>{row.stock}</TableCell>
+                <TableCell align="right">
+                  {row.stockType === 'KG'
+                    ? (Number(row.stock) / 1000).toFixed(3)
+                    : row.stock}
+                </TableCell>
                 <TableCell align="right">
                   {row.name === 'DIVERSOS' ? (
                     <ChangePrice {...{ row, price, handleChangePrice }} />
@@ -360,7 +343,7 @@ export default function SaleTable(): JSX.Element {
                 </TableCell>
                 <TableCell align="center">
                   <button
-                    onClick={() => handleDellete(row.code)}
+                    onClick={() => handleDelete(row.code)}
                     style={{
                       cursor: 'pointer',
                       border: `1px solid ${theme.brown}`,

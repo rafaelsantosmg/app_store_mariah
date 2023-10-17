@@ -6,7 +6,7 @@ export class CreateSaleDto {
 }
 
 class SalesProducts {
-  productCode: string;
+  productId: number;
   quantity: number;
   stockType: string;
   productName?: string;

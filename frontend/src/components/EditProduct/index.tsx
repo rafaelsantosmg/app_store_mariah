@@ -4,7 +4,7 @@ import api from '@/services'
 import { TFormValues } from '@/types'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/navigation'
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import * as Yup from 'yup'
 import ProductForm from '../ProductForm'
 
@@ -38,7 +38,6 @@ export default function EditProduct({ ...props }): JSX.Element {
           ? values.stock
           : values.stock.split(',').join('.')
       const request: TFormValues = {
-        code: values.code,
         name: values.name.toUpperCase().trim(),
         description: values.description.toUpperCase().trim(),
         stockType: values.stockType === 'UNIDADE' ? 'UN' : 'KG',
@@ -48,7 +47,7 @@ export default function EditProduct({ ...props }): JSX.Element {
         image: values.image,
       }
       const newProducts = products
-      const { data } = await api.patch(`/products/${product.code}`, request)
+      const { data } = await api.patch(`/products/${product.id}`, request)
       const index = products.findIndex((p) => p.code === data.code)
       if (index < 0) {
         throw new Error('Produto não encontrado')
@@ -66,14 +65,14 @@ export default function EditProduct({ ...props }): JSX.Element {
 
   const formEditProducts = useFormik({
     initialValues: {
+      id: product.id,
       code: product.code,
       name: product.name,
       description: product.description,
       stockType: product.stockType === 'UN' ? 'UNIDADE' : 'QUILOGRAMA',
       stock: product.stock,
       costPrice: product.costPrice,
-      percentage:
-        ((product.salePrice - product.costPrice) / product.costPrice) * 100,
+      percentage: 0,
       salePrice: product.salePrice,
       image: product?.image || '',
     },
@@ -85,14 +84,6 @@ export default function EditProduct({ ...props }): JSX.Element {
       form.resetForm()
     },
   })
-
-  useEffect(() => {
-    const { values, setFieldValue } = formEditProducts
-    const salePrice =
-      Number(values.costPrice) +
-      Number(values.costPrice) * (Number(values.percentage) / 100)
-    setFieldValue('salePrice', salePrice)
-  }, [formEditProducts.values.percentage])
 
   return (
     <ProductForm form={formEditProducts} type="edit" setProduct={setProduct} />

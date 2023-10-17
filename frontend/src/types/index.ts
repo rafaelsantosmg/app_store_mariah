@@ -25,7 +25,7 @@ export type TProviderProps = {
 }
 
 export type TFormValues = {
-  code: string
+  code?: string
   name: string
   description: string
   stockType: string

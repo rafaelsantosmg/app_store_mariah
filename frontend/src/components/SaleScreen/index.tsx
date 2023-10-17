@@ -50,12 +50,7 @@ export default function SaleScreen({ ...props }): JSX.Element {
 
   useEffect(() => {
     const totalProducts = saleProducts.reduce(
-      (acc, product) =>
-        acc +
-        product.salePrice *
-          (typeof product.quantity === 'number'
-            ? product.quantity
-            : Number(product.quantity.split(',').join('.'))),
+      (acc, product) => acc + product.salePrice * Number(product.quantity),
       0
     )
     const discont = (totalProducts * values.discount) / 100 || 0

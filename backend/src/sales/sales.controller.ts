@@ -32,7 +32,7 @@ export class SalesController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
-      return await this.salesService.findOne(+id);
+      return await this.salesService.findOne(Number(id));
     } catch (error) {
       throw new NotFoundException(error.message);
     }
@@ -41,7 +41,7 @@ export class SalesController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
-      return await this.salesService.remove(+id);
+      return await this.salesService.remove(Number(id));
     } catch (error) {
       throw new NotFoundException(error.message);
     }

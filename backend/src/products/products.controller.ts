@@ -39,7 +39,7 @@ export class ProductsController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
-      return await this.productsService.findOne(+id);
+      return await this.productsService.findOne(Number(id));
     } catch (error) {
       throw new NotFoundException(error.message);
     }
@@ -51,7 +51,7 @@ export class ProductsController {
     @Body() updateProductDto: UpdateProductDto,
   ) {
     try {
-      return await this.productsService.update(+id, updateProductDto);
+      return await this.productsService.update(Number(id), updateProductDto);
     } catch (error) {
       throw new NotFoundException(error.message);
     }
@@ -60,7 +60,7 @@ export class ProductsController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
-      return await this.productsService.remove(+id);
+      return await this.productsService.remove(Number(id));
     } catch (error) {
       throw new NotFoundException(error.message);
     }

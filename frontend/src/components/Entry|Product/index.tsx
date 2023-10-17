@@ -3,7 +3,6 @@ import { DataContext } from '@/providers/DataProvider'
 import { Button, Grid, Typography } from '@mui/material'
 import { ChangeEvent, useContext, useEffect, useRef } from 'react'
 import theme from '../../theme'
-import SelectFields from '../Inputs/SelectFields'
 import TextFields from '../Inputs/TextFields'
 
 const style = {
@@ -13,9 +12,7 @@ const style = {
   },
 }
 
-const stockTypes = ['UNIDADE', 'QUILOGRAMA']
-
-export default function ProductForm({ ...props }): JSX.Element {
+export default function EntryProduct({ ...props }): JSX.Element {
   const { products } = useContext(DataContext)
   const { form, setProduct, type, setOpenAddProduct } = props
   const {
@@ -95,16 +92,6 @@ export default function ProductForm({ ...props }): JSX.Element {
         </Grid>
         <Grid container justifyContent="space-between">
           <Grid item xs={5}>
-            <SelectFields
-              label="Tipo de Dado"
-              name="stockType"
-              onChange={handleChange}
-              options={stockTypes}
-              value={values.stockType}
-              clearField={() => form.setFieldValue('stockType', '')}
-            />
-          </Grid>
-          <Grid item xs={5}>
             <TextFields
               label="Estoque"
               name="stock"
@@ -118,7 +105,7 @@ export default function ProductForm({ ...props }): JSX.Element {
           </Grid>
         </Grid>
         <Grid container justifyContent="space-between">
-          <Grid item xs={5}>
+          <Grid item xs={3}>
             <TextFields
               inputProps={{ min: 0 }}
               label="Preço de Custo"
@@ -131,21 +118,8 @@ export default function ProductForm({ ...props }): JSX.Element {
               <Typography sx={style.p}>{errors.costPrice}</Typography>
             )}
           </Grid>
-          {/* <Grid item xs={3}>
-            <TextFields
-              inputProps={{ min: 0 }}
-              label="Porcentagem de Lucro"
-              name="percentage"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              type="number"
-              value={values.percentage}
-            />
-            {errors.percentage && touched.percentage && (
-              <Typography sx={style.p}>{errors.percentage}</Typography>
-            )}
-          </Grid> */}
-          <Grid item xs={5}>
+
+          <Grid item xs={3}>
             <TextFields
               label="Preço de Venda"
               name="salePrice"

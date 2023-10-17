@@ -79,7 +79,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
       quantity:
         product.stockType === 'UN'
           ? Number(product.quantity)
-          : Number(product.quantity.split(',').join('.')) * 1000,
+          : parseFloat(product.quantity),
     }))
     const request = {
       discount: values.discont,
@@ -88,11 +88,12 @@ export const DataProvider = ({ children }: TProviderProps) => {
       products: productsSerialize,
     }
     try {
-      if (values.saleType === 'sale') {
-        await api.post('/sales', request)
-      } else {
-        await api.post('/sales-spun', request)
-      }
+      console.log(request)
+      // if (values.saleType === 'sale') {
+      //   await api.post('/sales', request)
+      // } else {
+      //   await api.post('/sales-spun', request)
+      // }
       form.resetForm()
     } catch (error) {
       toast.error('Erro ao cadastrar venda \n' + error)
@@ -120,8 +121,6 @@ export const DataProvider = ({ children }: TProviderProps) => {
     validationSchema: schema,
     onSubmit: handleSubmit,
   })
-
-  // console.log(form.errors)
 
   return (
     <DataContext.Provider

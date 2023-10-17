@@ -172,7 +172,11 @@ export default function ListProductsTable() {
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [product, setProduct] = useState<Product>({} as Product)
 
-  const listProducts = filterListProducts(products, form.values?.search)
+  const listProducts = filterListProducts(
+    products,
+    form.values?.searchCode,
+    form.values?.searchName
+  )
 
   const rows = listProducts.map((product: Product) =>
     createData(

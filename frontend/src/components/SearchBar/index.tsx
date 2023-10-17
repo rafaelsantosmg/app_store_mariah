@@ -9,7 +9,7 @@ export default function SearchBar(): JSX.Element {
   const { form } = useContext(DataContext)
   const { handleBlur, handleChange, setFieldValue, values } = form
 
-  const handleChangeId = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeCode = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!isNaN(Number(event.target.value))) {
       handleChange(event)
       setFieldValue('search', event.target.value)
@@ -38,11 +38,7 @@ export default function SearchBar(): JSX.Element {
               label="Código"
               name="searchCode"
               onBlur={handleBlur}
-              onChange={handleChangeId}
-              onFocus={() => {
-                setFieldValue('search', '')
-                setFieldValue('searchName', '')
-              }}
+              onChange={handleChangeCode}
               value={values.searchCode}
             />
           </Grid>
@@ -53,10 +49,6 @@ export default function SearchBar(): JSX.Element {
               name="searchName"
               onBlur={handleBlur}
               onChange={handleChangeName}
-              onFocus={() => {
-                setFieldValue('search', '')
-                setFieldValue('searchCode', '')
-              }}
               type="search"
               value={values.searchName}
             />
