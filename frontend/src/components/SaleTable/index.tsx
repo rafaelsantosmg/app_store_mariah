@@ -128,7 +128,7 @@ export default function SaleTable(): JSX.Element {
     return {
       ...findProduct,
       salePrice:
-        findProduct?.name === 'DIVERSOS' ? price : findProduct?.salePrice,
+        findProduct?.name === 'PRODUTOS FIADO' ? price : findProduct?.salePrice,
       quantity: product.quantity,
     }
   })
@@ -318,7 +318,7 @@ export default function SaleTable(): JSX.Element {
                     : row.stock}
                 </TableCell>
                 <TableCell align="right">
-                  {row.name === 'DIVERSOS' ? (
+                  {row.name === 'PRODUTOS FIADO' ? (
                     <ChangePrice {...{ row, price, handleChangePrice }} />
                   ) : (
                     row.salePrice.toLocaleString('pt-br', {

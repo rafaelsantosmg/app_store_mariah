@@ -155,7 +155,7 @@ export default function ProductsTable(): JSX.Element {
       stockType,
       productName: name,
     }
-    if (name !== 'DIVERSOS') delete product.productName
+    if (name !== 'PRODUTOS FIADO') delete product.productName
     if (values.products.length > 0) {
       const productIndex = values.products.findIndex(
         (prod: TSaleProduct) => prod.productCode === code

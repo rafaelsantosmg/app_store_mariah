@@ -35,7 +35,7 @@ export class SalesService {
         }
 
         const productPrice =
-          productExist.name === 'DIVERSOS'
+          productExist.name === 'PRODUTOS FIADO'
             ? product.productPrice
             : productExist.salePrice;
 
