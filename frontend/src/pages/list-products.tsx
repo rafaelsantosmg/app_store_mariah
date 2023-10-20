@@ -10,13 +10,16 @@ import Header from '../components/Header'
 import ListProductsTable from '../components/ListProductsTable'
 import { DataContext } from '../providers/DataProvider'
 import { useRouter } from 'next/navigation'
+import EntryProducts from '@/components/EntryProduct'
 
 export default function ListProducts() {
   const router = useRouter()
   const {
+    openModalReceiptMerchandise,
     openModalSale,
-    setOpenModalSale,
     openModalSaleSpun,
+    setOpenModalReceiptMerchandise,
+    setOpenModalSale,
     setOpenModalSaleSpun,
   } = useContext(DataContext)
   const [openAddProduct, setOpenAddProduct] = useState<boolean>(false)
@@ -24,6 +27,7 @@ export default function ListProducts() {
   return (
     <Fragment>
       <Header
+        openModalReceiptMerchandise={setOpenModalReceiptMerchandise}
         openModalSale={setOpenModalSale}
         openModalSaleSpun={setOpenModalSaleSpun}
       />
@@ -98,10 +102,11 @@ export default function ListProducts() {
         <AddProduct setOpenAddProduct={setOpenAddProduct} />
       </ModalContent>
       <ModalContent
-        open={openModalSale || openModalSaleSpun}
+        open={openModalSale || openModalSaleSpun || openModalReceiptMerchandise}
         handleClose={() => {
           setOpenModalSale(false)
           setOpenModalSaleSpun(false)
+          setOpenModalReceiptMerchandise(false)
         }}
       >
         {openModalSale && (
@@ -109,6 +114,11 @@ export default function ListProducts() {
         )}
         {openModalSaleSpun && (
           <SaleScreenSpun handleClose={() => setOpenModalSaleSpun(false)} />
+        )}
+        {openModalReceiptMerchandise && (
+          <EntryProducts
+            handleClose={() => setOpenModalReceiptMerchandise(false)}
+          />
         )}
       </ModalContent>
     </Fragment>

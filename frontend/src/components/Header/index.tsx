@@ -1,26 +1,28 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import MenuIcon from '@mui/icons-material/Menu'
+import { Grid } from '@mui/material'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Container from '@mui/material/Container'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import { usePathname, useRouter } from 'next/navigation'
-import React, { useContext } from 'react'
-import { THeader } from '../../types'
-import theme from '../../theme'
 import Image from 'next/image'
-import Logo from '../../asset/images/logo.svg'
-import { time } from 'console'
 import Link from 'next/link'
-import { DataContext } from '@/providers/DataProvider'
-import { Grid } from '@mui/material'
+import { useRouter } from 'next/navigation'
+import React from 'react'
+import Logo from '../../asset/images/logo.svg'
+import theme from '../../theme'
+import { THeader } from '../../types'
+import DateTime from '../DateTime'
 
-export default function Header({ openModalSale, openModalSaleSpun }: THeader) {
-  const { dateTime } = useContext(DataContext)
+export default function Header({
+  openModalSale,
+  openModalSaleSpun,
+  openModalReceiptMerchandise,
+}: THeader) {
   const router = useRouter()
 
   const links = [
@@ -44,6 +46,11 @@ export default function Header({ openModalSale, openModalSaleSpun }: THeader) {
       title: 'Lista de Produtos',
       path: () => router.push('/list-products'),
     },
+    {
+      id: 5,
+      title: 'Recebimento de Mercadorias',
+      path: () => openModalReceiptMerchandise(true),
+    },
   ]
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
@@ -57,22 +64,38 @@ export default function Header({ openModalSale, openModalSaleSpun }: THeader) {
   }
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: theme.gainsboro }}>
-      <Grid container justifyContent="space-between" alignItems="center">
+    <AppBar
+      position="static"
+      sx={{
+        backgroundColor: theme.gainsboro,
+        '& .MuiToolbar-root': {
+          minHeight: 0,
+        },
+      }}
+    >
+      <Grid container justifyContent="center" alignItems="center">
         <Box
           sx={{
-            ml: 1,
             display: { xs: 'none', md: 'flex' },
+            width: '100%',
+            justifyContent: 'space-between',
+            borderBottom: '1px solid #8a5c33',
           }}
         >
           <Link href="/home">
             <Image width={230} src={Logo} alt="Logo da Mariah da Roça" />
           </Link>
+          <DateTime />
         </Box>
         <Toolbar disableGutters>
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: 'flex', md: 'none' },
+            }}
+          >
             <IconButton
-              size="large"
+              size="small"
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
@@ -123,13 +146,14 @@ export default function Header({ openModalSale, openModalSaleSpun }: THeader) {
                 key={page.id}
                 onClick={page.path}
                 sx={{
-                  color: '#592e01',
+                  color: theme.brown,
                   display: 'block',
-                  fontSize: '1.3rem',
+                  fontSize: '1rem',
                   fontWeight: '700',
                   mr: 2,
                   '&:hover': {
-                    borderBottom: '2px solid #8a5c33',
+                    backgroundColor: theme.brown,
+                    color: theme.gainsboro,
                   },
                 }}
               >
@@ -138,28 +162,6 @@ export default function Header({ openModalSale, openModalSaleSpun }: THeader) {
             ))}
           </Box>
         </Toolbar>
-        <hr
-          style={{
-            width: '0.2rem',
-            height: '3rem',
-            backgroundColor: '#592e01',
-            border: 'none',
-            margin: '0',
-            padding: '0',
-          }}
-        />
-        <Typography
-          variant="h3"
-          sx={{
-            color: theme.brown,
-            '@media (max-width: 600px)': {
-              fontSize: '1.2rem',
-            },
-            mr: 2,
-          }}
-        >
-          {dateTime}
-        </Typography>
       </Grid>
     </AppBar>
   )

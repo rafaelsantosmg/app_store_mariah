@@ -24,6 +24,10 @@ const theme = createTheme({
       fontFamily: ['Gagalin', 'sans-serif'].join(', '),
       fontSize: 32,
     },
+    h4: {
+      fontFamily: ['Gagalin', 'sans-serif'].join(', '),
+      fontSize: 24,
+    },
     body1: {
       fontFamily: ['Roboto', 'sans-serif'].join(', '),
       fontWeight: 400,

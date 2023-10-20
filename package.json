@@ -5,8 +5,8 @@
   "scripts": {
     "install:apps": "./apps_install.sh",
     "start": "concurrently \"yarn run backend\" \"yarn run frontend\"",
-    "backend": "cd ./backend && yarn start:dev",
-    "frontend": "cd ./frontend && yarn dev"
+    "backend": "cd ./backend && yarn start",
+    "frontend": "cd ./frontend && sleep 3 && yarn dev"
   },
   "repository": "git@github.com:rafaelsantosmg/app_store_mariah.git",
   "author": "Rafael Alonso <rafaelalonsobarbosa@gmail.com>",

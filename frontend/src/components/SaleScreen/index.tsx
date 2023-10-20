@@ -30,7 +30,7 @@ export default function SaleScreen({ ...props }): JSX.Element {
     '9x',
     '10x',
   ]
-  const { products, saleProducts, form, dateTime } = useContext(DataContext)
+  const { products, saleProducts, form } = useContext(DataContext)
   const { handleClose } = props
   const {
     handleBlur,
@@ -49,6 +49,15 @@ export default function SaleScreen({ ...props }): JSX.Element {
   }, [])
 
   useEffect(() => {
+    const listProducts = filterProductsInSale(products, values?.search)
+    if (listProducts.length === 0 || values?.search === '') {
+      setViewTable(false)
+    } else {
+      setViewTable(true)
+    }
+  }, [values?.search])
+
+  useEffect(() => {
     const totalProducts = saleProducts.reduce(
       (acc, product) => acc + product.salePrice * Number(product.quantity),
       0
@@ -57,15 +66,6 @@ export default function SaleScreen({ ...props }): JSX.Element {
 
     setTotal(totalProducts - discont)
   }, [saleProducts, values.discount])
-
-  useEffect(() => {
-    const listProducts = filterProductsInSale(products, values?.search)
-    if (listProducts.length === 0 || values?.search === '') {
-      setViewTable(false)
-    } else {
-      setViewTable(true)
-    }
-  }, [values?.search])
 
   return (
     <form
@@ -85,26 +85,15 @@ export default function SaleScreen({ ...props }): JSX.Element {
         sx={{ mb: 2, width: '100%' }}
       >
         <Typography
-          variant="h1"
+          variant="h2"
           sx={{
             color: theme.brown,
             '@media (max-width: 600px)': {
-              fontSize: '1.2rem',
+              fontSize: '1rem',
             },
           }}
         >
           Realizar Venda
-        </Typography>
-        <Typography
-          variant="h3"
-          sx={{
-            color: theme.brown,
-            '@media (max-width: 600px)': {
-              fontSize: '1.2rem',
-            },
-          }}
-        >
-          {dateTime}
         </Typography>
       </Grid>
       <Fragment>

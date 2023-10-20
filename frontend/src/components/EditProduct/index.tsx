@@ -15,7 +15,6 @@ export default function EditProduct({ ...props }): JSX.Element {
 
   const schema = Yup.object().shape({
     name: Yup.string().required('Campo obrigatório'),
-    description: Yup.string().optional(),
     stockType: Yup.string().required('Campo obrigatório'),
     stock: Yup.string().required('Campo obrigatório').nullable(),
     costPrice: Yup.number()
@@ -39,7 +38,6 @@ export default function EditProduct({ ...props }): JSX.Element {
           : values.stock.split(',').join('.')
       const request: TFormValues = {
         name: values.name.toUpperCase().trim(),
-        description: values.description.toUpperCase().trim(),
         stockType: values.stockType === 'UNIDADE' ? 'UN' : 'KG',
         stock: Number(stock),
         costPrice: Number(values.costPrice),
@@ -68,7 +66,6 @@ export default function EditProduct({ ...props }): JSX.Element {
       id: product.id,
       code: product.code,
       name: product.name,
-      description: product.description,
       stockType: product.stockType === 'UN' ? 'UNIDADE' : 'QUILOGRAMA',
       stock: product.stock,
       costPrice: product.costPrice,

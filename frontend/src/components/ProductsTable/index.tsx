@@ -83,8 +83,9 @@ function stableSort<T>(
   return stabilizedThis.map((el) => el[0])
 }
 
-export default function ProductsTable(): JSX.Element {
+export default function ProductsTable({ ...props }): JSX.Element {
   const { loading, products, form, saleProducts } = useContext(DataContext)
+  const { handleClickProducts } = props
   const { setFieldValue, values, handleBlur } = form
   const [order] = useState<Order>('asc')
   const [orderBy] = useState<keyof Product>('code')
@@ -242,6 +243,13 @@ export default function ProductsTable(): JSX.Element {
         name: prod.name,
         stockType: prod.stockType,
       })
+    }
+    if (
+      handleClickProducts.handleSelectProduct &&
+      handleClickProducts.setViewTable
+    ) {
+      handleClickProducts.handleSelectProduct(prod)
+      handleClickProducts.setViewTable(false)
     }
   }
 

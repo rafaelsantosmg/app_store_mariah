@@ -1,18 +1,10 @@
 import api from '@/services'
 import { useFormik } from 'formik'
 import { createContext, useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 import * as Yup from 'yup'
 import { Product, ProductSale } from '../../interfaces/Products'
 import { TDataContext, TProviderProps, TSaleProduct } from '../../types'
-import { toast } from 'react-toastify'
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
-
-const today = new Date()
-
-const dateTime = format(today, "'Dia' dd 'de' MMMM'", {
-  locale: ptBR,
-})
 
 function serializePaymentMethods(paymentMethod: string): string {
   switch (paymentMethod) {
@@ -36,6 +28,8 @@ export const DataProvider = ({ children }: TProviderProps) => {
   const [searchProducts, setSearchProducts] = useState<Product[]>([])
   const [saleProducts, setSaleProducts] = useState<ProductSale[]>([])
   const [loading, setLoading] = useState<boolean>(true)
+  const [openModalReceiptMerchandise, setOpenModalReceiptMerchandise] =
+    useState(false)
   const [openModalSale, setOpenModalSale] = useState(false)
   const [openModalSaleSpun, setOpenModalSaleSpun] = useState(false)
   const [getProducts, setGetProducts] = useState<boolean>(false)
@@ -124,15 +118,16 @@ export const DataProvider = ({ children }: TProviderProps) => {
   return (
     <DataContext.Provider
       value={{
-        dateTime,
         form,
         loading,
+        openModalReceiptMerchandise,
         openModalSale,
         openModalSaleSpun,
         products,
         saleProducts,
         searchProducts,
         setLoading,
+        setOpenModalReceiptMerchandise,
         setOpenModalSale,
         setOpenModalSaleSpun,
         setProducts,

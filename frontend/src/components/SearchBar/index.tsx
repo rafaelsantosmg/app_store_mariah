@@ -1,13 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { DataContext } from '@/providers/DataProvider'
 import { Box, Grid } from '@mui/material'
-import { useContext } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import theme from '../../theme'
 import TextFields from '../Inputs/TextFields'
 
 export default function SearchBar(): JSX.Element {
   const { form } = useContext(DataContext)
   const { handleBlur, handleChange, setFieldValue, values } = form
+
+  const inputRefName = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    inputRefName.current?.focus()
+  }, [])
 
   const handleChangeCode = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!isNaN(Number(event.target.value))) {
@@ -34,7 +40,7 @@ export default function SearchBar(): JSX.Element {
           <Grid item xs={2}>
             <TextFields
               id="outlined-number"
-              inputProps={{ min: 0 }}
+              inputProps={{ ref: inputRefName, min: 0 }}
               label="Código"
               name="searchCode"
               onBlur={handleBlur}

@@ -1,10 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import theme from '@/theme'
 import CloseIcon from '@mui/icons-material/Close'
-import { Box, IconButton, Modal } from '@mui/material'
+import { Box, IconButton, Modal, Typography } from '@mui/material'
 import Image from 'next/image'
 import Logo from '../../asset/images/logo.svg'
+import DateTime from '../DateTime'
 
 export default function ModalContent({ ...props }) {
   const { children, handleClose, open = false, renderButtons } = props
+
   return (
     <Modal open={open}>
       <Box
@@ -54,9 +58,19 @@ export default function ModalContent({ ...props }) {
           }}
         >
           <Image width={200} src={Logo} alt="Logo da Mariah da Roça" />
-          <IconButton onClick={handleClose}>
-            <CloseIcon fontSize="large" />
-          </IconButton>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <DateTime />
+            <IconButton onClick={handleClose}>
+              <CloseIcon fontSize="large" />
+            </IconButton>
+          </Box>
         </Box>
         <Box
           sx={{

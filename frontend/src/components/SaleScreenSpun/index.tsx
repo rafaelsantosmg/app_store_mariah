@@ -1,17 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { filterProductsInSale } from '@/utils/filterProducts'
 import { Button, Grid, Typography } from '@mui/material'
 import { Fragment, useContext, useEffect, useState } from 'react'
 import { DataContext } from '../../providers/DataProvider'
 import theme from '../../theme'
-import SelectFields from '../Inputs/SelectFields'
 import TextFields from '../Inputs/TextFields'
 import SortTable from '../ProductsTable'
 import SaleTable from '../SaleTable'
 import SearchBar from '../SearchBar'
 
 export default function SaleScreenSpun({ ...props }): JSX.Element {
-  const { searchProducts, saleProducts, form, dateTime } =
-    useContext(DataContext)
+  const { saleProducts, form, products } = useContext(DataContext)
   const { handleClose } = props
   const { handleSubmit, resetForm, setFieldValue, values } = form
   const [viewTable, setViewTable] = useState<boolean>(false)
@@ -23,8 +22,13 @@ export default function SaleScreenSpun({ ...props }): JSX.Element {
   }, [])
 
   useEffect(() => {
-    searchProducts.length > 0 ? setViewTable(true) : setViewTable(false)
-  }, [searchProducts])
+    const listProducts = filterProductsInSale(products, values?.search)
+    if (listProducts.length === 0 || values?.search === '') {
+      setViewTable(false)
+    } else {
+      setViewTable(true)
+    }
+  }, [values?.search])
 
   useEffect(() => {
     const totalProducts = saleProducts.reduce(
@@ -39,7 +43,7 @@ export default function SaleScreenSpun({ ...props }): JSX.Element {
     const discont = (totalProducts * values.discount) / 100 || 0
 
     setTotal(totalProducts - discont)
-  }, [saleProducts, values.discount])
+  }, [saleProducts])
 
   return (
     <form
@@ -59,37 +63,22 @@ export default function SaleScreenSpun({ ...props }): JSX.Element {
         sx={{ mb: 2, width: '100%' }}
       >
         <Typography
-          variant="h1"
+          variant="h2"
           sx={{
             color: theme.brown,
             '@media (max-width: 600px)': {
-              fontSize: '1.2rem',
+              fontSize: '1rem',
             },
           }}
         >
           Realizar Venda Fiada
-        </Typography>
-        <Typography
-          variant="h3"
-          sx={{
-            color: theme.brown,
-            '@media (max-width: 600px)': {
-              fontSize: '1.2rem',
-            },
-          }}
-        >
-          {dateTime}
         </Typography>
       </Grid>
       <Fragment>
         <Grid container>
           <Grid container>
             <SearchBar />
-            {viewTable ? (
-              <SortTable setViewTable={setViewTable} />
-            ) : (
-              <SaleTable />
-            )}
+            {viewTable ? <SortTable /> : <SaleTable />}
           </Grid>
         </Grid>
         <Grid container justifyContent="space-between" sx={{ mt: 5 }}>

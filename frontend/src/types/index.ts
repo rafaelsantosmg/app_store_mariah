@@ -4,15 +4,16 @@ import { Product, ProductSale } from '../interfaces/Products'
 export type Order = 'asc' | 'desc'
 
 export type TDataContext = {
-  dateTime: string
   form: any
   loading: boolean
+  openModalReceiptMerchandise: boolean
   openModalSale: boolean
   openModalSaleSpun: boolean
   products: Product[]
   saleProducts: ProductSale[]
   searchProducts: Product[]
   setLoading: (loading: boolean) => void
+  setOpenModalReceiptMerchandise: (value: boolean) => void
   setOpenModalSale: (value: boolean) => void
   setOpenModalSaleSpun: (value: boolean) => void
   setProducts: (products: Product[]) => void
@@ -25,11 +26,12 @@ export type TProviderProps = {
 }
 
 export type TFormValues = {
+  id?: number
   code?: string
   name: string
-  description: string
   stockType: string
   stock: string | number
+  pastStock?: string | number
   costPrice: number
   percentage?: number
   salePrice: number
@@ -38,7 +40,6 @@ export type TFormValues = {
 
 export type TFormErrors = {
   name?: string
-  description?: string
   stock?: string | number
   costPrice: number
   percentage?: number
@@ -85,4 +86,5 @@ export type TProductSale = {
 export type THeader = {
   openModalSale: (value: boolean) => void
   openModalSaleSpun: (value: boolean) => void
+  openModalReceiptMerchandise: (value: boolean) => void
 }

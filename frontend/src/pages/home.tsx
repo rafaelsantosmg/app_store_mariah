@@ -9,18 +9,22 @@ import Slogan from '../asset/images/slogan.svg'
 import Header from '../components/Header'
 import SaleScreen from '../components/SaleScreen'
 import { DataContext } from '../providers/DataProvider'
+import EntryProduct from '@/components/EntryProduct'
 
 export default function Home(): JSX.Element {
   const {
+    openModalReceiptMerchandise,
     openModalSale,
-    setOpenModalSale,
     openModalSaleSpun,
+    setOpenModalReceiptMerchandise,
+    setOpenModalSale,
     setOpenModalSaleSpun,
   } = useContext(DataContext)
 
   return (
     <Fragment>
       <Header
+        openModalReceiptMerchandise={setOpenModalReceiptMerchandise}
         openModalSale={setOpenModalSale}
         openModalSaleSpun={setOpenModalSaleSpun}
       />
@@ -38,10 +42,11 @@ export default function Home(): JSX.Element {
         <Image width={400} src={Slogan} alt="Slogan da Mariah da Roça" />
       </Box>
       <ModalContent
-        open={openModalSale || openModalSaleSpun}
+        open={openModalSale || openModalSaleSpun || openModalReceiptMerchandise}
         handleClose={() => {
           setOpenModalSale(false)
           setOpenModalSaleSpun(false)
+          setOpenModalReceiptMerchandise(false)
         }}
       >
         {openModalSale && (
@@ -50,6 +55,7 @@ export default function Home(): JSX.Element {
         {openModalSaleSpun && (
           <SaleScreenSpun handleClose={() => setOpenModalSaleSpun(false)} />
         )}
+        {openModalReceiptMerchandise && <EntryProduct />}
       </ModalContent>
     </Fragment>
   )
