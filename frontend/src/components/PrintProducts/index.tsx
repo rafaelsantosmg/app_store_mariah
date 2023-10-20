@@ -53,7 +53,7 @@ export default function ListProductPrint({ products }: ProductProps) {
         <table className={styles.tabela}>
           <thead>
             <tr>
-              <th className={styles.tabelaTh}>ID</th>
+              <th className={styles.tabelaTh}>Cod.</th>
               <th className={styles.tabelaTh}>Nome</th>
               <th className={styles.tabelaTh}>Tipo do Estoque</th>
               <th className={styles.tabelaTh}>Estoque</th>
@@ -63,7 +63,7 @@ export default function ListProductPrint({ products }: ProductProps) {
           <tbody>
             {products.map((product: Product) => (
               <tr key={product.id}>
-                <td className={styles.tabelaTd}>{product.id}</td>
+                <td className={styles.tabelaTd}>{product.code}</td>
                 <td className={styles.tabelaTd}>{product.name}</td>
                 <td className={styles.tabelaTd}>{product.stockType}</td>
                 <td className={styles.tabelaTd}>{product.stock}</td>
