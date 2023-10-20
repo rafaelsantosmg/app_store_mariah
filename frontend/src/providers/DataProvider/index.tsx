@@ -83,9 +83,17 @@ export const DataProvider = ({ children }: TProviderProps) => {
     }
     try {
       if (values.saleType === 'sale') {
-        await api.post('/sales', request)
+        const { data } = await api.post('/sales', request)
+        console.log(data)
+        toast.success(
+          `Venda no valor de ${data.totalPrice.toLocaleString('pt-br', {
+            style: 'currency',
+            currency: 'BRL',
+          })} finalizada com sucesso`
+        )
       } else {
         await api.post('/sales-spun', request)
+        toast.success('Venda finalizada com sucesso')
       }
       form.resetForm()
     } catch (error) {
