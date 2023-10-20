@@ -245,8 +245,8 @@ export default function ProductsTable({ ...props }): JSX.Element {
       })
     }
     if (
-      handleClickProducts.handleSelectProduct &&
-      handleClickProducts.setViewTable
+      handleClickProducts?.handleSelectProduct &&
+      handleClickProducts?.setViewTable
     ) {
       handleClickProducts.handleSelectProduct(prod)
       handleClickProducts.setViewTable(false)

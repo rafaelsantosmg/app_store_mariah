@@ -84,7 +84,6 @@ export const DataProvider = ({ children }: TProviderProps) => {
     try {
       if (values.saleType === 'sale') {
         const { data } = await api.post('/sales', request)
-        console.log(data)
         toast.success(
           `Venda no valor de ${data.totalPrice.toLocaleString('pt-br', {
             style: 'currency',

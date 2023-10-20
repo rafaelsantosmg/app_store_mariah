@@ -19,3 +19,18 @@ export function formateValueInputNumeric(value: string) {
   }
   return inputQuantity
 }
+
+export function formateValueInputNumericPrice(value: string) {
+  const inputValue = value.replace(',', '.')
+  const sanitizedValue = inputValue.replace(/[^0-9.]/g, '')
+  if (sanitizedValue.split('.').length > 2) {
+    return sanitizedValue.slice(0, -1)
+  }
+  let inputQuantity: string
+  if (sanitizedValue.includes('.') && sanitizedValue.split('.')[1].length > 2) {
+    inputQuantity = parseFloat(sanitizedValue).toFixed(2)
+  } else {
+    inputQuantity = sanitizedValue
+  }
+  return inputQuantity
+}

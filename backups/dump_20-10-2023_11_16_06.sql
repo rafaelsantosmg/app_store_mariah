@@ -16,8 +16,40 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE ONLY public.sales_products DROP CONSTRAINT sales_products_sale_id_fkey;
+ALTER TABLE ONLY public.sales_products DROP CONSTRAINT sales_products_product_id_fkey;
+ALTER TABLE ONLY public.payments DROP CONSTRAINT "payments_salesId_fkey";
+DROP INDEX public.products_code_key;
+ALTER TABLE ONLY public.sales_products DROP CONSTRAINT sales_products_pkey;
+ALTER TABLE ONLY public.sales DROP CONSTRAINT sales_pkey;
+ALTER TABLE ONLY public.products DROP CONSTRAINT products_pkey;
+ALTER TABLE ONLY public.payments DROP CONSTRAINT payments_pkey;
+ALTER TABLE ONLY public._prisma_migrations DROP CONSTRAINT _prisma_migrations_pkey;
+ALTER TABLE public.sales_products ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.sales ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.products ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.payments ALTER COLUMN id DROP DEFAULT;
+DROP SEQUENCE public.sales_products_id_seq;
+DROP TABLE public.sales_products;
+DROP SEQUENCE public.sales_id_seq;
+DROP TABLE public.sales;
+DROP SEQUENCE public.products_id_seq;
+DROP TABLE public.products;
+DROP SEQUENCE public.payments_id_seq;
+DROP TABLE public.payments;
+DROP TABLE public._prisma_migrations;
+-- *not* dropping schema, since initdb creates it
 --
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
+-- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+-- *not* creating schema, since initdb creates it
+
+
+ALTER SCHEMA public OWNER TO postgres;
+
+--
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
 --
 
 COMMENT ON SCHEMA public IS '';
@@ -28,7 +60,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: _prisma_migrations; Type: TABLE; Schema: public; Owner: lsantos
+-- Name: _prisma_migrations; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public._prisma_migrations (
@@ -43,10 +75,10 @@ CREATE TABLE public._prisma_migrations (
 );
 
 
-ALTER TABLE public._prisma_migrations OWNER TO lsantos;
+ALTER TABLE public._prisma_migrations OWNER TO postgres;
 
 --
--- Name: payments; Type: TABLE; Schema: public; Owner: lsantos
+-- Name: payments; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.payments (
@@ -58,10 +90,10 @@ CREATE TABLE public.payments (
 );
 
 
-ALTER TABLE public.payments OWNER TO lsantos;
+ALTER TABLE public.payments OWNER TO postgres;
 
 --
--- Name: payments_id_seq; Type: SEQUENCE; Schema: public; Owner: lsantos
+-- Name: payments_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.payments_id_seq
@@ -73,17 +105,17 @@ CREATE SEQUENCE public.payments_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.payments_id_seq OWNER TO lsantos;
+ALTER SEQUENCE public.payments_id_seq OWNER TO postgres;
 
 --
--- Name: payments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: lsantos
+-- Name: payments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.payments_id_seq OWNED BY public.payments.id;
 
 
 --
--- Name: products; Type: TABLE; Schema: public; Owner: lsantos
+-- Name: products; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.products (
@@ -102,10 +134,10 @@ CREATE TABLE public.products (
 );
 
 
-ALTER TABLE public.products OWNER TO lsantos;
+ALTER TABLE public.products OWNER TO postgres;
 
 --
--- Name: products_id_seq; Type: SEQUENCE; Schema: public; Owner: lsantos
+-- Name: products_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.products_id_seq
@@ -117,17 +149,17 @@ CREATE SEQUENCE public.products_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.products_id_seq OWNER TO lsantos;
+ALTER SEQUENCE public.products_id_seq OWNER TO postgres;
 
 --
--- Name: products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: lsantos
+-- Name: products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.products_id_seq OWNED BY public.products.id;
 
 
 --
--- Name: sales; Type: TABLE; Schema: public; Owner: lsantos
+-- Name: sales; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.sales (
@@ -141,10 +173,10 @@ CREATE TABLE public.sales (
 );
 
 
-ALTER TABLE public.sales OWNER TO lsantos;
+ALTER TABLE public.sales OWNER TO postgres;
 
 --
--- Name: sales_id_seq; Type: SEQUENCE; Schema: public; Owner: lsantos
+-- Name: sales_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.sales_id_seq
@@ -156,17 +188,17 @@ CREATE SEQUENCE public.sales_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.sales_id_seq OWNER TO lsantos;
+ALTER SEQUENCE public.sales_id_seq OWNER TO postgres;
 
 --
--- Name: sales_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: lsantos
+-- Name: sales_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.sales_id_seq OWNED BY public.sales.id;
 
 
 --
--- Name: sales_products; Type: TABLE; Schema: public; Owner: lsantos
+-- Name: sales_products; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.sales_products (
@@ -177,10 +209,10 @@ CREATE TABLE public.sales_products (
 );
 
 
-ALTER TABLE public.sales_products OWNER TO lsantos;
+ALTER TABLE public.sales_products OWNER TO postgres;
 
 --
--- Name: sales_products_id_seq; Type: SEQUENCE; Schema: public; Owner: lsantos
+-- Name: sales_products_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.sales_products_id_seq
@@ -192,57 +224,66 @@ CREATE SEQUENCE public.sales_products_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.sales_products_id_seq OWNER TO lsantos;
+ALTER SEQUENCE public.sales_products_id_seq OWNER TO postgres;
 
 --
--- Name: sales_products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: lsantos
+-- Name: sales_products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.sales_products_id_seq OWNED BY public.sales_products.id;
 
 
 --
--- Name: payments id; Type: DEFAULT; Schema: public; Owner: lsantos
+-- Name: payments id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.payments ALTER COLUMN id SET DEFAULT nextval('public.payments_id_seq'::regclass);
 
 
 --
--- Name: products id; Type: DEFAULT; Schema: public; Owner: lsantos
+-- Name: products id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.products ALTER COLUMN id SET DEFAULT nextval('public.products_id_seq'::regclass);
 
 
 --
--- Name: sales id; Type: DEFAULT; Schema: public; Owner: lsantos
+-- Name: sales id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sales ALTER COLUMN id SET DEFAULT nextval('public.sales_id_seq'::regclass);
 
 
 --
--- Name: sales_products id; Type: DEFAULT; Schema: public; Owner: lsantos
+-- Name: sales_products id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sales_products ALTER COLUMN id SET DEFAULT nextval('public.sales_products_id_seq'::regclass);
 
 
 --
--- Data for Name: _prisma_migrations; Type: TABLE DATA; Schema: public; Owner: lsantos
+-- Data for Name: _prisma_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public._prisma_migrations (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count) FROM stdin;
-bac5708d-9942-416b-9ac0-c6e34e8cb337	efb1091dbed375df70a8207c92c53b0db0ae0650c47ce34bb19867a224ca72ed	2023-10-07 20:40:31.147405+00	20231007204031_init	\N	\N	2023-10-07 20:40:31.100858+00	1
-5362e67c-df64-4afb-8c94-c8f9fd777cf7	7d2b184d5999b621c7357e9b76bc5b3bcd78bf8ebc18941ef8646a9b290e4d67	2023-10-09 13:28:12.496931+00	20231009160123_add_stock_type	\N	\N	2023-10-09 13:28:12.46801+00	1
-78e2f18f-1f48-4c69-b5c2-73ac5a6908ae	0e532e4938f3063ea601eda55c5371a04fe7e1b7538a809bdb5563ab62a303e3	2023-10-09 13:28:12.506043+00	20231009160610_add_stock	\N	\N	2023-10-09 13:28:12.498574+00	1
-e0abff64-9253-4efe-a1c9-cffbd345f2e7	9b92308d5d6e0d2b4e9c79509a23a7ed955b69e3aa8a9a6497d50cae0b359b18	2023-10-10 12:05:43.113013+00	20231010001141_add_new_relation	\N	\N	2023-10-10 12:05:43.09812+00	1
-ab8aa143-f06e-4f81-af5e-b21d94070704	eb58d11506a741755de68e391d89b54dfda7db9592e7c694fc147870557fffa3	2023-10-16 00:25:11.500457+00	20231016001506_add_column_code	\N	\N	2023-10-16 00:25:11.494721+00	1
+9a6149b6-a2e8-45f8-b69d-88dd7ffc030c	efb1091dbed375df70a8207c92c53b0db0ae0650c47ce34bb19867a224ca72ed	2023-10-20 13:51:47.291496+00	20231007204031_init	\N	\N	2023-10-20 13:51:47.275905+00	1
+5866cc2a-3c25-4613-8e88-ffeab1e48b00	7d2b184d5999b621c7357e9b76bc5b3bcd78bf8ebc18941ef8646a9b290e4d67	2023-10-20 13:51:47.298835+00	20231009160123_add_stock_type	\N	\N	2023-10-20 13:51:47.292647+00	1
+f9ad307a-4bfd-43a6-bf43-2b2561e3005c	0e532e4938f3063ea601eda55c5371a04fe7e1b7538a809bdb5563ab62a303e3	2023-10-20 13:51:47.302145+00	20231009160610_add_stock	\N	\N	2023-10-20 13:51:47.299619+00	1
+f59def8f-4ada-4369-bedc-69a7b8c9d315	9b92308d5d6e0d2b4e9c79509a23a7ed955b69e3aa8a9a6497d50cae0b359b18	2023-10-20 13:51:47.309946+00	20231010001141_add_new_relation	\N	\N	2023-10-20 13:51:47.302926+00	1
+2b912e72-f495-46c3-85d8-c0ab57488fb3	eb58d11506a741755de68e391d89b54dfda7db9592e7c694fc147870557fffa3	2023-10-20 13:51:47.31516+00	20231016001506_add_column_code	\N	\N	2023-10-20 13:51:47.310832+00	1
 \.
 
+
 --
--- Data for Name: products; Type: TABLE DATA; Schema: public; Owner: lsantos
+-- Data for Name: payments; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.payments (id, method, installment, created_at, "salesId") FROM stdin;
+\.
+
+
+--
+-- Data for Name: products; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.products (id, name, description, cost_price, sale_price, profit_margin, image, stock, created_at, updated_at, stock_type, code) FROM stdin;
@@ -275,7 +316,6 @@ COPY public.products (id, name, description, cost_price, sale_price, profit_marg
 1590	FIRMEZA DE ZÉ PELINTRA		0	75	75		1	2023-10-08 19:30:15.704	2023-10-16 00:32:23.014	UN	1584
 1591	DEFUMADOR SETE LINHAS		0	5	5		6	2023-10-08 19:52:36.789	2023-10-16 00:32:23.014	UN	1585
 1540	IMAGEM 12CM CABOCLO PENA VERDE		1	18	1		1	2023-10-08 18:03:37.015	2023-10-16 00:29:10.798	UN	1533
-1	ALGUIDAR N.00000 C/VERNIZ		0	4.5	1		17	2023-10-07 21:15:25.989	2023-10-08 18:12:14.367	UN	0001
 2	ALGUIDAR N.0000 C/VERNIZ		0	5.2	1		9	2023-10-07 21:19:22.657	2023-10-08 18:12:31.846	UN	0002
 3	ALGUIDAR N.000 C/VERNIZ		1	6	1		19	2023-10-07 21:20:45.574	2023-10-08 18:20:27.973	UN	0003
 4	ALGUIDAR N.00 C/VERNIZ		1	7.8	1		18	2023-10-07 21:21:13.231	2023-10-08 18:20:40.371	UN	0004
@@ -1385,7 +1425,6 @@ COPY public.products (id, name, description, cost_price, sale_price, profit_marg
 1108	BARALHO DA SORTE LUAR		1	13	1		2	2023-10-08 15:16:38.458	2023-10-08 22:02:20.166	UN	1108
 1109	BARALHO ARTHA MARIA PADILHA		1	18	1		1	2023-10-08 15:17:06.372	2023-10-08 22:02:26.016	UN	1109
 1110	BARALHO ARCANOS MAIORES WAITE		1	44.9	1		1	2023-10-08 15:17:16.341	2023-10-08 22:02:32.952	UN	1110
-1111	BARALHO ARCANOS MAIORES MARSELHA		1	44.9	1		1	2023-10-08 15:17:25.309	2023-10-08 22:02:38.237	UN	1111
 1112	BARALHO DA CIGANA		1	24	1		1	2023-10-08 15:17:30.52	2023-10-08 22:02:50.745	UN	1112
 1113	BARALHO CARTAS DA VOVÓ CIGANA		1	45	1		1	2023-10-08 15:17:38.512	2023-10-08 22:02:55.906	UN	1113
 1114	BARALHO MAGIA CIGANA		1	23	1		1	2023-10-08 15:17:44.294	2023-10-08 22:03:03.166	UN	1114
@@ -1880,12 +1919,6 @@ COPY public.products (id, name, description, cost_price, sale_price, profit_marg
 1644	CONJUNTO MASCULINO ALGODÃO BRANCO TAM G		0	139.9	139.9		3	2023-10-16 21:17:42.257	2023-10-16 21:17:42.257	UN	1637
 1645	CONJUNTO MASCULINO ALGODÃO BRANCO TAM GG		0	139.9	139.9		2	2023-10-16 21:17:52.699	2023-10-16 21:17:52.699	UN	1638
 1646	CONJUNTO MASCULINO ALGODÃO BRANCO TAM EXG		0	179.9	179.9		1	2023-10-16 21:18:09.105	2023-10-16 21:18:09.105	UN	1639
-1647	ROUPA DE ERE JARDINEIRA TAM UN		0	160	160		1	2023-10-16 21:23:04.52	2023-10-16 21:23:04.52	UN	1640
-1651	ROUPA DE ERE MENINO 2 PEÇAS TAM G		0	140	140		1	2023-10-16 21:29:56.691	2023-10-16 21:29:56.691	UN	1644
-1649	ROUPA DE ERE MENINA 2 PEÇAS TAM G		0	160	160		2	2023-10-16 21:26:54.222	2023-10-16 21:30:49.994	UN	1642
-1650	ROUPA DE ERE MENINA 2 PEÇAS TAM GG		0	160	160		2	2023-10-16 21:28:08.832	2023-10-16 21:31:00.572	UN	1643
-1652	ROUPA DE ERE MENINO MACACÃO TAM GG		0	140	140		3	2023-10-16 21:31:44.536	2023-10-16 21:31:44.536	UN	1645
-1653	ROUPA DE ERE MENINO MACACÃO TAM EXG		0	140	140		1	2023-10-16 21:32:07.587	2023-10-16 21:32:07.587	UN	1646
 1654	BATA LESE BRANCA TAM P		0	65	65		2	2023-10-17 12:22:55.636	2023-10-17 12:22:55.636	UN	1647
 1655	BATA LESE BRANCA TAM M		0	65	65		2	2023-10-17 12:23:09.252	2023-10-17 12:23:09.252	UN	1648
 1656	BATA LESE BRANCA TAM G		0	65	65		3	2023-10-17 12:23:26.155	2023-10-17 12:23:26.155	UN	1649
@@ -1916,9 +1949,13 @@ COPY public.products (id, name, description, cost_price, sale_price, profit_marg
 1681	CONJUNTO MASCULINO OXFORD VERMELHO X PRETO TAM G		0	60	60		2	2023-10-17 13:09:22.166	2023-10-17 13:09:22.166	UN	1674
 1682	CONJUNTO MASCULINO OXFORD VERMELHO X PRETO TAM GG		0	60	60		2	2023-10-17 13:09:33.682	2023-10-17 13:09:33.682	UN	1675
 1637	CAMISETA ESPECIAL TAM P / M / G / GG		0	79.9	79.9		3	2023-10-16 20:53:56.901	2023-10-17 19:48:41.68	UN	1630
-1648	ROUPA DE ERE MENINA 2 PEÇAS TAM M		0	160	160		3	2023-10-16 21:26:35.675	2023-10-17 20:23:09.665	UN	1641
 1683	CONJUNTO MASCULINO OXFORD VERMELHO X PRETO TAM EXG		0	65	65		1	2023-10-17 13:10:00.279	2023-10-17 13:10:00.279	UN	1676
 1618	CAMISETA BRANCA TAM M		15	34.9	19.9		11	2023-10-16 19:59:33.106	2023-10-17 14:40:38.517	UN	1611
+1652	ROUPA DE ERÊ MENINO MACACÃO TAM GG		0	140	140		3	2023-10-16 21:31:44.536	2023-10-20 13:14:53.423	UN	1645
+1651	ROUPA DE ERÊ MENINO 2 PEÇAS TAM G		0	140	140		1	2023-10-16 21:29:56.691	2023-10-20 13:15:05.296	UN	1644
+1649	ROUPA DE ERÊ MENINA 2 PEÇAS TAM G		0	160	160		2	2023-10-16 21:26:54.222	2023-10-20 13:15:26.954	UN	1642
+1648	ROUPA DE ERÊ MENINA 2 PEÇAS TAM M		0	160	160		3	2023-10-16 21:26:35.675	2023-10-20 13:15:35.233	UN	1641
+1647	ROUPA DE ERÊ JARDINEIRA TAM UN		0	160	160		1	2023-10-16 21:23:04.52	2023-10-20 13:15:43.938	UN	1640
 1684	CONJUNTO MASCULINO OXFORD PRETO TAM P		0	60	60		1	2023-10-17 14:43:37.539	2023-10-17 14:43:37.539	UN	1677
 1685	CONJUNTO MASCULINO OXFORD PRETO TAM M		0	60	60		2	2023-10-17 14:43:52.222	2023-10-17 14:43:52.222	UN	1678
 1686	CONJUNTO MASCULINO OXFORD PRETO TAM G		0	60	60		2	2023-10-17 14:43:59.899	2023-10-17 14:43:59.899	UN	1679
@@ -2026,7 +2063,6 @@ COPY public.products (id, name, description, cost_price, sale_price, profit_marg
 1786	CONJUNTO FEMININO OXFORD VERMELHO X PRETO TAM GG		0	79.9	79.9		1	2023-10-17 20:21:37.114	2023-10-17 20:21:37.114	UN	1779
 1787	CONJUNTO FEMININO OXFORD VERMELHO X PRETO TAM EXG		0	89.9	89.9		1	2023-10-17 20:21:44.011	2023-10-17 20:21:44.011	UN	1780
 1788	ROUPA DE CIGANO 4PÇS EXG		0	189.9	189.9		1	2023-10-17 20:22:32.261	2023-10-17 20:22:32.261	UN	1781
-1789	ROUPA DE ERE MENINO 2 PEÇAS TAM GG		0	140	140		1	2023-10-17 20:23:47.43	2023-10-17 20:23:47.43	UN	1782
 1790	SAIA DE CETIM NYPE		0	79.9	0		1	2023-10-17 20:24:17.893	2023-10-17 20:24:41.268	UN	1783
 1791	BOMBACHO DE OXFORD PRETO X VERMELHO 4PÇS		0	279.9	279.9		1	2023-10-17 20:25:13.161	2023-10-17 20:25:42.281	UN	1784
 1792	BOMBACHO DE OXFORD PRETO X DOURADO 4PÇS		0	279.9	279.9		1	2023-10-17 20:25:54.45	2023-10-17 20:25:54.45	UN	1785
@@ -2045,39 +2081,93 @@ COPY public.products (id, name, description, cost_price, sale_price, profit_marg
 1804	SAQUINHO PARA GUIA BRANCO		0	12	12		10	2023-10-17 21:07:58.023	2023-10-17 21:07:58.023	UN	1797
 1805	SAQUINHO PARA GUIA PRETO		0	12	12		5	2023-10-17 21:08:29.92	2023-10-17 21:08:29.92	UN	1798
 1806	SAQUINHO PARA GUIA VERMELHO		0	12	12		5	2023-10-17 21:09:02.239	2023-10-17 21:09:02.239	UN	1799
+1111	BARALHO ARCANOS MAIORES MARSELHA		1	44.9	1		0	2023-10-08 15:17:25.309	2023-10-20 01:34:50.314	UN	1111
+1	ALGUIDAR N.00000 C/VERNIZ		0	4.5	1		16	2023-10-07 21:15:25.989	2023-10-20 01:36:23.621	UN	0001
+1809	LENÇO ESTAMPADO		0	40	40		2	2023-10-20 12:55:23.773	2023-10-20 12:55:23.773	UN	1802
+1810	TOALHA CIGANA		0	69.9	69.9		5	2023-10-20 12:55:44.684	2023-10-20 12:55:44.684	UN	1803
+1811	LENÇO DE MOEDAS		0	40	40		7	2023-10-20 12:56:12.377	2023-10-20 12:56:12.377	UN	1804
+1812	AVENTAL PRETA VELHA BRANCO		0	30	30		1	2023-10-20 12:56:56.46	2023-10-20 12:56:56.46	UN	1805
+1813	AVENTAL PRETA VELHA XADRÊZ		0	30	30		1	2023-10-20 12:57:16.078	2023-10-20 12:57:16.078	UN	1806
+1814	LENÇO PRETA VELHA BRANCO		0	39.9	39.9		2	2023-10-20 12:57:45.606	2023-10-20 12:57:45.606	UN	1807
+1815	LENÇO PRETA VELHA XADRÊZ		0	39.9	39.9		2	2023-10-20 12:58:14.98	2023-10-20 12:58:14.98	UN	1808
+1816	LENÇO VERMELHO GRANDE		0	49.9	49.9		2	2023-10-20 12:58:44.735	2023-10-20 12:58:44.735	UN	1809
+1817	LENÇO PRETO GRANDE		0	49.9	49.9		2	2023-10-20 12:59:04.031	2023-10-20 12:59:04.031	UN	1810
+1818	BIBICO BRANCO		0	20	20		2	2023-10-20 12:59:31.038	2023-10-20 12:59:31.038	UN	1811
+1819	BIBICO AZUL		0	20	20		2	2023-10-20 12:59:43.136	2023-10-20 12:59:43.136	UN	1812
+1822	BOINA DE ERÊ ROSA		0	39.9	39.9		2	2023-10-20 13:00:53.789	2023-10-20 13:00:53.789	UN	1815
+1823	BOINA DE ERÊ ROSA X AZUL		0	39.9	39.9		3	2023-10-20 13:01:08.023	2023-10-20 13:01:08.023	UN	1816
+1824	BOINA DE ERÊ AZUL		0	39.9	39.9		2	2023-10-20 13:01:32.685	2023-10-20 13:01:32.685	UN	1817
+1825	SAIA ESTAMPADA ACETINADA		0	170	170		4	2023-10-20 13:02:00.358	2023-10-20 13:02:00.358	UN	1818
+1826	SAIA 11MTS		0	220	220		2	2023-10-20 13:02:17.881	2023-10-20 13:02:17.881	UN	1819
+1827	SAIA SENHOR DO BONFIM		0	280	280		1	2023-10-20 13:02:33.532	2023-10-20 13:02:33.532	UN	1820
+1828	BAIANA LUXO ROSA		0	400	400		1	2023-10-20 13:02:50.912	2023-10-20 13:02:50.912	UN	1821
+1829	BAIANA LUXO PRETO X DOURADA		0	499	499		1	2023-10-20 13:03:28.529	2023-10-20 13:03:28.529	UN	1822
+1830	BAIANA ESTAMPADA 3PÇS		0	180	180		3	2023-10-20 13:03:52.184	2023-10-20 13:03:52.184	UN	1823
+1831	BAIANA ANKARA E FITA 2PÇS		0	199	199		5	2023-10-20 13:04:26.976	2023-10-20 13:04:26.976	UN	1824
+1833	ROSA PARA GUIA VERMELHA ABERTA GG		0	12	12		4	2023-10-20 13:05:33.319	2023-10-20 13:06:00.731	UN	1826
+1832	ROSA PARA GUIA VERMELHA FECHADA GG		0	12	12		4	2023-10-20 13:05:12.983	2023-10-20 13:06:15.03	UN	1825
+1834	PINGENTES PEQUENO		0	3	3		14	2023-10-20 13:06:48.797	2023-10-20 13:06:48.797	UN	1827
+1835	PINGENTES MÉDIO		0	4.5	4.5		41	2023-10-20 13:07:07.821	2023-10-20 13:07:07.821	UN	1828
+1836	PINGENTES GRANDE		0	6.5	6.5		23	2023-10-20 13:07:23.715	2023-10-20 13:07:23.715	UN	1829
+1837	PINGENTES ESPECIAIS COM PEDRAS E ROSA MÉDIO		0	6	6		28	2023-10-20 13:08:01.991	2023-10-20 13:08:01.991	UN	1830
+1838	PINGENTES ESPECIAIS COM PEDRAS E ROSA PEQUENO		0	5	5		12	2023-10-20 13:08:33.442	2023-10-20 13:08:33.442	UN	1831
+1839	PINGENTES ESPECIAIS COM PEDRAS E ROSA GRANDE		0	8.5	8.5		27	2023-10-20 13:08:45.882	2023-10-20 13:08:45.882	UN	1832
+1821	BONÉ ERÊ MENINA		0	44.9	44.9		1	2023-10-20 13:00:14.654	2023-10-20 13:13:46.388	UN	1814
+1820	BONÉ ERÊ MENINO		0	44.9	44.9		2	2023-10-20 12:59:58.428	2023-10-20 13:13:59.351	UN	1813
+1808	SAQUINHO DE ERÊ		0	12	12		8	2023-10-20 12:54:58.767	2023-10-20 13:14:10.311	UN	1801
+1807	MOCHILA DE ERÊ		0	20	20		5	2023-10-20 12:54:39.115	2023-10-20 13:14:19.993	UN	1800
+1789	ROUPA DE ERÊ MENINO 2 PEÇAS TAM GG		0	140	140		1	2023-10-17 20:23:47.43	2023-10-20 13:14:30.807	UN	1782
+1653	ROUPA DE ERÊ MENINO MACACÃO TAM EXG		0	140	140		1	2023-10-16 21:32:07.587	2023-10-20 13:14:39.502	UN	1646
+1650	ROUPA DE ERÊ MENINA 2 PEÇAS TAM GG		0	160	160		2	2023-10-16 21:28:08.832	2023-10-20 13:15:15.343	UN	1643
 \.
 
 
 --
--- Name: payments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lsantos
+-- Data for Name: sales; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.payments_id_seq', 36, true);
-
-
---
--- Name: products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lsantos
---
-
-SELECT pg_catalog.setval('public.products_id_seq', 1806, true);
+COPY public.sales (id, total_price, sales_price, created_at, updated_at, discount, payment_id) FROM stdin;
+\.
 
 
 --
--- Name: sales_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lsantos
+-- Data for Name: sales_products; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.sales_id_seq', 36, true);
-
-
---
--- Name: sales_products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lsantos
---
-
-SELECT pg_catalog.setval('public.sales_products_id_seq', 66, true);
+COPY public.sales_products (id, sale_id, product_id, quantity) FROM stdin;
+\.
 
 
 --
--- Name: _prisma_migrations _prisma_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: lsantos
+-- Name: payments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.payments_id_seq', 1, false);
+
+
+--
+-- Name: products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.products_id_seq', 1, false);
+
+
+--
+-- Name: sales_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.sales_id_seq', 1, false);
+
+
+--
+-- Name: sales_products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.sales_products_id_seq', 1, false);
+
+
+--
+-- Name: _prisma_migrations _prisma_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public._prisma_migrations
@@ -2085,7 +2175,7 @@ ALTER TABLE ONLY public._prisma_migrations
 
 
 --
--- Name: payments payments_pkey; Type: CONSTRAINT; Schema: public; Owner: lsantos
+-- Name: payments payments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.payments
@@ -2093,7 +2183,7 @@ ALTER TABLE ONLY public.payments
 
 
 --
--- Name: products products_pkey; Type: CONSTRAINT; Schema: public; Owner: lsantos
+-- Name: products products_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.products
@@ -2101,7 +2191,7 @@ ALTER TABLE ONLY public.products
 
 
 --
--- Name: sales sales_pkey; Type: CONSTRAINT; Schema: public; Owner: lsantos
+-- Name: sales sales_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sales
@@ -2109,7 +2199,7 @@ ALTER TABLE ONLY public.sales
 
 
 --
--- Name: sales_products sales_products_pkey; Type: CONSTRAINT; Schema: public; Owner: lsantos
+-- Name: sales_products sales_products_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sales_products
@@ -2117,14 +2207,14 @@ ALTER TABLE ONLY public.sales_products
 
 
 --
--- Name: products_code_key; Type: INDEX; Schema: public; Owner: lsantos
+-- Name: products_code_key; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE UNIQUE INDEX products_code_key ON public.products USING btree (code);
 
 
 --
--- Name: payments payments_salesId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: lsantos
+-- Name: payments payments_salesId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.payments
@@ -2132,7 +2222,7 @@ ALTER TABLE ONLY public.payments
 
 
 --
--- Name: sales_products sales_products_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: lsantos
+-- Name: sales_products sales_products_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sales_products
@@ -2140,7 +2230,7 @@ ALTER TABLE ONLY public.sales_products
 
 
 --
--- Name: sales_products sales_products_sale_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: lsantos
+-- Name: sales_products sales_products_sale_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sales_products
@@ -2148,7 +2238,7 @@ ALTER TABLE ONLY public.sales_products
 
 
 --
--- Name: SCHEMA public; Type: ACL; Schema: -; Owner: pg_database_owner
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
 --
 
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;

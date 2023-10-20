@@ -15,7 +15,10 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { ChangeEvent, Fragment, useContext, useEffect, useState } from 'react'
 import TextFields from '../Inputs/TextFields'
-import { formateValueInputNumeric } from '@/utils/formate-values'
+import {
+  formateValueInputNumeric,
+  formateValueInputNumericPrice,
+} from '@/utils/formate-values'
 
 function createData(
   id: number,
@@ -100,11 +103,9 @@ function ChangePrice({ ...props }): JSX.Element {
         id="salePrice"
         name="salePrice"
         value={price}
-        onChange={({ target }: ChangeEvent<HTMLInputElement>) => {
-          if (!isNaN(parseFloat(target.value))) {
-            handleChangePrice(target.value, row.code)
-          }
-        }}
+        onChange={({ target }: ChangeEvent<HTMLInputElement>) =>
+          handleChangePrice(target.value, row.code)
+        }
         style={{
           height: '2rem',
           textAlign: 'center',
@@ -244,6 +245,7 @@ export default function SaleTable(): JSX.Element {
   }
 
   const handleChangePrice = (value: string, code: string) => {
+    const inputQuantity = formateValueInputNumericPrice(value)
     const saleProducts = values.products.map((product: TSaleProduct) => {
       if (product.productCode === code) {
         const index = filteredProducts.findIndex(
@@ -252,15 +254,11 @@ export default function SaleTable(): JSX.Element {
         if (index === -1) {
           return product
         }
-        setPrice(
-          value.split('.').length > 1
-            ? value.split('.')[0] + '.' + value.split('.')[1].slice(0, 2)
-            : value
-        )
+        setPrice(inputQuantity)
         return {
           ...product,
           quantity: product.quantity,
-          productPrice: Number(Number(value).toFixed(2)),
+          productPrice: Number(inputQuantity),
         }
       }
       return product

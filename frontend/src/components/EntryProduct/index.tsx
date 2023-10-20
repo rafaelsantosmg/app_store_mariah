@@ -1,19 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Product } from '@/interfaces/Products'
 import { DataContext } from '@/providers/DataProvider'
 import api from '@/services'
 import theme from '@/theme'
 import { TFormValues } from '@/types'
+import { filterListProducts } from '@/utils/filterProducts'
+import {
+  formateValueInputNumeric,
+  formateValueInputNumericPrice,
+} from '@/utils/formate-values'
 import { Box, Button, Grid, Typography } from '@mui/material'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/navigation'
-import { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import * as Yup from 'yup'
-import TextFields from '../Inputs/TextFields'
-import SearchBar from '../SearchBar'
 import SelectFields from '../Inputs/SelectFields'
+import TextFields from '../Inputs/TextFields'
 import ProductsTable from '../ProductsTable'
-import { filterListProducts } from '@/utils/filterProducts'
+import SearchBar from '../SearchBar'
 
 const style = {
   p: {
@@ -100,7 +103,6 @@ export default function EntryProducts({ ...props }): JSX.Element {
     handleChange,
     handleSubmit,
     setFieldValue,
-    setValues,
     resetForm,
     touched,
     values,
@@ -145,13 +147,14 @@ export default function EntryProducts({ ...props }): JSX.Element {
     setFieldValue('pastStock', product.stock)
   }
 
+  const handleChangeStock = (event: ChangeEvent<HTMLInputElement>) => {
+    const inputQuantity = formateValueInputNumeric(event.target.value)
+    setFieldValue(event.target.name, inputQuantity)
+  }
+
   const handleChangePrice = (event: ChangeEvent<HTMLInputElement>) => {
-    const price = event.target.value.replace(',', '.')
-    if (!isNaN(parseFloat(price))) {
-      setFieldValue(event.target.name, price)
-    } else {
-      handleChange(event)
-    }
+    const inputQuantity = formateValueInputNumericPrice(event.target.value)
+    setFieldValue(event.target.name, inputQuantity)
   }
 
   return (
@@ -235,7 +238,7 @@ export default function EntryProducts({ ...props }): JSX.Element {
                     label="Estoque"
                     name="stock"
                     onBlur={handleBlur}
-                    onChange={handleChange}
+                    onChange={handleChangeStock}
                     value={values.stock}
                   />
                   {errors.stock && touched.stock && (

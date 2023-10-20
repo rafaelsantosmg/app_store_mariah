@@ -1,5 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { DataContext } from '@/providers/DataProvider'
+import {
+  formateValueInputNumeric,
+  formateValueInputNumericPrice,
+} from '@/utils/formate-values'
 import { Button, Grid, Typography } from '@mui/material'
 import { ChangeEvent, useContext, useEffect, useRef } from 'react'
 import theme from '../../theme'
@@ -33,13 +37,14 @@ export default function ProductForm({ ...props }): JSX.Element {
     inputRefName.current?.focus()
   }, [])
 
+  const handleChangeStock = (event: ChangeEvent<HTMLInputElement>) => {
+    const inputQuantity = formateValueInputNumeric(event.target.value)
+    setFieldValue(event.target.name, inputQuantity)
+  }
+
   const handleChangePrice = (event: ChangeEvent<HTMLInputElement>) => {
-    const price = event.target.value.replace(',', '.')
-    if (!isNaN(parseFloat(price))) {
-      setFieldValue(event.target.name, price)
-    } else {
-      handleChange(event)
-    }
+    const inputQuantity = formateValueInputNumericPrice(event.target.value)
+    setFieldValue(event.target.name, inputQuantity)
   }
 
   return (
@@ -109,7 +114,7 @@ export default function ProductForm({ ...props }): JSX.Element {
               label="Estoque"
               name="stock"
               onBlur={handleBlur}
-              onChange={handleChange}
+              onChange={handleChangeStock}
               value={values.stock}
             />
             {errors.stock && touched.stock && (
