@@ -345,6 +345,9 @@ export default function ProductsTable({ ...props }): JSX.Element {
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
               labelRowsPerPage="Linhas por página:"
+              labelDisplayedRows={({ from, to, count }) =>
+                `${from}-${to} de ${count}`
+              }
             />
           </>
         )}
