@@ -183,7 +183,7 @@ export default function ListProductsTable() {
   const [pastPage, setPastPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [product, setProduct] = useState<Product>({} as Product)
-  console.log(page)
+
   useEffect(() => {
     if (
       form.values?.searchCode.length > 0 ||
@@ -251,8 +251,6 @@ export default function ListProductsTable() {
       ),
     [order, orderBy, page, rows, rowsPerPage]
   )
-
-  console.log(visibleRows)
 
   return (
     <>
