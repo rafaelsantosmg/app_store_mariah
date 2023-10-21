@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { filterProductsInSale } from '@/utils/filterProducts'
+import { formatedCurrency } from '@/utils/formate-values'
 import { Button, Grid, Typography } from '@mui/material'
 import { Fragment, useContext, useEffect, useState } from 'react'
 import { DataContext } from '../../providers/DataProvider'
@@ -85,10 +86,7 @@ export default function SaleScreenSpun({ ...props }): JSX.Element {
           <Grid item xs={3}>
             <TextFields
               label="Total"
-              value={total.toLocaleString('pt-br', {
-                style: 'currency',
-                currency: 'BRL',
-              })}
+              value={formatedCurrency(total)}
               inputProps={{ readOnly: true, min: 0 }}
             />
           </Grid>

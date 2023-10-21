@@ -21,40 +21,6 @@ model Payments {
   @@map("payments")
 }
 
-// model Sales {
-//   id           Int      @id @default(autoincrement())
-//   quantityUnit Int
-//   quantityKg   Float
-//   discont      Float
-//   totalPrice   Float    @map("total_price")
-//   salesPrice   Float    @map("sales_price")
-//   createdAt    DateTime @default(now()) @map("created_at")
-//   updatedAt    DateTime @updatedAt @map("updated_at")
-
-//   Products     Products[]
-//   Payments     Payments[]
-//   paymentsId   Int?
-
-//   @@map("sales")
-// }
-
-// model Products {
-//   id           Int      @id @default(autoincrement())
-//   name         String
-//   description  String
-//   costPrice    Float    @map("cost_price")
-//   salePrice    Float    @map("sale_price")
-//   profitMargin Float    @map("profit_margin")
-//   image        String?
-//   stockType    String   @map("stock_type")
-//   stock        Float
-//   createdAt    DateTime @default(now()) @map("created_at")
-//   updatedAt    DateTime @updatedAt @map("updated_at")
-//   Sales        Sales[]
-
-//   @@map("products")
-// }
-
 model Sales {
   id          Int       @id @default(autoincrement())
   discount    Float

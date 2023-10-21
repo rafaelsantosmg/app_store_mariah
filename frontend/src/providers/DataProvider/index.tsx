@@ -1,4 +1,5 @@
 import api from '@/services'
+import { formatedCurrency } from '@/utils/formate-values'
 import { useFormik } from 'formik'
 import { createContext, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
@@ -85,10 +86,9 @@ export const DataProvider = ({ children }: TProviderProps) => {
       if (values.saleType === 'sale') {
         const { data } = await api.post('/sales', request)
         toast.success(
-          `Venda no valor de ${data.totalPrice.toLocaleString('pt-br', {
-            style: 'currency',
-            currency: 'BRL',
-          })} finalizada com sucesso`
+          `Venda no valor de ${formatedCurrency(
+            data.totalPrice
+          )} finalizada com sucesso`
         )
       } else {
         await api.post('/sales-spun', request)

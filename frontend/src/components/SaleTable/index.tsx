@@ -3,6 +3,11 @@ import { Product } from '@/interfaces/Products'
 import { DataContext } from '@/providers/DataProvider'
 import theme from '@/theme'
 import { TProductSale, TSaleProduct } from '@/types'
+import {
+  formateValueInputNumeric,
+  formateValueInputNumericPrice,
+  formatedCurrency,
+} from '@/utils/formate-values'
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import RemoveIcon from '@mui/icons-material/Remove'
@@ -15,10 +20,6 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { ChangeEvent, Fragment, useContext, useEffect, useState } from 'react'
 import TextFields from '../Inputs/TextFields'
-import {
-  formateValueInputNumeric,
-  formateValueInputNumericPrice,
-} from '@/utils/formate-values'
 
 function createData(
   id: number,
@@ -319,22 +320,16 @@ export default function SaleTable(): JSX.Element {
                   {row.name === 'PRODUTOS FIADO' ? (
                     <ChangePrice {...{ row, price, handleChangePrice }} />
                   ) : (
-                    row.salePrice.toLocaleString('pt-br', {
-                      style: 'currency',
-                      currency: 'BRL',
-                    })
+                    formatedCurrency(row.salePrice)
                   )}
                 </TableCell>
                 <TableCell align="center">
-                  {(
+                  {formatedCurrency(
                     row.salePrice *
-                    (typeof row.quantity === 'number'
-                      ? row.quantity
-                      : Number(row.quantity.split(',').join('.')))
-                  ).toLocaleString('pt-br', {
-                    style: 'currency',
-                    currency: 'BRL',
-                  })}
+                      (typeof row.quantity === 'number'
+                        ? row.quantity
+                        : Number(row.quantity.split(',').join('.')))
+                  )}
                 </TableCell>
                 <TableCell align="center">
                   <button

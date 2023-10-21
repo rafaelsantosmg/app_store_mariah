@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import theme from '@/theme'
 import { filterListProducts } from '@/utils/filterProducts'
 import EditIcon from '@mui/icons-material/Edit'
@@ -12,10 +13,20 @@ import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import { visuallyHidden } from '@mui/utils'
-import { ChangeEvent, MouseEvent, useContext, useMemo, useState } from 'react'
+import {
+  ChangeEvent,
+  MouseEvent,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { Product } from '../../interfaces/Products'
 import { DataContext } from '../../providers/DataProvider'
-import { formateValueUnitKg } from '../../utils/formate-values'
+import {
+  formateValueUnitKg,
+  formatedCurrency,
+} from '../../utils/formate-values'
 import EditProduct from '../EditProduct'
 import ModalContent from '../ModalContent'
 
@@ -169,8 +180,22 @@ export default function ListProductsTable() {
   const [order, setOrder] = useState<Order>('asc')
   const [orderBy, setOrderBy] = useState<keyof Product>('code')
   const [page, setPage] = useState(0)
+  const [pastPage, setPastPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [product, setProduct] = useState<Product>({} as Product)
+  console.log(page)
+  useEffect(() => {
+    if (
+      form.values?.searchCode.length > 0 ||
+      form.values?.searchName.length > 0
+    ) {
+      setPage(0)
+      setOrderBy('name')
+    } else {
+      setPage(pastPage)
+      setOrderBy('code')
+    }
+  }, [form.values?.searchCode, form.values?.searchName])
 
   const listProducts = filterListProducts(
     products,
@@ -205,8 +230,9 @@ export default function ListProductsTable() {
     setOrderBy(property)
   }
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage)
+    setPastPage(newPage)
   }
 
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
@@ -226,6 +252,8 @@ export default function ListProductsTable() {
     [order, orderBy, page, rows, rowsPerPage]
   )
 
+  console.log(visibleRows)
+
   return (
     <>
       <Box sx={{ width: '100%' }}>
@@ -242,14 +270,9 @@ export default function ListProductsTable() {
                 onRequestSort={handleRequestSort}
               />
               <TableBody>
-                {visibleRows.map((row, index) => {
+                {visibleRows.map((row) => {
                   return (
-                    <TableRow
-                      hover
-                      tabIndex={-1}
-                      key={row.code}
-                      sx={{ cursor: 'pointer' }}
-                    >
+                    <TableRow key={row.code}>
                       <TableCell component="th" scope="row" padding="none">
                         {row.code}
                       </TableCell>
@@ -263,22 +286,17 @@ export default function ListProductsTable() {
                           : row.stock}
                       </TableCell>
                       <TableCell align="left">
-                        {row.costPrice.toLocaleString('pt-br', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        })}
+                        {formatedCurrency(row.costPrice)}
                       </TableCell>
                       <TableCell align="left">
-                        {row.salePrice.toLocaleString('pt-br', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        })}
+                        {formatedCurrency(row.salePrice)}
                       </TableCell>
-                      <TableCell align="center">
-                        <EditIcon
-                          onClick={() => handleEdit(row.code)}
-                          sx={{ cursor: 'pointer', color: theme.brown }}
-                        />
+                      <TableCell
+                        align="center"
+                        onClick={() => handleEdit(row.code)}
+                        sx={{ cursor: 'pointer' }}
+                      >
+                        <EditIcon sx={{ color: theme.brown }} />
                       </TableCell>
                     </TableRow>
                   )
@@ -292,7 +310,7 @@ export default function ListProductsTable() {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25, 50, 100, listProducts.length]}
+            rowsPerPageOptions={[5, 10, 25, 50, 100]}
             component="div"
             count={rows.length}
             rowsPerPage={rowsPerPage}

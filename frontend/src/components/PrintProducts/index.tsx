@@ -1,9 +1,9 @@
-import React from 'react'
-import styles from './listProductPrint.module.css' // Importe o arquivo de estilos
-import { Button } from '@mui/material'
-import theme from '../../theme'
-import { useRouter } from 'next/navigation'
 import { Product } from '@/interfaces/Products'
+import { formateValueUnitKg, formatedCurrency } from '@/utils/formate-values'
+import { Button } from '@mui/material'
+import { useRouter } from 'next/navigation'
+import theme from '../../theme'
+import styles from './listProductPrint.module.css' // Importe o arquivo de estilos
 
 type ProductProps = {
   products: Product[]
@@ -67,7 +67,9 @@ export default function ListProductPrint({ products }: ProductProps) {
                 <td className={styles.tabelaTd}>{product.name}</td>
                 <td className={styles.tabelaTd}>{product.stockType}</td>
                 <td className={styles.tabelaTd}>{product.stock}</td>
-                <td className={styles.tabelaTd}>{product.salePrice}</td>
+                <td className={styles.tabelaTd}>
+                  {formatedCurrency(product.salePrice)}
+                </td>
               </tr>
             ))}
           </tbody>

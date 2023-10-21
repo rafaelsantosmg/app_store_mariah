@@ -17,6 +17,7 @@ import SelectFields from '../Inputs/SelectFields'
 import TextFields from '../Inputs/TextFields'
 import ProductsTable from '../ProductsTable'
 import SearchBar from '../SearchBar'
+import { toast } from 'react-toastify'
 
 const style = {
   p: {
@@ -30,7 +31,6 @@ const stockTypes = ['UNIDADE', 'QUILOGRAMA']
 export default function EntryProducts({ ...props }): JSX.Element {
   const { form, products, setLoading, setProducts } = useContext(DataContext)
   const { handleClose } = props
-  const router = useRouter()
   const [viewTable, setViewTable] = useState<boolean>(false)
 
   const schema = Yup.object().shape({
@@ -69,8 +69,10 @@ export default function EntryProducts({ ...props }): JSX.Element {
       }
       newProducts[index] = data
       setProducts([...newProducts])
+      handleClose()
+      toast.success('Produto registrado com sucesso')
     } catch (error) {
-      alert('Erro ao editar produto \n' + error)
+      toast.error('Erro ao editar produto \n' + error)
     } finally {
       setLoading(false)
       setViewTable(false)
@@ -116,7 +118,10 @@ export default function EntryProducts({ ...props }): JSX.Element {
       setFieldValue('name', findProduct.name)
       setFieldValue('costPrice', findProduct.costPrice)
       setFieldValue('salePrice', findProduct.salePrice)
-      setFieldValue('stockType', findProduct.stockType)
+      setFieldValue(
+        'stockType',
+        findProduct.stockType === 'UN' ? 'UNIDADE' : 'QUILOGRAMA'
+      )
       setFieldValue('pastStock', findProduct.stock)
       setViewTable(false)
     } else {

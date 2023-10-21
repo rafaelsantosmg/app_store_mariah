@@ -4,6 +4,7 @@ import { filterListProducts } from '@/utils/filterProducts'
 import {
   formateValueInputNumeric,
   formateValueUnitKg,
+  formatedCurrency,
 } from '@/utils/formate-values'
 import { Button, Grid, TableHead } from '@mui/material'
 import Paper from '@mui/material/Paper'
@@ -320,10 +321,7 @@ export default function ProductsTable({ ...props }): JSX.Element {
                         : row.stock}
                     </TableCell>
                     <TableCell align="left">
-                      {row.salePrice.toLocaleString('pt-br', {
-                        style: 'currency',
-                        currency: 'BRL',
-                      })}
+                      {formatedCurrency(row.salePrice)}
                     </TableCell>
                   </TableRow>
                 )
