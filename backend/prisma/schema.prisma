@@ -11,77 +11,74 @@ datasource db {
 }
 
 model Payments {
-  id            Int              @id @default(autoincrement())
-  method        String?
-  installment   String?
-  createdAt     DateTime         @default(now()) @map("created_at")
-  
-  salesId       Int?
-  Sales         Sales?           @relation(fields: [salesId], references: [id])
-  DailyPayments DailyMovements[] @relation("DailyPayments") // Relação com a tabela intermediária
+  id          Int      @id @default(autoincrement())
+  method      String?
+  installment String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  salesId Int?
+  Sales   Sales? @relation(fields: [salesId], references: [id])
 
   @@map("payments")
 }
 
 model Sales {
-  id            Int       @id @default(autoincrement())
-  discount      Float
-  totalPrice    Float     @map("total_price")
-  salesPrice    Float     @map("sales_price")
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
+  id         Int      @id @default(autoincrement())
+  discount   Float
+  totalPrice Float    @map("total_price")
+  salesPrice Float    @map("sales_price")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
-  SalesProducts SalesProduct[]  // Relação com a tabela intermediária
+  SalesProducts SalesProduct[] // Relação com a tabela intermediária
   Payments      Payments[]
 
   @@map("sales")
 }
 
 model Products {
-  id            Int      @id @default(autoincrement())
-  code          String?  @unique
-  name          String
-  description   String?
-  costPrice     Float    @map("cost_price")
-  salePrice     Float    @map("sale_price")
-  profitMargin  Float    @map("profit_margin")
-  image         String?
-  stockType     String   @map("stock_type")
-  stock         Float
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  id           Int      @id @default(autoincrement())
+  code         String?  @unique
+  name         String
+  description  String?
+  costPrice    Float    @map("cost_price")
+  salePrice    Float    @map("sale_price")
+  profitMargin Float    @map("profit_margin")
+  image        String?
+  stockType    String   @map("stock_type")
+  stock        Float
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
-  SalesProducts SalesProduct[]  // Relação com a tabela intermediária
+  SalesProducts SalesProduct[] // Relação com a tabela intermediária
 
   @@map("products")
 }
 
 model SalesProduct {
-  id        Int      @id @default(autoincrement())
-  saleId    Int      @map("sale_id")
-  productId Int      @map("product_id")
+  id        Int   @id @default(autoincrement())
+  saleId    Int   @map("sale_id")
+  productId Int   @map("product_id")
   quantity  Float
 
-  Sale      Sales    @relation(fields: [saleId], references: [id])
-  Product   Products @relation(fields: [productId], references: [id])
+  Sale    Sales    @relation(fields: [saleId], references: [id])
+  Product Products @relation(fields: [productId], references: [id])
 
   @@map("sales_products")
 }
 
 model DailyMovements {
-  id                          Int        @id @default(autoincrement())
-  openingBalance              Float?     @map("opening_balance")
-  closingBalance              Float?     @map("closing_balance")
-  totalSales                  Float      @map("total_sales")
-  cashSales                   Float      @map("cash_sales")
-  pixSales                    Float      @map("pix_sales")
-  debitCardSales              Float      @map("debit_card_sales")
-  creditCardSalesCash         Float      @map("credit_card_sales_cash")
-  creditCardsSalesInstallment Float      @map("credit_card_sales_installment")
-  createdAt                   DateTime   @default(now()) @map("created_at")
-  updatedAt                   DateTime   @updatedAt @map("updated_at")
-
-  Payments                    Payments[] @relation("DailyPayments") // Relação com a tabela intermediária
+  id                          Int      @id @default(autoincrement())
+  openingBalance              Float?   @map("opening_balance")
+  closingBalance              Float?   @map("closing_balance")
+  totalSales                  Float    @map("total_sales")
+  cashSales                   Float    @map("cash_sales")
+  pixSales                    Float    @map("pix_sales")
+  debitCardSales              Float    @map("debit_card_sales")
+  creditCardSalesCash         Float    @map("credit_card_sales_cash")
+  creditCardsSalesInstallment Float    @map("credit_card_sales_installment")
+  createdAt                   DateTime @default(now()) @map("created_at")
+  updatedAt                   DateTime @updatedAt @map("updated_at")
 
   @@map("daily_movements")
 }

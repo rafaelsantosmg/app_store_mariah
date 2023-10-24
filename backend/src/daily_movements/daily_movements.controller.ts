@@ -1,15 +1,15 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
 } from '@nestjs/common';
 import { DailyMovementsService } from './daily_movements.service';
-import { CreateDailyMovementDto } from './dto/create-daily_movement.dto';
 import { UpdateDailyMovementDto } from './dto/update-daily_movement.dto';
+import { CreateDailyMovementDto } from './dto/create-daily_movement.dto';
 
 @Controller('daily-movements')
 export class DailyMovementsController {
@@ -26,8 +26,13 @@ export class DailyMovementsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.dailyMovementsService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.dailyMovementsService.findOne(+id);
+  }
+
+  @Get('/moviment-day/:date')
+  async findMovimentDate(@Param('date') date: Date) {
+    return await this.dailyMovementsService.findDayMoviment(date);
   }
 
   @Patch(':id')
