@@ -16,8 +16,40 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE ONLY public.sales_products DROP CONSTRAINT sales_products_sale_id_fkey;
+ALTER TABLE ONLY public.sales_products DROP CONSTRAINT sales_products_product_id_fkey;
+ALTER TABLE ONLY public.payments DROP CONSTRAINT "payments_salesId_fkey";
+DROP INDEX public.products_code_key;
+ALTER TABLE ONLY public.sales_products DROP CONSTRAINT sales_products_pkey;
+ALTER TABLE ONLY public.sales DROP CONSTRAINT sales_pkey;
+ALTER TABLE ONLY public.products DROP CONSTRAINT products_pkey;
+ALTER TABLE ONLY public.payments DROP CONSTRAINT payments_pkey;
+ALTER TABLE ONLY public._prisma_migrations DROP CONSTRAINT _prisma_migrations_pkey;
+ALTER TABLE public.sales_products ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.sales ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.products ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.payments ALTER COLUMN id DROP DEFAULT;
+DROP SEQUENCE public.sales_products_id_seq;
+DROP TABLE public.sales_products;
+DROP SEQUENCE public.sales_id_seq;
+DROP TABLE public.sales;
+DROP SEQUENCE public.products_id_seq;
+DROP TABLE public.products;
+DROP SEQUENCE public.payments_id_seq;
+DROP TABLE public.payments;
+DROP TABLE public._prisma_migrations;
+-- *not* dropping schema, since initdb creates it
 --
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
+-- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+-- *not* creating schema, since initdb creates it
+
+
+ALTER SCHEMA public OWNER TO postgres;
+
+--
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
 --
 
 COMMENT ON SCHEMA public IS '';
@@ -1593,6 +1625,7 @@ COPY public.products (id, name, description, cost_price, sale_price, profit_marg
 1291	INCENSSÁRIO BUDA		1	20	1		1	2023-10-08 15:56:52.232	2023-11-02 23:40:40.493	UN	1291
 1305	ISQUEIRO BIC PEQUENO		1	4.99	1		9	2023-10-08 16:01:02.877	2023-11-02 23:41:12.204	UN	1305
 1307	ISQUEIRO SEGUNDA LINHA GRANDE		1	4	1		8	2023-10-08 16:01:33.589	2023-11-02 23:41:19.882	UN	1307
+1324	SOPEIRA PORCELANA PEQUENA BRANCA		1	69.9	1		0	2023-10-08 16:09:00.794	2023-11-02 23:42:22.431	UN	1324
 1343	IMAGEM RESINA MINI OXUM AMARELA		1	35	1		1	2023-10-08 16:11:58.768	2023-10-08 22:34:47.715	UN	1343
 1344	IMAGEM RESINA MINI OGUM VERMLHO		1	35	1		1	2023-10-08 16:12:08.65	2023-10-08 22:34:50.882	UN	1344
 1345	IMAGEM RESINA MINI OXUMARÊ		1	35	1		1	2023-10-08 16:12:13.228	2023-10-08 22:34:53.794	UN	1345
@@ -2058,6 +2091,7 @@ COPY public.products (id, name, description, cost_price, sale_price, profit_marg
 315	ESSÊNCIA LAVANDA		1	5	1		2	2023-10-08 12:29:30.519	2023-10-21 14:30:24.59	UN	0315
 384	DEFUMADOR CITRONELA		1	5	1		8	2023-10-08 12:47:30.349	2023-10-21 15:39:27.542	UN	0384
 7	ALGUIDAR N.2 C/VERNIZ		1	15	1		9	2023-10-07 21:23:22.826	2023-11-02 22:17:18.208	UN	0007
+130	PILÃO PEQUENO		10	25	1		0	2023-10-08 00:04:38.959	2023-11-02 22:23:03.24	UN	0130
 137	GAMELA REDONDA MÉDIA		1	40	1		1	2023-10-08 00:07:37.956	2023-11-02 22:23:50.532	UN	0137
 175	CACHAÇA COROTE		1	6	1		6	2023-10-08 00:15:19.135	2023-11-02 22:28:04.226	UN	0175
 424	INCENSO ABRE CAMINHO		1	3.5	1		18	2023-10-08 12:59:56.323	2023-11-02 22:58:10.915	UN	0424
@@ -2085,12 +2119,7 @@ COPY public.products (id, name, description, cost_price, sale_price, profit_marg
 1483	IMAGEM 20CM EXÚ TRANCA RUA		18.5	35	1		1	2023-10-08 16:40:42.138	2023-11-02 23:46:33.219	UN	1483
 1593	VELA DOURADA UNIDADE		0	2.5	2.5		46	2023-10-08 20:10:09.453	2023-11-02 23:49:20.085	UN	1586
 1608	IMAGEM 20CM SANTA RITA		18.5	35	16.5		1	2023-10-16 17:19:22.019	2023-11-02 23:50:21.143	UN	1601
-130	PILÃO PEQUENO		10	25	1		2	2023-10-08 00:04:38.959	2023-11-03 16:11:11.003	UN	0130
-1324	SOPEIRA PORCELANA PEQUENA BRANCA		1	69.9	1		3	2023-10-08 16:09:00.794	2023-11-03 16:11:37.192	UN	1324
-1842	VELA MAÇO N.3		0	6	6		11	2023-11-03 16:12:58.95	2023-11-03 16:12:58.95	UN	1835
-1843	VELA MAÇO N.8		0	12	12		13	2023-11-03 16:13:14.004	2023-11-03 16:13:14.004	UN	1836
-1840	VELA DEDINHO BRANCA KG		0	29.99	29.99		1	2023-11-03 16:12:12.117	2023-11-03 16:13:33.453	KG	1833
-1841	VELA DEDINHO BRANCA UN		0	1	1		20	2023-11-03 16:12:33.62	2023-11-03 16:13:41.98	UN	1834
+1840	VELA DEDINHO BRANCA KG		0	29.99	29.99		1	2023-11-03 03:54:01.632	2023-11-03 03:54:01.632	KG	1833
 \.
 
 
@@ -2121,11 +2150,7 @@ SELECT pg_catalog.setval('public.payments_id_seq', 1, false);
 -- Name: products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-<<<<<<< HEAD:backups/dump_03-11-2023_13_14_48.sql
-SELECT pg_catalog.setval('public.products_id_seq', 1843, true);
-=======
-SELECT pg_catalog.setval('public.products_id_seq', 1839 , true);
->>>>>>> 20b031e9e1d8f5bd9ea37b94f937d836ca3f7e5b:backups/dump_02-11-2023_20_55_20.sql
+SELECT pg_catalog.setval('public.products_id_seq', 1840, true);
 
 
 --
@@ -2214,7 +2239,7 @@ ALTER TABLE ONLY public.sales_products
 
 
 --
--- Name: SCHEMA public; Type: ACL; Schema: -; Owner: pg_database_owner
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
 --
 
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
