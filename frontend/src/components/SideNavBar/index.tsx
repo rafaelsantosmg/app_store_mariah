@@ -147,7 +147,7 @@ export default function SideNavBar({ ...props }) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <Header {...props} />
+      {/* <Header {...props} /> */}
       {/* <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
