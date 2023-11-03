@@ -16,8 +16,40 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE ONLY public.sales_products DROP CONSTRAINT sales_products_sale_id_fkey;
+ALTER TABLE ONLY public.sales_products DROP CONSTRAINT sales_products_product_id_fkey;
+ALTER TABLE ONLY public.payments DROP CONSTRAINT "payments_salesId_fkey";
+DROP INDEX public.products_code_key;
+ALTER TABLE ONLY public.sales_products DROP CONSTRAINT sales_products_pkey;
+ALTER TABLE ONLY public.sales DROP CONSTRAINT sales_pkey;
+ALTER TABLE ONLY public.products DROP CONSTRAINT products_pkey;
+ALTER TABLE ONLY public.payments DROP CONSTRAINT payments_pkey;
+ALTER TABLE ONLY public._prisma_migrations DROP CONSTRAINT _prisma_migrations_pkey;
+ALTER TABLE public.sales_products ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.sales ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.products ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.payments ALTER COLUMN id DROP DEFAULT;
+DROP SEQUENCE public.sales_products_id_seq;
+DROP TABLE public.sales_products;
+DROP SEQUENCE public.sales_id_seq;
+DROP TABLE public.sales;
+DROP SEQUENCE public.products_id_seq;
+DROP TABLE public.products;
+DROP SEQUENCE public.payments_id_seq;
+DROP TABLE public.payments;
+DROP TABLE public._prisma_migrations;
+-- *not* dropping schema, since initdb creates it
 --
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
+-- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+-- *not* creating schema, since initdb creates it
+
+
+ALTER SCHEMA public OWNER TO postgres;
+
+--
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
 --
 
 COMMENT ON SCHEMA public IS '';
@@ -2087,6 +2119,7 @@ COPY public.products (id, name, description, cost_price, sale_price, profit_marg
 1483	IMAGEM 20CM EXÚ TRANCA RUA		18.5	35	1		1	2023-10-08 16:40:42.138	2023-11-02 23:46:33.219	UN	1483
 1593	VELA DOURADA UNIDADE		0	2.5	2.5		46	2023-10-08 20:10:09.453	2023-11-02 23:49:20.085	UN	1586
 1608	IMAGEM 20CM SANTA RITA		18.5	35	16.5		1	2023-10-16 17:19:22.019	2023-11-02 23:50:21.143	UN	1601
+1840	VELA DEDINHO BRANCA KG		0	29.99	29.99		1	2023-11-03 03:54:01.632	2023-11-03 03:54:01.632	KG	1833
 \.
 
 
@@ -2117,7 +2150,7 @@ SELECT pg_catalog.setval('public.payments_id_seq', 1, false);
 -- Name: products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.products_id_seq', 1839 , true);
+SELECT pg_catalog.setval('public.products_id_seq', 1840, true);
 
 
 --
@@ -2206,7 +2239,7 @@ ALTER TABLE ONLY public.sales_products
 
 
 --
--- Name: SCHEMA public; Type: ACL; Schema: -; Owner: pg_database_owner
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
 --
 
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;

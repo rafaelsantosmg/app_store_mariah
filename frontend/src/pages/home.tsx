@@ -10,6 +10,7 @@ import Header from '../components/Header'
 import SaleScreen from '../components/SaleScreen'
 import { DataContext } from '../providers/DataProvider'
 import EntryProduct from '@/components/EntryProduct'
+import SideNavBar from '@/components/SideNavBar'
 
 export default function Home(): JSX.Element {
   const {
@@ -23,24 +24,25 @@ export default function Home(): JSX.Element {
 
   return (
     <Fragment>
-      <Header
+      <SideNavBar
         openModalReceiptMerchandise={setOpenModalReceiptMerchandise}
         openModalSale={setOpenModalSale}
         openModalSaleSpun={setOpenModalSaleSpun}
-      />
-      <Box
-        sx={{
-          alignItems: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          height: '80vh',
-          justifyContent: 'center',
-          width: '100%',
-        }}
       >
-        <Image width={700} src={Logo} alt="Logo da Mariah da Roça" />
-        <Image width={400} src={Slogan} alt="Slogan da Mariah da Roça" />
-      </Box>
+        <Box
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            height: '80vh',
+            justifyContent: 'center',
+            width: '100%',
+          }}
+        >
+          <Image width={700} src={Logo} alt="Logo da Mariah da Roça" />
+          <Image width={400} src={Slogan} alt="Slogan da Mariah da Roça" />
+        </Box>
+      </SideNavBar>
       <ModalContent
         open={openModalSale || openModalSaleSpun || openModalReceiptMerchandise}
         handleClose={() => {

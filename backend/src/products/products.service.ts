@@ -22,7 +22,6 @@ export class ProductsService {
       data: {
         ...createProductDto,
         profitMargin: createProductDto.salePrice - createProductDto.costPrice,
-        stock: createProductDto.stock,
       },
     });
 
