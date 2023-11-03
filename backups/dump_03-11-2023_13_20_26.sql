@@ -16,40 +16,8 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-ALTER TABLE ONLY public.sales_products DROP CONSTRAINT sales_products_sale_id_fkey;
-ALTER TABLE ONLY public.sales_products DROP CONSTRAINT sales_products_product_id_fkey;
-ALTER TABLE ONLY public.payments DROP CONSTRAINT "payments_salesId_fkey";
-DROP INDEX public.products_code_key;
-ALTER TABLE ONLY public.sales_products DROP CONSTRAINT sales_products_pkey;
-ALTER TABLE ONLY public.sales DROP CONSTRAINT sales_pkey;
-ALTER TABLE ONLY public.products DROP CONSTRAINT products_pkey;
-ALTER TABLE ONLY public.payments DROP CONSTRAINT payments_pkey;
-ALTER TABLE ONLY public._prisma_migrations DROP CONSTRAINT _prisma_migrations_pkey;
-ALTER TABLE public.sales_products ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.sales ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.products ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.payments ALTER COLUMN id DROP DEFAULT;
-DROP SEQUENCE public.sales_products_id_seq;
-DROP TABLE public.sales_products;
-DROP SEQUENCE public.sales_id_seq;
-DROP TABLE public.sales;
-DROP SEQUENCE public.products_id_seq;
-DROP TABLE public.products;
-DROP SEQUENCE public.payments_id_seq;
-DROP TABLE public.payments;
-DROP TABLE public._prisma_migrations;
--- *not* dropping schema, since initdb creates it
 --
--- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
---
-
--- *not* creating schema, since initdb creates it
-
-
-ALTER SCHEMA public OWNER TO postgres;
-
---
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
 --
 
 COMMENT ON SCHEMA public IS '';
@@ -60,7 +28,19 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: _prisma_migrations; Type: TABLE; Schema: public; Owner: postgres
+-- Name: _DailyPayments; Type: TABLE; Schema: public; Owner: lsantos
+--
+
+CREATE TABLE public."_DailyPayments" (
+    "A" integer NOT NULL,
+    "B" integer NOT NULL
+);
+
+
+ALTER TABLE public."_DailyPayments" OWNER TO lsantos;
+
+--
+-- Name: _prisma_migrations; Type: TABLE; Schema: public; Owner: lsantos
 --
 
 CREATE TABLE public._prisma_migrations (
@@ -75,10 +55,53 @@ CREATE TABLE public._prisma_migrations (
 );
 
 
-ALTER TABLE public._prisma_migrations OWNER TO postgres;
+ALTER TABLE public._prisma_migrations OWNER TO lsantos;
 
 --
--- Name: payments; Type: TABLE; Schema: public; Owner: postgres
+-- Name: daily_movements; Type: TABLE; Schema: public; Owner: lsantos
+--
+
+CREATE TABLE public.daily_movements (
+    id integer NOT NULL,
+    opening_balance double precision,
+    closing_balance double precision,
+    total_sales double precision NOT NULL,
+    cash_sales double precision NOT NULL,
+    pix_sales double precision NOT NULL,
+    debit_card_sales double precision NOT NULL,
+    credit_card_sales_cash double precision NOT NULL,
+    credit_card_sales_installment double precision NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public.daily_movements OWNER TO lsantos;
+
+--
+-- Name: daily_movements_id_seq; Type: SEQUENCE; Schema: public; Owner: lsantos
+--
+
+CREATE SEQUENCE public.daily_movements_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.daily_movements_id_seq OWNER TO lsantos;
+
+--
+-- Name: daily_movements_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: lsantos
+--
+
+ALTER SEQUENCE public.daily_movements_id_seq OWNED BY public.daily_movements.id;
+
+
+--
+-- Name: payments; Type: TABLE; Schema: public; Owner: lsantos
 --
 
 CREATE TABLE public.payments (
@@ -90,10 +113,10 @@ CREATE TABLE public.payments (
 );
 
 
-ALTER TABLE public.payments OWNER TO postgres;
+ALTER TABLE public.payments OWNER TO lsantos;
 
 --
--- Name: payments_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: payments_id_seq; Type: SEQUENCE; Schema: public; Owner: lsantos
 --
 
 CREATE SEQUENCE public.payments_id_seq
@@ -105,17 +128,17 @@ CREATE SEQUENCE public.payments_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.payments_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.payments_id_seq OWNER TO lsantos;
 
 --
--- Name: payments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: payments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: lsantos
 --
 
 ALTER SEQUENCE public.payments_id_seq OWNED BY public.payments.id;
 
 
 --
--- Name: products; Type: TABLE; Schema: public; Owner: postgres
+-- Name: products; Type: TABLE; Schema: public; Owner: lsantos
 --
 
 CREATE TABLE public.products (
@@ -134,10 +157,10 @@ CREATE TABLE public.products (
 );
 
 
-ALTER TABLE public.products OWNER TO postgres;
+ALTER TABLE public.products OWNER TO lsantos;
 
 --
--- Name: products_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: products_id_seq; Type: SEQUENCE; Schema: public; Owner: lsantos
 --
 
 CREATE SEQUENCE public.products_id_seq
@@ -149,17 +172,17 @@ CREATE SEQUENCE public.products_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.products_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.products_id_seq OWNER TO lsantos;
 
 --
--- Name: products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: lsantos
 --
 
 ALTER SEQUENCE public.products_id_seq OWNED BY public.products.id;
 
 
 --
--- Name: sales; Type: TABLE; Schema: public; Owner: postgres
+-- Name: sales; Type: TABLE; Schema: public; Owner: lsantos
 --
 
 CREATE TABLE public.sales (
@@ -168,15 +191,14 @@ CREATE TABLE public.sales (
     sales_price double precision NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at timestamp(3) without time zone NOT NULL,
-    discount double precision NOT NULL,
-    payment_id integer
+    discount double precision NOT NULL
 );
 
 
-ALTER TABLE public.sales OWNER TO postgres;
+ALTER TABLE public.sales OWNER TO lsantos;
 
 --
--- Name: sales_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: sales_id_seq; Type: SEQUENCE; Schema: public; Owner: lsantos
 --
 
 CREATE SEQUENCE public.sales_id_seq
@@ -188,17 +210,17 @@ CREATE SEQUENCE public.sales_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.sales_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.sales_id_seq OWNER TO lsantos;
 
 --
--- Name: sales_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: sales_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: lsantos
 --
 
 ALTER SEQUENCE public.sales_id_seq OWNED BY public.sales.id;
 
 
 --
--- Name: sales_products; Type: TABLE; Schema: public; Owner: postgres
+-- Name: sales_products; Type: TABLE; Schema: public; Owner: lsantos
 --
 
 CREATE TABLE public.sales_products (
@@ -209,10 +231,10 @@ CREATE TABLE public.sales_products (
 );
 
 
-ALTER TABLE public.sales_products OWNER TO postgres;
+ALTER TABLE public.sales_products OWNER TO lsantos;
 
 --
--- Name: sales_products_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: sales_products_id_seq; Type: SEQUENCE; Schema: public; Owner: lsantos
 --
 
 CREATE SEQUENCE public.sales_products_id_seq
@@ -224,45 +246,60 @@ CREATE SEQUENCE public.sales_products_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.sales_products_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.sales_products_id_seq OWNER TO lsantos;
 
 --
--- Name: sales_products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: sales_products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: lsantos
 --
 
 ALTER SEQUENCE public.sales_products_id_seq OWNED BY public.sales_products.id;
 
 
 --
--- Name: payments id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: daily_movements id; Type: DEFAULT; Schema: public; Owner: lsantos
+--
+
+ALTER TABLE ONLY public.daily_movements ALTER COLUMN id SET DEFAULT nextval('public.daily_movements_id_seq'::regclass);
+
+
+--
+-- Name: payments id; Type: DEFAULT; Schema: public; Owner: lsantos
 --
 
 ALTER TABLE ONLY public.payments ALTER COLUMN id SET DEFAULT nextval('public.payments_id_seq'::regclass);
 
 
 --
--- Name: products id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: products id; Type: DEFAULT; Schema: public; Owner: lsantos
 --
 
 ALTER TABLE ONLY public.products ALTER COLUMN id SET DEFAULT nextval('public.products_id_seq'::regclass);
 
 
 --
--- Name: sales id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: sales id; Type: DEFAULT; Schema: public; Owner: lsantos
 --
 
 ALTER TABLE ONLY public.sales ALTER COLUMN id SET DEFAULT nextval('public.sales_id_seq'::regclass);
 
 
 --
--- Name: sales_products id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: sales_products id; Type: DEFAULT; Schema: public; Owner: lsantos
 --
 
 ALTER TABLE ONLY public.sales_products ALTER COLUMN id SET DEFAULT nextval('public.sales_products_id_seq'::regclass);
 
 
 --
--- Data for Name: _prisma_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: _DailyPayments; Type: TABLE DATA; Schema: public; Owner: lsantos
+--
+
+COPY public."_DailyPayments" ("A", "B") FROM stdin;
+\.
+
+
+--
+-- Data for Name: _prisma_migrations; Type: TABLE DATA; Schema: public; Owner: lsantos
 --
 
 COPY public._prisma_migrations (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count) FROM stdin;
@@ -271,11 +308,20 @@ COPY public._prisma_migrations (id, checksum, finished_at, migration_name, logs,
 f9ad307a-4bfd-43a6-bf43-2b2561e3005c	0e532e4938f3063ea601eda55c5371a04fe7e1b7538a809bdb5563ab62a303e3	2023-10-20 13:51:47.302145+00	20231009160610_add_stock	\N	\N	2023-10-20 13:51:47.299619+00	1
 f59def8f-4ada-4369-bedc-69a7b8c9d315	9b92308d5d6e0d2b4e9c79509a23a7ed955b69e3aa8a9a6497d50cae0b359b18	2023-10-20 13:51:47.309946+00	20231010001141_add_new_relation	\N	\N	2023-10-20 13:51:47.302926+00	1
 2b912e72-f495-46c3-85d8-c0ab57488fb3	eb58d11506a741755de68e391d89b54dfda7db9592e7c694fc147870557fffa3	2023-10-20 13:51:47.31516+00	20231016001506_add_column_code	\N	\N	2023-10-20 13:51:47.310832+00	1
+e46a75c1-3fd8-48c0-b759-b9146adffc2c	6937c77f1d883da406721c495eb90491b18455118fa63300e232c28e92f3b8dc	2023-11-03 16:20:00.374768+00	20231022161139_add_daily_sales	\N	\N	2023-11-03 16:20:00.348159+00	1
 \.
 
 
 --
--- Data for Name: payments; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: daily_movements; Type: TABLE DATA; Schema: public; Owner: lsantos
+--
+
+COPY public.daily_movements (id, opening_balance, closing_balance, total_sales, cash_sales, pix_sales, debit_card_sales, credit_card_sales_cash, credit_card_sales_installment, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: payments; Type: TABLE DATA; Schema: public; Owner: lsantos
 --
 
 COPY public.payments (id, method, installment, created_at, "salesId") FROM stdin;
@@ -283,7 +329,7 @@ COPY public.payments (id, method, installment, created_at, "salesId") FROM stdin
 
 
 --
--- Data for Name: products; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: products; Type: TABLE DATA; Schema: public; Owner: lsantos
 --
 
 COPY public.products (id, name, description, cost_price, sale_price, profit_margin, image, stock, created_at, updated_at, stock_type, code) FROM stdin;
@@ -1625,7 +1671,6 @@ COPY public.products (id, name, description, cost_price, sale_price, profit_marg
 1291	INCENSSÁRIO BUDA		1	20	1		1	2023-10-08 15:56:52.232	2023-11-02 23:40:40.493	UN	1291
 1305	ISQUEIRO BIC PEQUENO		1	4.99	1		9	2023-10-08 16:01:02.877	2023-11-02 23:41:12.204	UN	1305
 1307	ISQUEIRO SEGUNDA LINHA GRANDE		1	4	1		8	2023-10-08 16:01:33.589	2023-11-02 23:41:19.882	UN	1307
-1324	SOPEIRA PORCELANA PEQUENA BRANCA		1	69.9	1		0	2023-10-08 16:09:00.794	2023-11-02 23:42:22.431	UN	1324
 1343	IMAGEM RESINA MINI OXUM AMARELA		1	35	1		1	2023-10-08 16:11:58.768	2023-10-08 22:34:47.715	UN	1343
 1344	IMAGEM RESINA MINI OGUM VERMLHO		1	35	1		1	2023-10-08 16:12:08.65	2023-10-08 22:34:50.882	UN	1344
 1345	IMAGEM RESINA MINI OXUMARÊ		1	35	1		1	2023-10-08 16:12:13.228	2023-10-08 22:34:53.794	UN	1345
@@ -2091,7 +2136,6 @@ COPY public.products (id, name, description, cost_price, sale_price, profit_marg
 315	ESSÊNCIA LAVANDA		1	5	1		2	2023-10-08 12:29:30.519	2023-10-21 14:30:24.59	UN	0315
 384	DEFUMADOR CITRONELA		1	5	1		8	2023-10-08 12:47:30.349	2023-10-21 15:39:27.542	UN	0384
 7	ALGUIDAR N.2 C/VERNIZ		1	15	1		9	2023-10-07 21:23:22.826	2023-11-02 22:17:18.208	UN	0007
-130	PILÃO PEQUENO		10	25	1		0	2023-10-08 00:04:38.959	2023-11-02 22:23:03.24	UN	0130
 137	GAMELA REDONDA MÉDIA		1	40	1		1	2023-10-08 00:07:37.956	2023-11-02 22:23:50.532	UN	0137
 175	CACHAÇA COROTE		1	6	1		6	2023-10-08 00:15:19.135	2023-11-02 22:28:04.226	UN	0175
 424	INCENSO ABRE CAMINHO		1	3.5	1		18	2023-10-08 12:59:56.323	2023-11-02 22:58:10.915	UN	0424
@@ -2119,20 +2163,25 @@ COPY public.products (id, name, description, cost_price, sale_price, profit_marg
 1483	IMAGEM 20CM EXÚ TRANCA RUA		18.5	35	1		1	2023-10-08 16:40:42.138	2023-11-02 23:46:33.219	UN	1483
 1593	VELA DOURADA UNIDADE		0	2.5	2.5		46	2023-10-08 20:10:09.453	2023-11-02 23:49:20.085	UN	1586
 1608	IMAGEM 20CM SANTA RITA		18.5	35	16.5		1	2023-10-16 17:19:22.019	2023-11-02 23:50:21.143	UN	1601
-1840	VELA DEDINHO BRANCA KG		0	29.99	29.99		1	2023-11-03 03:54:01.632	2023-11-03 03:54:01.632	KG	1833
+130	PILÃO PEQUENO		10	25	1		2	2023-10-08 00:04:38.959	2023-11-03 16:11:11.003	UN	0130
+1324	SOPEIRA PORCELANA PEQUENA BRANCA		1	69.9	1		3	2023-10-08 16:09:00.794	2023-11-03 16:11:37.192	UN	1324
+1842	VELA MAÇO N.3		0	6	6		11	2023-11-03 16:12:58.95	2023-11-03 16:12:58.95	UN	1835
+1843	VELA MAÇO N.8		0	12	12		13	2023-11-03 16:13:14.004	2023-11-03 16:13:14.004	UN	1836
+1840	VELA DEDINHO BRANCA KG		0	29.99	29.99		1	2023-11-03 16:12:12.117	2023-11-03 16:13:33.453	KG	1833
+1841	VELA DEDINHO BRANCA UN		0	1	1		20	2023-11-03 16:12:33.62	2023-11-03 16:13:41.98	UN	1834
 \.
 
 
 --
--- Data for Name: sales; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: sales; Type: TABLE DATA; Schema: public; Owner: lsantos
 --
 
-COPY public.sales (id, total_price, sales_price, created_at, updated_at, discount, payment_id) FROM stdin;
+COPY public.sales (id, total_price, sales_price, created_at, updated_at, discount) FROM stdin;
 \.
 
 
 --
--- Data for Name: sales_products; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: sales_products; Type: TABLE DATA; Schema: public; Owner: lsantos
 --
 
 COPY public.sales_products (id, sale_id, product_id, quantity) FROM stdin;
@@ -2140,35 +2189,42 @@ COPY public.sales_products (id, sale_id, product_id, quantity) FROM stdin;
 
 
 --
--- Name: payments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: daily_movements_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lsantos
+--
+
+SELECT pg_catalog.setval('public.daily_movements_id_seq', 1, false);
+
+
+--
+-- Name: payments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lsantos
 --
 
 SELECT pg_catalog.setval('public.payments_id_seq', 1, false);
 
 
 --
--- Name: products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lsantos
 --
 
-SELECT pg_catalog.setval('public.products_id_seq', 1840, true);
+SELECT pg_catalog.setval('public.products_id_seq', 1843, true);
 
 
 --
--- Name: sales_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: sales_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lsantos
 --
 
 SELECT pg_catalog.setval('public.sales_id_seq', 1, false);
 
 
 --
--- Name: sales_products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: sales_products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lsantos
 --
 
 SELECT pg_catalog.setval('public.sales_products_id_seq', 1, false);
 
 
 --
--- Name: _prisma_migrations _prisma_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: _prisma_migrations _prisma_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: lsantos
 --
 
 ALTER TABLE ONLY public._prisma_migrations
@@ -2176,7 +2232,15 @@ ALTER TABLE ONLY public._prisma_migrations
 
 
 --
--- Name: payments payments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: daily_movements daily_movements_pkey; Type: CONSTRAINT; Schema: public; Owner: lsantos
+--
+
+ALTER TABLE ONLY public.daily_movements
+    ADD CONSTRAINT daily_movements_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: payments payments_pkey; Type: CONSTRAINT; Schema: public; Owner: lsantos
 --
 
 ALTER TABLE ONLY public.payments
@@ -2184,7 +2248,7 @@ ALTER TABLE ONLY public.payments
 
 
 --
--- Name: products products_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: products products_pkey; Type: CONSTRAINT; Schema: public; Owner: lsantos
 --
 
 ALTER TABLE ONLY public.products
@@ -2192,7 +2256,7 @@ ALTER TABLE ONLY public.products
 
 
 --
--- Name: sales sales_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: sales sales_pkey; Type: CONSTRAINT; Schema: public; Owner: lsantos
 --
 
 ALTER TABLE ONLY public.sales
@@ -2200,7 +2264,7 @@ ALTER TABLE ONLY public.sales
 
 
 --
--- Name: sales_products sales_products_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: sales_products sales_products_pkey; Type: CONSTRAINT; Schema: public; Owner: lsantos
 --
 
 ALTER TABLE ONLY public.sales_products
@@ -2208,14 +2272,44 @@ ALTER TABLE ONLY public.sales_products
 
 
 --
--- Name: products_code_key; Type: INDEX; Schema: public; Owner: postgres
+-- Name: _DailyPayments_AB_unique; Type: INDEX; Schema: public; Owner: lsantos
+--
+
+CREATE UNIQUE INDEX "_DailyPayments_AB_unique" ON public."_DailyPayments" USING btree ("A", "B");
+
+
+--
+-- Name: _DailyPayments_B_index; Type: INDEX; Schema: public; Owner: lsantos
+--
+
+CREATE INDEX "_DailyPayments_B_index" ON public."_DailyPayments" USING btree ("B");
+
+
+--
+-- Name: products_code_key; Type: INDEX; Schema: public; Owner: lsantos
 --
 
 CREATE UNIQUE INDEX products_code_key ON public.products USING btree (code);
 
 
 --
--- Name: payments payments_salesId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: _DailyPayments _DailyPayments_A_fkey; Type: FK CONSTRAINT; Schema: public; Owner: lsantos
+--
+
+ALTER TABLE ONLY public."_DailyPayments"
+    ADD CONSTRAINT "_DailyPayments_A_fkey" FOREIGN KEY ("A") REFERENCES public.daily_movements(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: _DailyPayments _DailyPayments_B_fkey; Type: FK CONSTRAINT; Schema: public; Owner: lsantos
+--
+
+ALTER TABLE ONLY public."_DailyPayments"
+    ADD CONSTRAINT "_DailyPayments_B_fkey" FOREIGN KEY ("B") REFERENCES public.payments(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: payments payments_salesId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: lsantos
 --
 
 ALTER TABLE ONLY public.payments
@@ -2223,7 +2317,7 @@ ALTER TABLE ONLY public.payments
 
 
 --
--- Name: sales_products sales_products_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: sales_products sales_products_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: lsantos
 --
 
 ALTER TABLE ONLY public.sales_products
@@ -2231,7 +2325,7 @@ ALTER TABLE ONLY public.sales_products
 
 
 --
--- Name: sales_products sales_products_sale_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: sales_products sales_products_sale_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: lsantos
 --
 
 ALTER TABLE ONLY public.sales_products
@@ -2239,7 +2333,7 @@ ALTER TABLE ONLY public.sales_products
 
 
 --
--- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: pg_database_owner
 --
 
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
