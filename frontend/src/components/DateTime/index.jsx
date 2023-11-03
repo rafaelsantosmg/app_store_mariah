@@ -4,20 +4,13 @@ import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { useEffect, useState } from 'react'
 
-export default function DateTime() {
-  const [dateTime, setDateTime] = useState(
-    format(new Date(), "'Dia' dd 'de' MMMM 'às' HH:mm", {
-      locale: ptBR,
-    })
-  )
+export default function DateTime({ ...props }) {
+  const { fulltime } = props
+  const [dateTime, setDateTime] = useState(new Date())
 
   useEffect(() => {
     const timeId = setInterval(() => {
-      setDateTime(
-        format(new Date(), "'Dia' dd 'de' MMMM 'às' HH:mm", {
-          locale: ptBR,
-        })
-      )
+      setDateTime(new Date())
     }, 1000)
 
     return () => {
@@ -35,7 +28,13 @@ export default function DateTime() {
         paddingRight: '0.7rem',
       }}
     >
-      {dateTime || 'Carregando...'}
+      {format(
+        dateTime,
+        `'Dia' dd 'de' MMMM 'às' ${fulltime ? 'HH:mm:ss' : 'HH:mm'}`,
+        {
+          locale: ptBR,
+        }
+      )}
     </Typography>
   )
 }

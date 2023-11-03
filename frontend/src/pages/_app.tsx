@@ -1,10 +1,13 @@
+import SideNavBar from '@/components/SideNavBar'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
+import { useContext } from 'react'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { DataProvider } from '../providers/DataProvider'
+import { DataContext, DataProvider } from '../providers/DataProvider'
 import '../styles/globals.css'
+import myTheme from '../theme'
 
 const theme = createTheme({
   typography: {
@@ -55,7 +58,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Component {...pageProps} />
+        <SideNavBar>
+          <Component {...pageProps} />
+        </SideNavBar>
         <ToastContainer />
       </ThemeProvider>
     </DataProvider>

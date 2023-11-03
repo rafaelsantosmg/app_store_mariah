@@ -1,38 +1,20 @@
 import AddProduct from '@/components/AddProduct'
 import ModalContent from '@/components/ModalContent'
-import SaleScreen from '@/components/SaleScreen'
-import SaleScreenSpun from '@/components/SaleScreenSpun'
 import SearchBar from '@/components/SearchBar'
 import theme from '@/theme'
 import { Box, Button, Grid, Typography } from '@mui/material'
-import { Fragment, useContext, useState } from 'react'
-import Header from '../components/Header'
-import ListProductsTable from '../components/ListProductsTable'
-import { DataContext } from '../providers/DataProvider'
 import { useRouter } from 'next/navigation'
-import EntryProducts from '@/components/EntryProduct'
+import { Fragment, useState } from 'react'
+import ListProductsTable from '../components/ListProductsTable'
 
 export default function ListProducts() {
   const router = useRouter()
-  const {
-    openModalReceiptMerchandise,
-    openModalSale,
-    openModalSaleSpun,
-    setOpenModalReceiptMerchandise,
-    setOpenModalSale,
-    setOpenModalSaleSpun,
-  } = useContext(DataContext)
   const [openAddProduct, setOpenAddProduct] = useState<boolean>(false)
 
   return (
     <Fragment>
-      <Header
-        openModalReceiptMerchandise={setOpenModalReceiptMerchandise}
-        openModalSale={setOpenModalSale}
-        openModalSaleSpun={setOpenModalSaleSpun}
-      />
       <Grid container justifyContent="center" sx={{ mt: 2 }}>
-        <Grid item xs={10}>
+        <Grid item xs={12}>
           <Grid container justifyContent="space-between" alignItems="center">
             <Box
               sx={{
@@ -88,38 +70,21 @@ export default function ListProducts() {
             </Button>
           </Grid>
         </Grid>
-        <Grid item xs={10}>
+
+        <Grid item xs={12}>
           <SearchBar />
         </Grid>
-        <Grid item xs={10} sx={{ mt: 2 }}>
+
+        <Grid item xs={12} sx={{ mt: 2 }}>
           <ListProductsTable />
         </Grid>
       </Grid>
+
       <ModalContent
         open={openAddProduct}
         handleClose={() => setOpenAddProduct(false)}
       >
         <AddProduct setOpenAddProduct={setOpenAddProduct} />
-      </ModalContent>
-      <ModalContent
-        open={openModalSale || openModalSaleSpun || openModalReceiptMerchandise}
-        handleClose={() => {
-          setOpenModalSale(false)
-          setOpenModalSaleSpun(false)
-          setOpenModalReceiptMerchandise(false)
-        }}
-      >
-        {openModalSale && (
-          <SaleScreen handleClose={() => setOpenModalSale(false)} />
-        )}
-        {openModalSaleSpun && (
-          <SaleScreenSpun handleClose={() => setOpenModalSaleSpun(false)} />
-        )}
-        {openModalReceiptMerchandise && (
-          <EntryProducts
-            handleClose={() => setOpenModalReceiptMerchandise(false)}
-          />
-        )}
       </ModalContent>
     </Fragment>
   )

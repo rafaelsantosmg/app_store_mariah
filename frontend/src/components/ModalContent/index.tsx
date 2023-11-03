@@ -66,7 +66,7 @@ export default function ModalContent({ ...props }) {
               alignItems: 'center',
             }}
           >
-            <DateTime />
+            <DateTime fulltime />
             <IconButton onClick={handleClose}>
               <CloseIcon fontSize="large" />
             </IconButton>

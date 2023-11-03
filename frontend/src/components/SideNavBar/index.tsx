@@ -1,5 +1,17 @@
+import Logo from '@/asset/images/logo.svg'
+import { DataContext } from '@/providers/DataProvider'
+import theme from '@/theme'
+import {
+  AddHomeWork,
+  AttachMoney,
+  Inventory,
+  ListAlt,
+  MonetizationOn,
+} from '@mui/icons-material'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import MenuIcon from '@mui/icons-material/Menu'
+import { Grid, Toolbar } from '@mui/material'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -11,12 +23,19 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
+import Tooltip from '@mui/material/Tooltip'
 import { CSSObject, Theme, styled, useTheme } from '@mui/material/styles'
+import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { MouseEvent, useState } from 'react'
-import Header from '../Header'
+import { useContext, useState } from 'react'
+import DateTime from '../DateTime'
+import ModalContent from '../ModalContent'
+import SaleScreen from '../SaleScreen'
+import SaleScreenSpun from '../SaleScreenSpun'
+import EntryProducts from '../EntryProduct'
 
-const drawerWidth = 240
+const drawerWidth = 300
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
@@ -88,53 +107,51 @@ const Drawer = styled(MuiDrawer, {
 }))
 
 export default function SideNavBar({ ...props }) {
+  const { children } = props
   const {
-    children,
+    openModalReceiptMerchandise,
     openModalSale,
     openModalSaleSpun,
-    openModalReceiptMerchandise,
-  } = props
+    setOpenModalReceiptMerchandise,
+    setOpenModalSale,
+    setOpenModalSaleSpun,
+  } = useContext(DataContext)
   const router = useRouter()
+  const themeMUI = useTheme()
+  const [open, setOpen] = useState(false)
 
   const links = [
     {
       id: 1,
       title: 'Página Inícial',
-      path: () => router.push('/home'),
+      handleClick: () => router.push('/home'),
+      icon: <AddHomeWork />,
     },
     {
       id: 2,
       title: 'Venda',
-      path: () => openModalSale(true),
+      handleClick: () => setOpenModalSale(true),
+      icon: <MonetizationOn />,
     },
     {
       id: 3,
       title: 'Venda Fiado',
-      path: () => openModalSaleSpun(true),
+      handleClick: () => setOpenModalSaleSpun(true),
+      icon: <AttachMoney />,
     },
     {
       id: 4,
       title: 'Lista de Produtos',
-      path: () => router.push('/list-products'),
+      handleClick: () => router.push('/list-products'),
+      icon: <Inventory />,
     },
     {
       id: 5,
       title: 'Recebimento de Mercadorias',
-      path: () => openModalReceiptMerchandise(true),
+      handleClick: () => setOpenModalReceiptMerchandise(true),
+      icon: <ListAlt />,
     },
   ]
-
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
-
-  const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget)
-  }
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null)
-  }
-  const theme = useTheme()
-  const [open, setOpen] = useState(false)
 
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -147,8 +164,13 @@ export default function SideNavBar({ ...props }) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      {/* <Header {...props} /> */}
-      {/* <AppBar position="fixed" open={open}>
+      <AppBar
+        position="fixed"
+        open={open}
+        sx={{
+          backgroundColor: theme.gainsboro,
+        }}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -158,19 +180,42 @@ export default function SideNavBar({ ...props }) {
             sx={{
               marginRight: 5,
               ...(open && { display: 'none' }),
+              color: theme.brown,
             }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
-          </Typography>
+          <Grid container justifyContent="center" alignItems="center">
+            <Box
+              sx={{
+                display: { xs: 'none', md: 'flex' },
+                width: '100%',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Link href="/home">
+                <Image width={230} src={Logo} alt="Logo da Mariah da Roça" />
+              </Link>
+              <DateTime />
+            </Box>
+          </Grid>
         </Toolbar>
-      </AppBar> */}
-      <Drawer variant="permanent" open={open}>
+      </AppBar>
+      <Drawer
+        variant="permanent"
+        open={open}
+        PaperProps={{
+          sx: {
+            backgroundColor: theme.gainsboro,
+            '& .MuiDivider-root': {
+              backgroundColor: theme.brown,
+            },
+          },
+        }}
+      >
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? (
+            {themeMUI.direction === 'rtl' ? (
               <ChevronRightIcon />
             ) : (
               <ChevronLeftIcon />
@@ -179,58 +224,63 @@ export default function SideNavBar({ ...props }) {
         </DrawerHeader>
         <Divider />
         <List>
-          {links.map(({ id, title }) => (
+          {links.map(({ id, title, icon, handleClick }) => (
             <ListItem key={id} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
+              <Tooltip title={title}>
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
+                    justifyContent: open ? 'initial' : 'center',
+                    minHeight: 48,
+                    px: 2.5,
                   }}
+                  onClick={handleClick}
                 >
-                  {title}
-                </ListItemIcon>
-                <ListItemText primary={title} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
+                  <ListItemIcon
+                    sx={{
+                      color: theme.brown,
+                      justifyContent: 'center',
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                    }}
+                  >
+                    {icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={title}
+                    sx={{
+                      color: theme.lightBrown,
+                      fontWeight: 600,
+                      opacity: open ? 1 : 0,
+                    }}
+                  />
+                </ListItemButton>
+              </Tooltip>
             </ListItem>
           ))}
         </List>
         <Divider />
-        {/* <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List> */}
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1, pl: 8, pr: 8 }}>
         <DrawerHeader />
         {children}
+        <ModalContent
+          open={
+            openModalSale || openModalSaleSpun || openModalReceiptMerchandise
+          }
+          handleClose={() => {
+            setOpenModalSale(false)
+            setOpenModalSaleSpun(false)
+            setOpenModalReceiptMerchandise(false)
+          }}
+        >
+          {openModalSale && (
+            <SaleScreen handleClose={() => setOpenModalSale(false)} />
+          )}
+          {openModalSaleSpun && (
+            <SaleScreenSpun handleClose={() => setOpenModalSaleSpun(false)} />
+          )}
+          {openModalReceiptMerchandise && <EntryProducts />}
+        </ModalContent>
       </Box>
     </Box>
   )
