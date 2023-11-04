@@ -11,7 +11,7 @@ import {
 import { Box, Button, Grid, Typography } from '@mui/material'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/navigation'
-import { ChangeEvent, useContext, useEffect, useState } from 'react'
+import { ChangeEvent, Fragment, useContext, useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import SelectFields from '../Inputs/SelectFields'
 import TextFields from '../Inputs/TextFields'
@@ -187,6 +187,7 @@ export default function EntryProducts({ ...props }): JSX.Element {
           sx={{ width: '90%' }}
         >
           <SearchBar />
+
           {viewTable ? (
             <ProductsTable
               handleClickProducts={{
@@ -195,7 +196,7 @@ export default function EntryProducts({ ...props }): JSX.Element {
               }}
             />
           ) : (
-            <>
+            <Fragment>
               <Grid container justifyContent="space-between">
                 <Typography
                   variant="h3"
@@ -213,6 +214,7 @@ export default function EntryProducts({ ...props }): JSX.Element {
                   <TextFields label="Código" value={values.code} disabled />
                 </Grid>
               </Grid>
+
               <Grid container justifyContent="space-between">
                 <Grid item xs={12}>
                   <TextFields
@@ -227,6 +229,7 @@ export default function EntryProducts({ ...props }): JSX.Element {
                   )}
                 </Grid>
               </Grid>
+
               <Grid container justifyContent="space-between">
                 <Grid item xs={5}>
                   <SelectFields
@@ -251,6 +254,7 @@ export default function EntryProducts({ ...props }): JSX.Element {
                   )}
                 </Grid>
               </Grid>
+
               <Grid container justifyContent="space-between">
                 <Grid item xs={5}>
                   <TextFields
@@ -278,6 +282,7 @@ export default function EntryProducts({ ...props }): JSX.Element {
                   )}
                 </Grid>
               </Grid>
+
               <Grid
                 container
                 sx={{
@@ -343,7 +348,7 @@ export default function EntryProducts({ ...props }): JSX.Element {
                   Cancelar
                 </Button>
               </Grid>
-            </>
+            </Fragment>
           )}
         </Grid>
       </form>

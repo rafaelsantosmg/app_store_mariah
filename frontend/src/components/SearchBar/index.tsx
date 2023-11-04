@@ -48,6 +48,7 @@ export default function SearchBar(): JSX.Element {
               value={values.searchCode}
             />
           </Grid>
+
           <Grid item xs={10}>
             <TextFields
               id="outlined-search"

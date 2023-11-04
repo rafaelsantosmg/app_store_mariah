@@ -164,6 +164,7 @@ export default function SideNavBar({ ...props }) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
+
       <AppBar
         position="fixed"
         open={open}
@@ -201,6 +202,7 @@ export default function SideNavBar({ ...props }) {
           </Grid>
         </Toolbar>
       </AppBar>
+
       <Drawer
         variant="permanent"
         open={open}
@@ -260,9 +262,11 @@ export default function SideNavBar({ ...props }) {
         </List>
         <Divider />
       </Drawer>
+
       <Box component="main" sx={{ flexGrow: 1, pl: 8, pr: 8 }}>
         <DrawerHeader />
         {children}
+
         <ModalContent
           open={
             openModalSale || openModalSaleSpun || openModalReceiptMerchandise

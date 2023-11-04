@@ -15,6 +15,7 @@ import TableSortLabel from '@mui/material/TableSortLabel'
 import { visuallyHidden } from '@mui/utils'
 import {
   ChangeEvent,
+  Fragment,
   MouseEvent,
   useContext,
   useEffect,
@@ -253,7 +254,7 @@ export default function ListProductsTable() {
   )
 
   return (
-    <>
+    <Fragment>
       <Box sx={{ width: '100%' }}>
         <Paper sx={{ width: '100%', mb: 2, p: 2 }}>
           <TableContainer>
@@ -307,6 +308,7 @@ export default function ListProductsTable() {
               </TableBody>
             </Table>
           </TableContainer>
+
           <TablePagination
             rowsPerPageOptions={[5, 10, 25, 50, 100]}
             component="div"
@@ -322,12 +324,13 @@ export default function ListProductsTable() {
           />
         </Paper>
       </Box>
+
       <ModalContent
         open={product.code ? true : false}
         handleClose={() => setProduct({} as Product)}
       >
         <EditProduct product={product} setProduct={setProduct} />
       </ModalContent>
-    </>
+    </Fragment>
   )
 }

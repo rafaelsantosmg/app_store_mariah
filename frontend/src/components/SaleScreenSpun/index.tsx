@@ -79,9 +79,11 @@ export default function SaleScreenSpun({ ...props }): JSX.Element {
         <Grid container>
           <Grid container>
             <SearchBar />
+
             {viewTable ? <SortTable /> : <SaleTable />}
           </Grid>
         </Grid>
+
         <Grid container justifyContent="space-between" sx={{ mt: 5 }}>
           <Grid item xs={3}>
             <TextFields
@@ -91,6 +93,7 @@ export default function SaleScreenSpun({ ...props }): JSX.Element {
             />
           </Grid>
         </Grid>
+
         <Grid
           container
           sx={{

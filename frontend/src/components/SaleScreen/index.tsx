@@ -97,13 +97,16 @@ export default function SaleScreen({ ...props }): JSX.Element {
           Realizar Venda
         </Typography>
       </Grid>
+
       <Fragment>
         <Grid container>
           <Grid container>
             <SearchBar />
+
             {viewTable ? <ProductsTable /> : <SaleTable />}
           </Grid>
         </Grid>
+
         <Grid container justifyContent="space-between" sx={{ mt: 5 }}>
           <Grid item xs={3}>
             <TextFields
@@ -112,6 +115,7 @@ export default function SaleScreen({ ...props }): JSX.Element {
               inputProps={{ readOnly: true, min: 0 }}
             />
           </Grid>
+
           <Grid item xs={2}>
             <TextFields
               inputProps={{ min: 0, max: MAX_DISCOUNT }}
@@ -123,6 +127,7 @@ export default function SaleScreen({ ...props }): JSX.Element {
               value={values.discount}
             />
           </Grid>
+
           <Grid item xs={3}>
             <SelectFields
               label="Forma de Pagamento"
@@ -134,6 +139,7 @@ export default function SaleScreen({ ...props }): JSX.Element {
               onClose={handleChange}
             />
           </Grid>
+
           <Grid item xs={2}>
             <SelectFields
               label="Nº de Parcelas"
@@ -147,6 +153,7 @@ export default function SaleScreen({ ...props }): JSX.Element {
             />
           </Grid>
         </Grid>
+
         <Grid
           container
           sx={{

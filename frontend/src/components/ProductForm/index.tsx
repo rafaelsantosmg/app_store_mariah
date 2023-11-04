@@ -83,6 +83,7 @@ export default function ProductForm({ ...props }): JSX.Element {
             />
           </Grid>
         </Grid>
+
         <Grid container justifyContent="space-between">
           <Grid item xs={12}>
             <TextFields
@@ -98,6 +99,7 @@ export default function ProductForm({ ...props }): JSX.Element {
             )}
           </Grid>
         </Grid>
+
         <Grid container justifyContent="space-between">
           <Grid item xs={5}>
             <SelectFields
@@ -122,6 +124,7 @@ export default function ProductForm({ ...props }): JSX.Element {
             )}
           </Grid>
         </Grid>
+
         <Grid container justifyContent="space-between">
           <Grid item xs={5}>
             <TextFields
@@ -163,6 +166,7 @@ export default function ProductForm({ ...props }): JSX.Element {
             )}
           </Grid>
         </Grid>
+
         <Grid
           container
           sx={{

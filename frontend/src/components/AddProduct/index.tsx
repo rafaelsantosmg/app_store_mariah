@@ -43,7 +43,6 @@ export default function AddProduct({ ...props }): JSX.Element {
       const request: TFormValues = {
         code: String(Number(products[products.length - 1].code) + 1),
         name: values.name.toUpperCase().trim(),
-        description: values.description.toUpperCase().trim(),
         stockType: values.stockType === 'UNIDADE' ? 'UN' : 'KG',
         stock: Number(stock),
         costPrice: Number(values.costPrice),
@@ -65,7 +64,6 @@ export default function AddProduct({ ...props }): JSX.Element {
     initialValues: {
       code: '',
       name: '',
-      description: '',
       stockType: 'UNIDADE',
       stock: '',
       costPrice: 0,

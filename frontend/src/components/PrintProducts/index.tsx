@@ -30,6 +30,7 @@ export default function ListProductPrint({ products }: ProductProps) {
         >
           Imprimir Lista
         </Button>
+
         <Button
           variant="outlined"
           type="button"
@@ -60,6 +61,7 @@ export default function ListProductPrint({ products }: ProductProps) {
               <th className={styles.tabelaTh}>Preço de Venda</th>
             </tr>
           </thead>
+
           <tbody>
             {products.map((product: Product) => (
               <tr key={product.id}>

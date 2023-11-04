@@ -32,6 +32,7 @@ export default function SelectFields({
       >
         {label}
       </InputLabel>
+
       <Select
         endAdornment={
           value !== '' && (

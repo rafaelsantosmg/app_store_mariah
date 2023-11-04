@@ -282,6 +282,7 @@ export default function SaleTable(): JSX.Element {
             <TableCell align="center">Remover</TableCell>
           </TableRow>
         </TableHead>
+
         <TableBody>
           {rows.map((row: TProductSale) => {
             return (

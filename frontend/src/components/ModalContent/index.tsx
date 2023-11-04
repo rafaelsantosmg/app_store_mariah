@@ -1,13 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import theme from '@/theme'
-import CloseIcon from '@mui/icons-material/Close'
-import { Box, IconButton, Modal, Typography } from '@mui/material'
+import { Box, Modal } from '@mui/material'
 import Image from 'next/image'
 import Logo from '../../asset/images/logo.svg'
 import DateTime from '../DateTime'
 
 export default function ModalContent({ ...props }) {
-  const { children, handleClose, open = false, renderButtons } = props
+  const { children, open = false, renderButtons } = props
 
   return (
     <Modal open={open}>
@@ -37,9 +35,7 @@ export default function ModalContent({ ...props }) {
           left: '50%',
           maxHeight: '95%',
           minWidth: '300px',
-          pl: 5,
-          pr: 5,
-          pt: 6,
+          p: 5,
           position: 'relative',
           top: '50%',
           transform: 'translate(-50%, -50%)',
@@ -51,6 +47,8 @@ export default function ModalContent({ ...props }) {
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
+            p: 1,
+            mb: 2,
             position: 'absolute',
             right: '0',
             top: '0',
@@ -67,22 +65,22 @@ export default function ModalContent({ ...props }) {
             }}
           >
             <DateTime fulltime />
-            <IconButton onClick={handleClose}>
-              <CloseIcon fontSize="large" />
-            </IconButton>
           </Box>
         </Box>
+
         <Box
           sx={{
             border: '1px solid #ccc',
             borderRadius: '10px',
             height: '85vh',
             overflow: 'auto',
-            padding: '0 1rem',
+            p: 2,
+            mt: 2,
           }}
         >
           {children}
         </Box>
+
         <Box
           style={{
             display: 'flex',

@@ -288,6 +288,7 @@ export default function ProductsTable({ ...props }): JSX.Element {
                 <TableCell align="left">Preço</TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
               {visibleRows.map((row, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`
@@ -334,24 +335,24 @@ export default function ProductsTable({ ...props }): JSX.Element {
             </TableBody>
           </Table>
         </TableContainer>
+
         {listProducts.length > rowsPerPage && (
-          <>
-            <TablePagination
-              rowsPerPageOptions={[5, 10]}
-              component="div"
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              labelRowsPerPage="Linhas por página:"
-              labelDisplayedRows={({ from, to, count }) =>
-                `${from}-${to} de ${count}`
-              }
-            />
-          </>
+          <TablePagination
+            rowsPerPageOptions={[5, 10]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            labelRowsPerPage="Linhas por página:"
+            labelDisplayedRows={({ from, to, count }) =>
+              `${from}-${to} de ${count}`
+            }
+          />
         )}
       </Paper>
+
       <Grid container justifyContent="space-between" sx={{ mb: 2 }}>
         <Grid item>
           <TextFields
@@ -363,6 +364,7 @@ export default function ProductsTable({ ...props }): JSX.Element {
             value={values.quantity}
           />
         </Grid>
+
         <Grid item>
           <Button
             variant="outlined"

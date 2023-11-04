@@ -1,15 +1,31 @@
 import SideNavBar from '@/components/SideNavBar'
-import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
+import { CssBaseline } from '@mui/material'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
-import { useContext } from 'react'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { DataContext, DataProvider } from '../providers/DataProvider'
+import { DataProvider } from '../providers/DataProvider'
 import '../styles/globals.css'
 import myTheme from '../theme'
 
 const theme = createTheme({
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        '*::-webkit-scrollbar': {
+          width: '8px',
+        },
+        '*::-webkit-scrollbar-track': {
+          backgroundColor: myTheme.gainsboro, // Cor de fundo da track da barra de rolagem
+        },
+        '*::-webkit-scrollbar-thumb': {
+          backgroundColor: myTheme.lightBrown, // Cor do thumb (o "botão" da barra de rolagem)
+          borderRadius: '6px',
+        },
+      },
+    },
+  },
   typography: {
     subtitle1: {
       fontFamily: ['Gagalin', 'sans-serif'].join(', '),
