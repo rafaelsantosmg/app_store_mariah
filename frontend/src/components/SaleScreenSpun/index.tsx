@@ -20,6 +20,9 @@ export default function SaleScreenSpun({ ...props }): JSX.Element {
   useEffect(() => {
     setFieldValue('saleType', 'saleSpun')
     setFieldValue('paymentMethod', 'money')
+    setFieldValue('searchCode', '')
+    setFieldValue('searchName', '')
+    setFieldValue('search', '')
   }, [])
 
   useEffect(() => {
