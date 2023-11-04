@@ -33,6 +33,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
     useState(false)
   const [openModalSale, setOpenModalSale] = useState(false)
   const [openModalSaleSpun, setOpenModalSaleSpun] = useState(false)
+  const [openModalCashier, setOpenModalCashier] = useState(false)
   const [getProducts, setGetProducts] = useState<boolean>(false)
 
   useEffect(() => {
@@ -127,6 +128,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
       value={{
         form,
         loading,
+        openModalCashier,
         openModalReceiptMerchandise,
         openModalSale,
         openModalSaleSpun,
@@ -134,6 +136,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
         saleProducts,
         searchProducts,
         setLoading,
+        setOpenModalCashier,
         setOpenModalReceiptMerchandise,
         setOpenModalSale,
         setOpenModalSaleSpun,

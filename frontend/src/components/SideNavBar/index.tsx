@@ -2,11 +2,13 @@ import Logo from '@/asset/images/logo.svg'
 import { DataContext } from '@/providers/DataProvider'
 import theme from '@/theme'
 import {
+  AddBox,
   AddHomeWork,
-  AttachMoney,
-  Inventory,
+  AddShoppingCart,
   ListAlt,
-  MonetizationOn,
+  RequestQuoteTwoTone,
+  SavingsTwoTone,
+  ShoppingCart,
 } from '@mui/icons-material'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
@@ -30,10 +32,11 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useContext, useState } from 'react'
 import DateTime from '../DateTime'
+import EntryProducts from '../EntryProduct'
 import ModalContent from '../ModalContent'
+import OpenCashier from '../OpenCashier'
 import SaleScreen from '../SaleScreen'
 import SaleScreenSpun from '../SaleScreenSpun'
-import EntryProducts from '../EntryProduct'
 
 const drawerWidth = 300
 
@@ -109,9 +112,11 @@ const Drawer = styled(MuiDrawer, {
 export default function SideNavBar({ ...props }) {
   const { children } = props
   const {
+    openModalCashier,
     openModalReceiptMerchandise,
     openModalSale,
     openModalSaleSpun,
+    setOpenModalCashier,
     setOpenModalReceiptMerchandise,
     setOpenModalSale,
     setOpenModalSaleSpun,
@@ -131,25 +136,37 @@ export default function SideNavBar({ ...props }) {
       id: 2,
       title: 'Venda',
       handleClick: () => setOpenModalSale(true),
-      icon: <MonetizationOn />,
+      icon: <AddShoppingCart />,
     },
     {
       id: 3,
       title: 'Venda Fiado',
       handleClick: () => setOpenModalSaleSpun(true),
-      icon: <AttachMoney />,
+      icon: <ShoppingCart />,
     },
     {
       id: 4,
       title: 'Lista de Produtos',
       handleClick: () => router.push('/list-products'),
-      icon: <Inventory />,
+      icon: <ListAlt />,
     },
     {
       id: 5,
       title: 'Recebimento de Mercadorias',
       handleClick: () => setOpenModalReceiptMerchandise(true),
-      icon: <ListAlt />,
+      icon: <AddBox />,
+    },
+    {
+      id: 6,
+      title: 'Abertura de Caixa',
+      handleClick: () => setOpenModalCashier(true),
+      icon: <RequestQuoteTwoTone />,
+    },
+    {
+      id: 7,
+      title: 'Fechamento de Caixa',
+      handleClick: () => router.push('/closing-cashier'),
+      icon: <SavingsTwoTone />,
     },
   ]
 
@@ -269,13 +286,11 @@ export default function SideNavBar({ ...props }) {
 
         <ModalContent
           open={
-            openModalSale || openModalSaleSpun || openModalReceiptMerchandise
+            openModalSale ||
+            openModalSaleSpun ||
+            openModalReceiptMerchandise ||
+            openModalCashier
           }
-          handleClose={() => {
-            setOpenModalSale(false)
-            setOpenModalSaleSpun(false)
-            setOpenModalReceiptMerchandise(false)
-          }}
         >
           {openModalSale && (
             <SaleScreen handleClose={() => setOpenModalSale(false)} />
@@ -287,6 +302,9 @@ export default function SideNavBar({ ...props }) {
             <EntryProducts
               handleClose={() => setOpenModalReceiptMerchandise(false)}
             />
+          )}
+          {openModalCashier && (
+            <OpenCashier handleClose={() => setOpenModalCashier(false)} />
           )}
         </ModalContent>
       </Box>

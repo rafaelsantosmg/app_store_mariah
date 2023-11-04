@@ -6,6 +6,7 @@ export type Order = 'asc' | 'desc'
 export type TDataContext = {
   form: any
   loading: boolean
+  openModalCashier: boolean
   openModalReceiptMerchandise: boolean
   openModalSale: boolean
   openModalSaleSpun: boolean
@@ -13,6 +14,7 @@ export type TDataContext = {
   saleProducts: ProductSale[]
   searchProducts: Product[]
   setLoading: (loading: boolean) => void
+  setOpenModalCashier: (value: boolean) => void
   setOpenModalReceiptMerchandise: (value: boolean) => void
   setOpenModalSale: (value: boolean) => void
   setOpenModalSaleSpun: (value: boolean) => void

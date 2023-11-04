@@ -103,11 +103,9 @@ export default function SaleScreen({ ...props }): JSX.Element {
 
       <Fragment>
         <Grid container>
-          <Grid container>
-            <SearchBar />
+          <SearchBar />
 
-            {viewTable ? <ProductsTable /> : <SaleTable />}
-          </Grid>
+          {viewTable ? <ProductsTable /> : <SaleTable />}
         </Grid>
 
         <Grid container justifyContent="space-between" sx={{ mt: 5 }}>
