@@ -283,7 +283,11 @@ export default function SideNavBar({ ...props }) {
           {openModalSaleSpun && (
             <SaleScreenSpun handleClose={() => setOpenModalSaleSpun(false)} />
           )}
-          {openModalReceiptMerchandise && <EntryProducts />}
+          {openModalReceiptMerchandise && (
+            <EntryProducts
+              handleClose={() => setOpenModalReceiptMerchandise(false)}
+            />
+          )}
         </ModalContent>
       </Box>
     </Box>

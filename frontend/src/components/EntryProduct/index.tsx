@@ -86,7 +86,7 @@ export default function EntryProducts({ ...props }): JSX.Element {
       name: '',
       costPrice: 0,
       salePrice: 0,
-      stockType: 'UN',
+      stockType: 'UNIDADE',
       stock: 0,
       pastStock: 0,
     },
@@ -148,7 +148,7 @@ export default function EntryProducts({ ...props }): JSX.Element {
     setFieldValue('name', product.name)
     setFieldValue('costPrice', product.costPrice)
     setFieldValue('salePrice', product.salePrice)
-    setFieldValue('stockType', product.stockType)
+    setFieldValue('stockType', product.stockType === 'UN' ? 'UNIDADE' : 'KG')
     setFieldValue('pastStock', product.stock)
   }
 

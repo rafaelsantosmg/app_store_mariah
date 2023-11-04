@@ -23,7 +23,6 @@ export class ProductsController {
     try {
       return await this.productsService.create(createProductDto);
     } catch (error) {
-      console.log(error);
       throw new ConflictException(error.message);
     }
   }
