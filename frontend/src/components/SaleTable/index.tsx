@@ -38,6 +38,7 @@ function AddRemoveQuantityUn({ ...props }): JSX.Element {
   return (
     <Fragment>
       <button
+        type="button"
         style={{
           cursor: 'pointer',
           border: `1px solid ${theme.brown}`,
@@ -49,6 +50,7 @@ function AddRemoveQuantityUn({ ...props }): JSX.Element {
       </button>
       {row.quantity}
       <button
+        type="button"
         style={{
           cursor: 'pointer',
           border: `1px solid ${theme.brown}`,
