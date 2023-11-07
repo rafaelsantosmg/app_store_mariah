@@ -38,6 +38,15 @@ export class SalesController {
     }
   }
 
+  @Get('by-date/:date')
+  async findByDate(@Param('date') date: string) {
+    try {
+      return await this.salesService.findByDate(date);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
+  }
+
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {

@@ -325,10 +325,7 @@ export default function ListProductsTable() {
         </Paper>
       </Box>
 
-      <ModalContent
-        open={product.code ? true : false}
-        handleClose={() => setProduct({} as Product)}
-      >
+      <ModalContent open={product.code ? true : false}>
         <EditProduct product={product} setProduct={setProduct} />
       </ModalContent>
     </Fragment>

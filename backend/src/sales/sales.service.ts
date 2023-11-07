@@ -138,6 +138,27 @@ export class SalesService {
     return { ...sale, SalesProducts };
   }
 
+  async findByDate(date: string) {
+    const sales = await this.prisma.sales.findMany({
+      where: {
+        createdAt: {
+          gte: new Date(`${date} 00:00:00`),
+          lte: new Date(`${date} 23:59:59`),
+        },
+      },
+      include: {
+        SalesProducts: true,
+        Payments: true,
+      },
+    });
+
+    if (!sales) {
+      throw new Error('Sale not found');
+    }
+
+    return sales;
+  }
+
   async remove(id: number) {
     const sale = await this.prisma.sales.findUnique({ where: { id } });
 

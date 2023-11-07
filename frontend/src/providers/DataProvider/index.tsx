@@ -79,7 +79,10 @@ export const DataProvider = ({ children }: TProviderProps) => {
     }))
     const request = {
       discount: values.discont,
-      paymentInstallment: values.paymentInstallment,
+      paymentInstallment:
+        values.paymentInstallment === 'A VISTA'
+          ? 'in_cash'
+          : values.paymentInstallment,
       paymentMethod: serializePaymentMethods(values.paymentMethod),
       products: productsSerialize,
     }

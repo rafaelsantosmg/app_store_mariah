@@ -72,6 +72,9 @@ export default function ModalContent({ ...props }) {
           sx={{
             border: '1px solid #ccc',
             borderRadius: '10px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
             height: '85vh',
             overflow: 'auto',
             p: 2,
@@ -79,19 +82,18 @@ export default function ModalContent({ ...props }) {
           }}
         >
           {children}
-        </Box>
-
-        <Box
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            height: '2.5rem',
-            justifyContent: 'flex-end',
-            margin: '1rem 0',
-            width: '100%',
-          }}
-        >
-          {renderButtons}
+          <Box
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              height: '2.5rem',
+              justifyContent: 'flex-end',
+              margin: '1rem 0',
+              width: '100%',
+            }}
+          >
+            {renderButtons}
+          </Box>
         </Box>
       </Box>
     </Modal>

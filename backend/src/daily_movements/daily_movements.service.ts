@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { format } from 'date-fns';
 import { PrismaService } from '../database/prisma/prisma.service';
-import { UpdateDailyMovementDto } from './dto/update-daily_movement.dto';
 import { CreateDailyMovementDto } from './dto/create-daily_movement.dto';
+import { UpdateDailyMovementDto } from './dto/update-daily_movement.dto';
 
 type Methods = {
   pix: number;
@@ -68,13 +69,19 @@ export class DailyMovementsService {
   }
 
   async findDayMoviment(movimentDate: Date) {
-    const date = new Date(movimentDate);
+    const initialDate = format(
+      new Date(movimentDate),
+      'yyyy-MM-dd 00:00:00.SSS',
+    );
+    const finalDate = format(new Date(movimentDate), 'yyyy-MM-dd 23:59:59.SSS');
 
-    const moviment = await this.prisma.dailyMovements.findFirst({
+    console.log(initialDate, finalDate);
+
+    const moviment = await this.prisma.dailyMovements.findMany({
       where: {
         createdAt: {
-          gte: date,
-          lte: new Date(date.getTime() + 999),
+          gte: initialDate,
+          lte: finalDate,
         },
       },
     });
@@ -99,11 +106,11 @@ export class DailyMovementsService {
     const creditCardsInstallment = sales
       .filter((sale) =>
         sale.Payments.some(
-          (p) => p.method === 'credit_card' && p.installment !== 'A VISTA',
+          (p) => p.method === 'credit_card' && p.installment !== 'in_cash',
         ),
       )
       .reduce((acc, curr) => {
-        const qtd = curr.Payments.find((p) => p.installment !== 'A VISTA');
+        const qtd = curr.Payments.find((p) => p.installment !== 'in_cash');
 
         return acc + curr.totalPrice / Number(qtd.installment.replace('x', ''));
       }, 0);

@@ -80,10 +80,7 @@ export default function ListProducts() {
         </Grid>
       </Grid>
 
-      <ModalContent
-        open={openAddProduct}
-        handleClose={() => setOpenAddProduct(false)}
-      >
+      <ModalContent open={openAddProduct}>
         <AddProduct setOpenAddProduct={setOpenAddProduct} />
       </ModalContent>
     </Fragment>
