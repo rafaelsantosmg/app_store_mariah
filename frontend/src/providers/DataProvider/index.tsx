@@ -18,7 +18,7 @@ function serializePaymentMethods(paymentMethod: string): string {
     case 'Cartão de Débito':
       return 'debit_card'
     default:
-      return ''
+      return 'money'
   }
 }
 
